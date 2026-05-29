@@ -1,9 +1,12 @@
 import React from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { Box, CssBaseline } from '@mui/material';
-import Main from './components/Main';
-import Sub from './components/Sub';
+import Main from './pages/auth/main/Main';
 import Menu from './components/Menu'; 
+import Sub from './components/Sub';
+import Login from './pages/auth/Login'; 
+import Register from './pages/auth/Register'; 
+
 
 
 function App() {
@@ -13,11 +16,15 @@ function App() {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      {!isAuthPage && <Menu />} {/* 로그인과 회원가입 페이지가 아닐 때만 Menu 렌더링 */}
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      {!isAuthPage && <Menu />}
+      <Box component="main" sx={{ 
+          flexGrow: 1, 
+          p: isAuthPage ? 0 : 3
+      }}>
         <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/sub" element={<Sub />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/join" element={<Register />} />
+          <Route path="/main" element={<Main />} />
         </Routes>
       </Box>
     </Box>

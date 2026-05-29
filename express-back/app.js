@@ -5,6 +5,7 @@ const oracledb = require('oracledb');
 
 // router
 const sampleRouter = require("./routes/sample");
+const authRouter = require("./routes/auth");
 
 const db = require("./db");
 
@@ -13,11 +14,10 @@ app.use(cors());
 app.use(express.json())
 
 // ejs 설정
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '.')); // .은 경로
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use("/sample", sampleRouter);
+app.use("/api/auth", authRouter);
 
 async function startServer() {
   try {

@@ -1,0 +1,80 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #F5EDD8;
+    background-image: url('../../../public/images/back3.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.formWrap {
+    position: relative;
+    z-index: 1;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* 로고 영역 */
+.logoArea {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.logoImg {
+    width: 100px;
+}
+
+/* 타이틀 */
+.title {
+    text-align: center !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    color: #7B4F2E !important;
+    margin-bottom: 4px !important;
+}
+
+/* 서브타이틀 */
+.subTitle {
+    text-align: center !important;
+    font-size: 13px !important;
+    color: #B08060 !important;
+    margin-bottom: 8px !important;
+}
+
+/* 가입하기 버튼 */
+.button {
+    background-color: #7B4F2E !important;
+    margin-top: 4px !important;
+}
+
+.button:hover {
+    background-color: #5C3D2E !important;
+}
+
+/* 하단 로그인 링크 */
+.footer {
+    text-align: center !important;
+    font-size: 13px !important;
+    color: #B08060 !important;
+    margin-top: 4px !important;
+}
+
+.link {
+    color: #7B4F2E;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}

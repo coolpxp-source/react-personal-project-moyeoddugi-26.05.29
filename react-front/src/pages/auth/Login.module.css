@@ -1,0 +1,142 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;        /* min-height 대신 height */
+    width: 100%;
+    background-image: url('../../../public/images/back3.jpg');
+    background-size: cover;
+    background-position: center;
+    position: fixed;      /* 화면에 고정 */
+    top: 0;
+    left: 0;
+}
+
+/* 왼쪽 이미지 영역 */
+.leftSection {
+    flex: 1;
+    min-height: 100vh;
+}
+
+/* 이미지 위에 로고 올리기 */
+.overlay {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.logoArea {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.logoImg {
+    width: 220px;
+}
+
+.logoSub {
+    color: #B08060 !important;
+}
+
+/* 오른쪽 폼 영역 */
+.rightSection {
+    width: 550px;
+    height: 100vh;        /* min-height 대신 height */
+    overflow-y: auto;     /* 내용 많으면 스크롤 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.75); /* 반투명 흰색 */
+    backdrop-filter: blur(8px);                   /* 뒤 배경 흐릿하게 */
+    border-left: 1px solid #EEE5D6;
+}
+
+/* Paper 없애고 바로 폼 */
+.formWrap {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.title {
+  text-align: center;
+  color: #7B4F2E;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.subTitle {
+  text-align: center;
+  color: #B08060;
+  margin-bottom: 24px;
+}
+
+.button {
+  background-color: #7B4F2E !important;
+  margin-bottom: 16px !important;
+}
+
+.button:hover {
+  background-color: #5C3D2E !important;
+}
+
+.link {
+  color: #7B4F2E;
+}
+
+.divider {
+    text-align: center;
+    color: #B08060;
+    margin: 16px 0;
+}
+
+/* 구글 버튼 (MUI Button) */
+.socialButton {
+    margin-bottom: 8px !important;
+    border-color: #C4956A !important;
+    background-color: white !important;
+    color: #7B4F2E !important;
+    height: 45px;
+    transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+
+.socialButton:hover {
+    opacity: 0.85 !important;
+    transform: scale(1.02) !important;
+    background-color: white !important;
+}
+
+/* 카카오/네이버 이미지 버튼 */
+.socialImg {
+    height: 45px;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 8px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.socialImg:hover {
+    opacity: 0.85;
+    transform: scale(1.02);
+}
+
+/* 새 계정 만들기 */
+.newAccountButton {
+    border-color: #7B4F2E !important;
+    color: #7B4F2E !important;
+    background-color: white !important;
+    transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+
+.newAccountButton:hover {
+    opacity: 0.85 !important;
+    transform: scale(1.02) !important;
+    background-color: white !important;
+}

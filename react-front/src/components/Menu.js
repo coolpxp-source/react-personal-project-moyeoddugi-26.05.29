@@ -17,6 +17,7 @@ const topMenuItems = [
 ];
 
 const menuItems = [
+  { text: '홈', icon: '🏠', path: '/main' },
   { text: '도안 공유', icon: '🧶', path: '/patterns' },
   { text: '작품 자랑', icon: '🎨', path: '/works' },
   { text: '뜨개 지도', icon: '📍', path: '/places' },
@@ -32,20 +33,25 @@ function Menu() {
       navigate('/');
   }
   return (
+
     <Drawer
       variant="permanent"
       sx={{
-        width: 240, // 너비 설정
+        width: 300, // 너비 설정
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: 240, // Drawer 내부의 너비 설정
+          width: 320, // Drawer 내부의 너비 설정
           boxSizing: 'border-box',
           backgroundColor: '#FAF6F0',
           borderRight: '1px solid #E8D5B7'
         },
       }}
     >
-      <Toolbar />
+      {/* 로고 이미지 부분 */}
+      <Link to="/main" style={{ display: 'flex', justifyContent: 'center', padding: '12px' }}>
+          <img src="/logo/logo_title.png" alt="모여뜨기" style={{ width: '120px' }}/>
+      </Link>
+      
       {/* 프로필 영역 */}
       <Box 
         sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 1 }}

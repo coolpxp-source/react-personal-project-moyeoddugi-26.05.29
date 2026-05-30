@@ -1,13 +1,16 @@
 .container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
 }
 
+/* ▼ 수정: padding-right 배너 너비만큼 */
 .tabs {
     border-bottom: 1px solid #E8D5B7 !important;
     background-color: #FAF6F0;
+    padding-right: 390px !important;
+    padding-left: 16px !important;
 }
 
 .tab {
@@ -24,13 +27,13 @@
 
 .cardGrid {
     display: flex;
-    flex-direction: column;  /* 세로로 쌓기 */
+    flex-direction: column;
     gap: 16px;
 }
 
 .cardRow {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;  /* 이미지 : 내용 : 댓글 */
+    grid-template-columns: 1fr 2fr 1fr;
     gap: 12px;
     background-color: #ffffff;
     border-radius: 12px;
@@ -116,27 +119,16 @@
     color: #7B4F2E !important;
 }
 
-.banner {
-    background-color: #EDE0C8;
-    border-radius: 12px;
-    padding: 16px;
-    text-align: center;
-    color: #7B4F2E;
-    font-size: 13px;
-    position: sticky;  /* 스크롤해도 고정 */
-    top: 0;
-}
-
+/* ▼ 수정: grid 제거하고 배너 여백만 padding-right로 처리 */
 .mainLayout {
-    display: grid;
-    grid-template-columns: 1fr 280px;  /* 카드 : 배너 */
-    gap: 16px;
-    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 406px 16px 40px;  /* ← 오른쪽 배너 너비만큼 */
     flex: 1;
     overflow-y: auto;
 }
 
-.sideSection {
+.cardSection {
     display: flex;
     flex-direction: column;
     gap: 12px;

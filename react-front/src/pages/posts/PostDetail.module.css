@@ -1,0 +1,143 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 24px 406px 24px 32px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #FAF6F0;
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.badgeRow { margin-bottom: 12px; }
+
+.title {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    margin-bottom: 12px !important;
+}
+
+.authorRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.nickname {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #5C3D2E !important;
+}
+
+.date {
+    font-size: 12px !important;
+    color: #B08060 !important;
+}
+
+.content {
+    font-size: 14px !important;
+    color: #5C3D2E !important;
+    line-height: 1.8 !important;
+    margin-bottom: 20px !important;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-top: 1px solid #E8D5B7;
+    border-bottom: 1px solid #E8D5B7;
+    margin-bottom: 16px;
+}
+
+.footerItem {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.footerText {
+    font-size: 13px !important;
+    color: #B08060 !important;
+}
+
+.commentSection {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 12px;
+    padding-left: 25px;
+}
+
+.commentItem {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.commentBody {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.commentHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.commentNick {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #5C3D2E !important;
+}
+
+.commentDate {
+    font-size: 11px !important;
+    color: #B08060 !important;
+}
+
+.commentText {
+    font-size: 13px !important;
+    color: #7B4F2E !important;
+}
+
+.replyBtn {
+    color: #B08060 !important;
+    font-size: 11px !important;
+    padding: 0 !important;
+    min-width: 0 !important;
+}
+
+.replyInput {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.commentInput {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #E8D5B7;
+}
+
+.submitBtn {
+    background-color: #7B4F2E !important;
+    white-space: nowrap;
+    font-size: 12px !important;
+}
+
+.submitBtn:hover { background-color: #5C3D2E !important; }

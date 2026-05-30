@@ -1,0 +1,239 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #FAF6F0;
+    overflow: hidden;
+}
+
+/* ▼ 수정: padding-right 배너 너비만큼 */
+.tabs {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #E8D5B7 !important;
+    padding-right: 390px !important;
+    padding-left: 16px !important;  /* ← 탭은 살짝만 */
+}
+
+/* ▼ 수정: padding-right 배너 너비 + 여백 맞춤 */
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 406px 12px 40px; /* 좌측 메뉴랑 피드카드 사이의 여백 */
+    background-color: #ffffff;
+    border-bottom: 1px solid #E8D5B7;
+}
+
+.searchInput { flex: 1; }
+
+/* 메인 레이아웃 - 피드 + 사이드 */
+/* ▼ 수정: padding-right 배너 너비 + 여백 맞춤 */
+.mainLayout {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 406px 16px 40px;  /* 좌측 메뉴랑 피드카드 사이의 여백 */
+    flex: 1;
+    overflow-y: auto;
+}
+
+.feedSection {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+.feed {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+/* 피드 카드 */
+.feedCard {
+    padding: 16px;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    background-color: #ffffff;
+}
+
+.badgeRow {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px; /* ▼ 수정: 여백 늘림 */
+}
+
+/* ▼ 수정: 들여쓰기 추가 */
+.postTitle {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    margin-bottom: 10px !important; /* ▼ 수정 */
+    padding-left: 4px !important;   /* ▼ 들여쓰기 */
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.postTitle:hover { color: #7B4F2E !important; }
+
+/* ▼ 수정: 들여쓰기 추가 */
+.authorRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 10px 0;     /* ▼ 수정: 상하 여백 늘림 */
+    padding-left: 20px;  /* ▼ 들여쓰기 */
+}
+
+.nickname {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #5C3D2E !important;
+}
+
+.date {
+    font-size: 11px !important;
+    color: #B08060 !important;
+}
+
+/* 이미지 있을 때 */
+.contentWithImg {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.postImg {
+    width: 140px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: #EDE0C8;
+}
+
+/* 이미지 없을 때 */
+/* ▼ 수정: 들여쓰기 추가 */
+.contentOnly {
+    margin-bottom: 14px; /* ▼ 수정: 여백 늘림 */
+    padding-left: 25px;   /* ▼ 들여쓰기 */
+    cursor: pointer;
+}
+
+.postContent {
+    font-size: 13px !important;
+    color: #7B4F2E !important;
+    line-height: 1.6 !important;
+}
+
+/* 하단 */
+/* ▼ 수정: 들여쓰기 추가 */
+.cardFooter {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 10px;   /* ▼ 수정: 여백 늘림 */
+    padding-left: 25px;  /* ▼ 들여쓰기 */
+}
+
+.footerItem {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.footerText {
+    font-size: 12px !important;
+    color: #B08060 !important;
+}
+
+/* 댓글 */
+.commentArea {
+    background-color: #FAF6F0;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.noComment {
+    font-size: 12px !important;
+    color: #B08060 !important;
+    text-align: center !important;
+}
+
+.commentInput {
+    display: flex;
+    gap: 8px;
+}
+
+.commentBtn {
+    background-color: #7B4F2E !important;
+    white-space: nowrap;
+    font-size: 12px !important;
+}
+
+.commentBtn:hover { background-color: #5C3D2E !important; }
+
+.empty {
+    text-align: center !important;
+    padding: 40px 0 !important;
+    color: #B08060 !important;
+}
+
+/* 댓글 아이템 */
+.commentItem {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid #F0E6D3;
+}
+
+.commentBody {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.commentHeader {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.commentNick {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #5C3D2E !important;
+}
+
+.commentDate {
+    font-size: 11px !important;
+    color: #B08060 !important;
+}
+
+.commentText {
+    font-size: 12px !important;
+    color: #7B4F2E !important;
+}
+
+.replyBtn {
+    color: #B08060 !important;
+    font-size: 11px !important;
+    padding: 0 !important;
+    min-width: 0 !important;
+    align-self: flex-end;
+}
+
+.replyInput {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}

@@ -73,6 +73,7 @@ router.post('/login', async (req, res) => {
         let payload = {
           userEmail : result.rows[0].EMAIL,
           userName :  result.rows[0].USER_NAME,
+          userNickname: result.rows[0].NICKNAME,
           role : result.rows[0].ROLE,
         };
         // 토큰 생성 

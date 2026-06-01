@@ -9,11 +9,14 @@ router.get('/', async (req, res) => {
   let connection;
   try {
     connection = await db.getConnection();
-    // 기본 쿼리
+    // ▼ 수정: 댓글 수 같이 조회
     let query = `
         SELECT p.POST_ID, p.BOARD_TYPE, p.TITLE, p.CONTENT, 
               p.VIEW_COUNT, p.CREATED_AT,
-              u.NICKNAME, u.PROFILE_IMG
+              u.NICKNAME, u.PROFILE_IMG,
+              (SELECT COUNT(*) FROM COMMENTS c 
+               WHERE c.TARGET_ID = p.POST_ID 
+               AND c.TARGET_TYPE = 'POST') AS COMMENT_COUNT
         FROM POSTS p
         JOIN USERS u ON p.USER_ID = u.USER_ID
     `;
@@ -95,9 +98,9 @@ router.get('/:postId', async (req, res) => {
 
 // 3. 게시글 작성
 router.post('/', async (req, res) => {
-    const { userId, boardType, title, content } = req.body;
+    const { userEmail, boardType, title, content } = req.body;
     // 빈 값 검사
-    if(!userId || !boardType || !title || !content){
+    if(!userEmail || !boardType || !title || !content){
         return res.json({
             result: false,
             message: '제목과 내용을 입력해주세요!'
@@ -114,6 +117,18 @@ router.post('/', async (req, res) => {
     let connection;
     try {
         connection = await db.getConnection();
+
+        // ▼ 추가: 이메일로 USER_ID 조회
+        const userResult = await connection.execute(
+            `SELECT USER_ID FROM USERS WHERE EMAIL = :userEmail`,
+            [userEmail]
+        );
+
+        if(userResult.rows.length === 0){
+            return res.json({ result: false, message: '유저를 찾을 수 없어요.' });
+        }
+
+        const userId = userResult.rows[0][0];
         
         const result = await connection.execute(
             `

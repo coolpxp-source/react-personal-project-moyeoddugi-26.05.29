@@ -7,6 +7,7 @@ const oracledb = require('oracledb');
 const sampleRouter = require("./routes/sample");
 const authRouter = require("./routes/auth");
 const postsRouter = require("./routes/posts");
+const commentsRouter = require('./routes/comments');
 
 const db = require("./db");
 
@@ -20,6 +21,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/sample", sampleRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postsRouter);
+app.use("/api/comments", commentsRouter);
 
 async function startServer() {
   try {

@@ -8,6 +8,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register'; 
 import PostList from './pages/posts/PostList'; 
 import PostDetail  from './pages/posts/PostDetail'; 
+import PostWrite  from './pages/posts/PostWrite'; 
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/main" element={<Main />} />
           <Route path="/posts" element={<PostList />} />
           <Route path="/posts/:id" element={<PostDetail />} />
+          <Route path="/posts/write" element={<PostWrite />} />
         </Routes>
       </Box>
     </Box>

@@ -6,6 +6,46 @@
     overflow: hidden;
 }
 
+/* Avatar 공통 */
+.avatarLarge {
+    width: 28px !important;
+    height: 28px !important;
+    background-color: #C4956A !important;
+    font-size: 12px !important;
+}
+
+.avatarMedium {
+    width: 26px !important;
+    height: 26px !important;
+    background-color: #C4956A !important;
+    font-size: 11px !important;
+}
+
+.avatarSmall {
+    width: 22px !important;
+    height: 22px !important;
+    background-color: #C4956A !important;
+    font-size: 10px !important;
+}
+
+/* 아이콘 공통 */
+.iconLike {
+    font-size: 18px !important;
+    color: #E0A0A0 !important;
+    cursor: pointer;
+}
+
+.iconChat {
+    font-size: 18px !important;
+    cursor: pointer;
+}
+
+.iconBookmark {
+    font-size: 18px !important;
+    color: #B08060 !important;
+    cursor: pointer;
+}
+
 /* ▼ 수정: padding-right 배너 너비만큼 */
 .tabs {
     background-color: #ffffff !important;
@@ -170,6 +210,7 @@
 .commentInput {
     display: flex;
     gap: 8px;
+    background-color: white;
 }
 
 .commentBtn {
@@ -229,11 +270,49 @@
     font-size: 11px !important;
     padding: 0 !important;
     min-width: 0 !important;
-    align-self: flex-end;
+    align-self: flex-start;
 }
 
 .replyInput {
     display: flex;
-    gap: 8px;
+    gap: 4px;
     margin-top: 6px;
+    width: 100%;
+    max-width: 500px;
+    background-color: white;
+}
+
+/* 대댓글 */
+.replyItem {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+    padding: 6px 0 6px 12px;
+    border-left: 2px solid #E8D5B7;
+    margin: 4px 0;
+    width: 100%;
+}
+
+/* ▼ 추가: @닉네임 달린 대댓글 추가 들여쓰기 */
+.replyItemNested {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+    padding: 6px 0 6px 24px;  /* ← 들여쓰기 더 깊게 */
+    margin: 4px 0;
+    width: 100%;
+}
+
+.commentActions {
+    display: flex;
+    gap: 4px;
+}
+
+.actionBtn {
+    color: #B08060 !important;
+    font-size: 11px !important;
+    padding: 0 4px !important;
+    min-width: 40px !important;
+    border: 1px solid #B08060 !important; /* ▼ 추가: 보더라인 */
+    border-radius: 4px !important;         /* ▼ 추가: 둥근 모서리 */
 }

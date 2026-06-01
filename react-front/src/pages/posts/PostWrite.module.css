@@ -1,0 +1,47 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 24px 406px 24px 32px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #FAF6F0;
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pageTitle {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    margin-bottom: 8px !important;
+}
+
+.field { width: 100%; }
+
+.btnRow {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.cancelBtn {
+    border-color: #B08060 !important;
+    color: #B08060 !important;
+    border-radius: 20px !important;
+}
+
+.submitBtn {
+    background-color: #7B4F2E !important;
+    border-radius: 20px !important;
+}
+
+.submitBtn:hover { background-color: #5C3D2E !important; }

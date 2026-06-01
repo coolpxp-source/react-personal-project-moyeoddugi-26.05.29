@@ -6,12 +6,12 @@ import { jwtDecode } from 'jwt-decode';
 import styles from './PlaceMap.module.css';
 import RightSidebar from '../../components/RightSidebar';
 import { useNavigate } from 'react-router-dom';
+import { getPlaceReviews, createPlaceReview, deletePlaceReview } from '../../api/placeReviews';
 
 const ALLOW_STATUS_COLORS = {
     '허용': '#4CAF50',
-    '묵인': '#FF9800',
     '금지': '#F44336',
-    '모르겠어요': '#9E9E9E',
+    '모르겠어요': '#FF9800',
 };
 
 const TAG_FILTERS = [
@@ -29,7 +29,7 @@ const TAG_FILTERS = [
     { key: 'HAS_RESTROOM', label: '화장실 有' },
 ];
 
-const FILTER_CHIPS = ['전체', '허용', '묵인', '금지', '모르겠어요'];
+const FILTER_CHIPS = ['전체', '허용', '금지', '모르겠어요'];
 
 function PlaceMap() {
     const mapRef = useRef(null);
@@ -47,29 +47,31 @@ function PlaceMap() {
     const [mapReady, setMapReady] = useState(false);
     const [searchResults, setSearchResults] = useState([]); // ▼ 추가: 검색 미리보기
     const markerImageCache = {}; // ▼ 추가: 마커 이미지 캐시
+    const [reviews, setReviews] = useState([]);
+    const [reviewInput, setReviewInput] = useState('');
+    const [reviewAllowStatus, setReviewAllowStatus] = useState('');
 
     // 마커 이미지 SVG로 생성
-        const getMarkerImage = (color) => {
-            // ▼ 캐시에 있으면 재사용
-            if (markerImageCache[color]) return markerImageCache[color];
-            const svg = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="35" viewBox="0 0 24 35">
-                    <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 23 12 23S24 21 24 12C24 5.4 18.6 0 12 0z" fill="${color}" stroke="white" stroke-width="1.5"/>
-                    <circle cx="12" cy="12" r="5" fill="white"/>
-                </svg>
-            `;
-            const blob = new Blob([svg], { type: 'image/svg+xml' });
-            const url = URL.createObjectURL(blob);
-            // ▼ 수정: 변수에 저장 후 캐시에 넣고 return
-            const markerImage = new window.kakao.maps.MarkerImage(
-                url,
-                new window.kakao.maps.Size(24, 35),
-                { offset: new window.kakao.maps.Point(12, 35) }
-            );
-            markerImageCache[color] = markerImage; // ▼ return 전에 캐시 저장
-            return markerImage;
-        };
-
+    const getMarkerImage = (color) => {
+        // ▼ 캐시에 있으면 재사용
+        if (markerImageCache[color]) return markerImageCache[color];
+        const svg = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="35" viewBox="0 0 24 35">
+                <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 23 12 23S24 21 24 12C24 5.4 18.6 0 12 0z" fill="${color}" stroke="white" stroke-width="1.5"/>
+                <circle cx="12" cy="12" r="5" fill="white"/>
+            </svg>
+        `;
+        const blob = new Blob([svg], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        // ▼ 수정: 변수에 저장 후 캐시에 넣고 return
+        const markerImage = new window.kakao.maps.MarkerImage(
+            url,
+            new window.kakao.maps.Size(24, 35),
+            { offset: new window.kakao.maps.Point(12, 35) }
+        );
+        markerImageCache[color] = markerImage; // ▼ return 전에 캐시 저장
+        return markerImage;
+    };
 
     const toggleTagFilter = (key) => {
         setTagFilters(prev =>
@@ -96,7 +98,7 @@ function PlaceMap() {
         const coords = new window.kakao.maps.LatLng(place.LATITUDE, place.LONGITUDE);
         mapInstanceRef.current.panTo(coords);
         mapInstanceRef.current.setLevel(4);
-        setSelectedPlace(place);
+        handlePlaceSelect(place); // ▼ 수정
         setSearch(place.PLACE_NAME);
         setSearchResults([]);
     };
@@ -120,6 +122,47 @@ function PlaceMap() {
                 });
             }
         });
+    };
+
+    // ▼ 추가: 리뷰 조회
+    const fetchReviews = async (placeId) => {
+        const data = await getPlaceReviews(placeId);
+        if (data.list) setReviews(data.list);
+    };
+
+    // ▼ 추가: 마커 클릭 시 리뷰도 같이 조회
+    const handlePlaceSelect = (place) => {
+        setSelectedPlace(place);
+        setReviews([]);
+        setReviewInput('');
+        setReviewAllowStatus('');
+        fetchReviews(place.PLACE_ID);
+    };
+
+    // ▼ 추가: 리뷰 등록
+    const handleReviewSubmit = async () => {
+        if (!reviewInput.trim()) return alert('내용을 입력해주세요.');
+        if (!reviewAllowStatus) return alert('허용 여부를 선택해주세요.'); // ▼ 추가
+        const data = await createPlaceReview({
+            userEmail: user?.userEmail,
+            placeId: selectedPlace.PLACE_ID,
+            content: reviewInput,
+            allowStatus: reviewAllowStatus || null,
+        });
+        if (data.result) {
+            fetchReviews(selectedPlace.PLACE_ID);
+            setReviewInput('');
+            setReviewAllowStatus('');
+        } else {
+            alert(data.message);
+        }
+    };
+
+    // ▼ 추가: 리뷰 삭제
+    const handleReviewDelete = async (reviewId) => {
+        if (!window.confirm('리뷰를 삭제할까요?')) return;
+        const data = await deletePlaceReview(reviewId);
+        if (data.result) fetchReviews(selectedPlace.PLACE_ID);
     };
 
     // 지도 초기화
@@ -187,7 +230,7 @@ function PlaceMap() {
             });
 
             window.kakao.maps.event.addListener(marker, 'click', () => {
-                setSelectedPlace(place);
+                handlePlaceSelect(place); // ▼ 수정: setSelectedPlace → handlePlaceSelect
                 mapInstanceRef.current.panTo(position);
             });
 
@@ -199,31 +242,38 @@ function PlaceMap() {
         <Box className={styles.container}>
             {/* 필터 칩 */}
             <Box className={styles.filterRow}>
-                <Box className={styles.statusChips}>
-                    {FILTER_CHIPS.map(chip => (
-                        <Chip key={chip} label={chip} size="small"
-                            onClick={() => setFilter(chip)}
-                            style={{
-                                backgroundColor: filter === chip ? '#7B4F2E' : '#F5EDD8',
-                                color: filter === chip ? '#ffffff' : '#7B4F2E',
-                                cursor: 'pointer',
-                            }}
-                        />
-                    ))}
+                {/* 뜨개 허용 여부 */}
+                <Box className={styles.filterGroup}>
+                    <Typography className={styles.filterLabel}>뜨개 허용 여부</Typography>
+                    <Box className={styles.statusChips}>
+                        {FILTER_CHIPS.map(chip => (
+                            <Chip key={chip} label={chip} size="small"
+                                onClick={() => setFilter(chip)}
+                                style={{
+                                    backgroundColor: filter === chip ? '#7B4F2E' : '#F5EDD8',
+                                    color: filter === chip ? '#ffffff' : '#7B4F2E',
+                                    cursor: 'pointer',
+                                }}
+                            />
+                        ))}
+                    </Box>
                 </Box>
 
-                {/* 시설 태그 필터 */}
-                <Box className={styles.tagChips}>
-                    {TAG_FILTERS.map(tag => (
-                        <Chip key={tag.key} label={tag.label} size="small"
-                            onClick={() => toggleTagFilter(tag.key)}
-                            style={{
-                                backgroundColor: tagFilters.includes(tag.key) ? '#C4956A' : '#F5EDD8',
-                                color: tagFilters.includes(tag.key) ? '#ffffff' : '#7B4F2E',
-                                cursor: 'pointer',
-                            }}
-                        />
-                    ))}
+                {/* 이런 곳 원해요 */}
+                <Box className={styles.filterGroup}>
+                    <Typography className={styles.filterLabel}>이런 곳 원해요</Typography>
+                    <Box className={styles.tagChips}>
+                        {TAG_FILTERS.map(tag => (
+                            <Chip key={tag.key} label={tag.label} size="small"
+                                onClick={() => toggleTagFilter(tag.key)}
+                                style={{
+                                    backgroundColor: tagFilters.includes(tag.key) ? '#C4956A' : '#F5EDD8',
+                                    color: tagFilters.includes(tag.key) ? '#ffffff' : '#7B4F2E',
+                                    cursor: 'pointer',
+                                }}
+                            />
+                        ))}
+                    </Box>
                 </Box>
                 {/* 검색창 */}
                 <Box className={styles.searchRow}>
@@ -314,10 +364,77 @@ function PlaceMap() {
                             {selectedPlace.HAS_RESTROOM === 'Y' && <Chip label="화장실 有" size="small" className={styles.tag}/>}
                         </Box>
 
-                        <Button size="small" className={styles.closeBtn}
-                            onClick={() => setSelectedPlace(null)}>
-                            닫기
-                        </Button>
+                        {/* ▼ 추가: 리뷰 목록 */}
+                        <Box className={styles.reviewSection}>
+                            <Typography className={styles.reviewTitle}>리뷰 ({reviews.length})</Typography>
+                            {reviews.length === 0 ? (
+                                <Typography className={styles.noReview}>아직 리뷰가 없어요 🧶</Typography>
+                            ) : (
+                                reviews.map(review => (
+                                    <Box key={review.REVIEW_ID} className={styles.reviewItem}>
+                                        <Box className={styles.reviewHeader}>
+                                            <Typography className={styles.reviewNick}>{review.NICKNAME}</Typography>
+                                            {review.ALLOW_STATUS && (
+                                                <Chip label={review.ALLOW_STATUS} size="small"
+                                                    style={{
+                                                        backgroundColor: ALLOW_STATUS_COLORS[review.ALLOW_STATUS],
+                                                        color: '#fff', fontSize: 10, height: 18
+                                                    }}
+                                                />
+                                            )}
+                                            {review.NICKNAME === user?.userNickname && (
+                                                <Button size="small" className={styles.reviewDeleteBtn}
+                                                    onClick={() => handleReviewDelete(review.REVIEW_ID)}>
+                                                    삭제
+                                                </Button>
+                                            )}
+                                        </Box>
+                                        <Typography className={styles.reviewContent}>{review.CONTENT}</Typography>
+                                        <Typography className={styles.reviewDate}>
+                                            {new Date(review.CREATED_AT).toLocaleDateString()}
+                                        </Typography>
+                                    </Box>
+                                ))
+                            )}
+                        </Box>
+
+                        {/* ▼ 추가: 리뷰 작성 */}
+                        <Box className={styles.reviewInputSection}>
+                            <Box className={styles.reviewStatusRow}>
+                                {['허용', '금지', '모르겠어요'].map(status => (
+                                    <Chip key={status} label={status} size="small"
+                                        onClick={() => setReviewAllowStatus(
+                                            reviewAllowStatus === status ? '' : status
+                                        )}
+                                        style={{
+                                            backgroundColor: reviewAllowStatus === status
+                                                ? ALLOW_STATUS_COLORS[status] : '#F5EDD8',
+                                            color: reviewAllowStatus === status ? '#fff' : '#7B4F2E',
+                                            cursor: 'pointer', fontSize: 10,
+                                        }}
+                                    />
+                                ))}
+                            </Box>
+                            <Box className={styles.reviewInputRow}>
+                                <TextField fullWidth size="small"
+                                    placeholder="리뷰를 입력하세요"
+                                    value={reviewInput}
+                                    onChange={(e) => setReviewInput(e.target.value)}
+                                />
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                            <Button size="small" className={styles.closeBtn}
+                                onClick={() => setSelectedPlace(null)}
+                                sx={{ flex: 1 }}>
+                                닫기
+                            </Button>
+                            <Button variant="contained" className={styles.reviewSubmitBtn}
+                                onClick={handleReviewSubmit}
+                                sx={{ flex: 1 }}>
+                                등록
+                            </Button>
+                        </Box>
                     </Box>
                 )}
             </Box>

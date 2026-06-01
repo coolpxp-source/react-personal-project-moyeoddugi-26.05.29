@@ -1,0 +1,115 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 24px 406px 24px 32px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #FAF6F0;
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pageTitle {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #5C3D2E !important;
+}
+
+.addressRow {
+    display: flex;
+    gap: 8px;
+}
+
+.searchBtn {
+    background-color: #7B4F2E !important;
+    white-space: nowrap;
+    border-radius: 8px !important;
+}
+
+.searchBtn:hover { background-color: #5C3D2E !important; }
+
+/* 허용 여부 버튼 */
+.allowRow {
+    display: flex;
+    gap: 12px;
+}
+
+.allowBtn {
+    flex: 1;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+}
+
+.chipRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* 사진 첨부 */
+.imageArea {
+    border: 2px dashed #E8D5B7;
+    border-radius: 12px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #FAF6F0;
+    transition: border-color 0.2s;
+}
+
+.imageArea:hover { border-color: #C4956A; }
+
+.imagePlaceholder {
+    font-size: 13px !important;
+    color: #B08060 !important;
+}
+
+.imagePreview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.btnRow {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.cancelBtn {
+    border-color: #B08060 !important;
+    color: #B08060 !important;
+    border-radius: 20px !important;
+}
+
+.submitBtn {
+    background-color: #7B4F2E !important;
+    border-radius: 20px !important;
+}
+
+.submitBtn:hover { background-color: #5C3D2E !important; }

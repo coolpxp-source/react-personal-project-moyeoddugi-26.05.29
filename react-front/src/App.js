@@ -10,6 +10,9 @@ import PostList from './pages/posts/PostList';
 import PostDetail  from './pages/posts/PostDetail'; 
 import PostWrite  from './pages/posts/PostWrite'; 
 import PlaceMap from './pages/places/PlaceMap';
+import PlaceReport from './pages/places/PlaceReport';
+import PatternList from './pages/patterns/PatternList';
+import PatternWrite from './pages/patterns/PatternWrite';
 
 
 function App() {
@@ -34,6 +37,9 @@ function App() {
           <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/posts/write" element={<PostWrite />} />
           <Route path="/places" element={<PlaceMap />} />
+          <Route path="/places/report" element={<PlaceReport />} />
+          <Route path="/patterns" element={<PatternList />} />
+          <Route path="/patterns/write" element={<PatternWrite />} />
         </Routes>
       </Box>
     </Box>

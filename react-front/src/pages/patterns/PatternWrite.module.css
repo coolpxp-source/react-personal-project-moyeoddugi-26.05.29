@@ -1,0 +1,147 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 24px 406px 24px 130px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #FAF6F0;
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.pageTitle {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #E8D5B7;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #F5EDD8;
+}
+
+.section:last-of-type { border-bottom: none; }
+
+.sectionTitle {
+    font-size: 17px !important;
+    font-weight: 600 !important;
+    color: #5C3D2E !important;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.label {
+    font-size: 15px !important;
+    color: #7B4F2E !important;
+}
+
+.chipRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.detailGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+/* 이미지 */
+.imageArea {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.imageItem {
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+.imagePreview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #E8D5B7;
+}
+
+.removeImgBtn {
+    position: absolute !important;
+    top: 4px;
+    right: 4px;
+    min-width: 24px !important;
+    width: 24px;
+    height: 24px;
+    padding: 0 !important;
+    background-color: rgba(0,0,0,0.5) !important;
+    color: white !important;
+    font-size: 10px !important;
+    border-radius: 50% !important;
+}
+
+.imageUpload {
+    width: 120px;
+    height: 120px;
+    border: 2px dashed #E8D5B7;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #FAF6F0;
+}
+
+.imageUpload:hover { border-color: #C4956A; }
+
+.imagePlaceholder {
+    font-size: 12px !important;
+    color: #B08060 !important;
+}
+
+/* 태그 */
+
+.addTagBtn {
+    background-color: #7B4F2E !important;
+    white-space: nowrap;
+    border-radius: 8px !important;
+}
+
+/* 버튼 */
+.btnRow {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.cancelBtn {
+    border-color: #B08060 !important;
+    color: #B08060 !important;
+    border-radius: 20px !important;
+}
+
+.submitBtn {
+    background-color: #7B4F2E !important;
+    border-radius: 20px !important;
+}
+
+.submitBtn:hover { background-color: #5C3D2E !important; }

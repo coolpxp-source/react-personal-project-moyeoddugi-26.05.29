@@ -10,6 +10,8 @@ const postsRouter = require("./routes/posts");
 const commentsRouter = require('./routes/comments');
 const likesRouter = require('./routes/likes');
 const placesRouter = require('./routes/places');
+const placeReviewsRouter = require('./routes/placeReviews');
+const patternsRouter = require('./routes/patterns');
 
 const db = require("./db");
 
@@ -26,6 +28,9 @@ app.use("/api/posts", postsRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/likes", likesRouter);
 app.use("/api/places", placesRouter);
+app.use('/api/place-reviews', placeReviewsRouter);
+app.use('/api/patterns', patternsRouter);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 async function startServer() {
   try {

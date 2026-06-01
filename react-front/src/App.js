@@ -9,6 +9,7 @@ import Register from './pages/auth/Register';
 import PostList from './pages/posts/PostList'; 
 import PostDetail  from './pages/posts/PostDetail'; 
 import PostWrite  from './pages/posts/PostWrite'; 
+import PlaceMap from './pages/places/PlaceMap';
 
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
   const isAuthPage = location.pathname === '/' || location.pathname === '/join';
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#FAF6F0', minHeight: '100vh' }}>
       <CssBaseline />
       {!isAuthPage && <Menu />}
       <Box component="main" sx={{ 
@@ -32,6 +33,7 @@ function App() {
           <Route path="/posts" element={<PostList />} />
           <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/posts/write" element={<PostWrite />} />
+          <Route path="/places" element={<PlaceMap />} />
         </Routes>
       </Box>
     </Box>

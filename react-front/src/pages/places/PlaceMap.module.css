@@ -1,0 +1,259 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #FAF6F0;
+    overflow: auto;
+    padding: 16px 406px 16px 40px;  /* ← 오른쪽 배너 너비만큼 */
+}
+
+.filterRow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 16px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #E8D5B7;
+    border-radius: 15px;
+}
+
+.statusChips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tagChips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.searchRow {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.searchBtn {
+    background-color: #7B4F2E !important;
+    white-space: nowrap;
+    border-radius: 8px !important;
+}
+
+.searchBtn:hover { background-color: #5C3D2E !important; }
+
+.searchInput {
+    margin-left: auto;
+    width: 160px;
+}
+
+.searchWrapper {
+    position: relative;
+    flex: 1;
+}
+
+.searchDropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 8px;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.searchDropdownItem {
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #F5EDD8;
+}
+
+.searchDropdownItem:last-child { border-bottom: none; }
+
+.searchDropdownItem:hover { background-color: #FAF6F0; }
+
+.dropdownName {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #3D2B1A !important;
+}
+
+.dropdownAddress {
+    font-size: 11px !important;
+    color: #B08060 !important;
+}
+
+.mapLayout {
+    display: flex;
+    flex: 1;
+    overflow: visible;
+    padding: 16px;
+    gap: 16px;
+    min-height: 0; /* ▼ 추가: flex 자식이 부모 높이 넘치지 않게 */
+}
+
+.mapArea {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* ▼ 추가 */
+}
+
+/* ▼ 수정: 지도가 남은 공간 꽉 채우게 */
+.map {
+    width: 100%;
+    flex: 1;
+    border-radius: 12px;
+    border: 1px solid #E8D5B7;
+    min-height: 500px; /* ▼ 수정 */
+}
+
+.legend {
+    position: absolute;
+    bottom: 10px;   /* 버튼 위 */
+    left: 12px;
+    display: flex;
+    gap: 12px;
+    background-color: rgba(255,255,255,0.9);
+    padding: 6px 10px;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.legendDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.legendText {
+    font-size: 11px !important;
+    color: #7B4F2E !important;
+}
+
+/* ▼ 수정: 버튼 지도 안 오른쪽 하단으로 */
+.reportBtn {
+    position: absolute !important;
+    bottom: 12px;
+    right: 12px;
+    background-color: #7B4F2E !important;
+    border-radius: 20px !important;
+    z-index: 1;
+    width: 160px;
+}
+
+.reportBtn:hover { background-color: #5C3D2E !important; }
+
+.placeDetail {
+    width: 240px;
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: fit-content;
+}
+
+.placeName {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.placeAddress {
+    font-size: 12px !important;
+    color: #B08060 !important;
+}
+
+.tagRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.tag {
+    background-color: #F5EDD8 !important;
+    color: #7B4F2E !important;
+    font-size: 10px !important;
+}
+
+.closeBtn {
+    color: #B08060 !important;
+    align-self: flex-end;
+    font-size: 11px !important;
+}
+
+/* 추천 섹션 */
+.recommendSection {
+    padding: 16px;
+    background-color: #FAF6F0;
+    border-top: 1px solid #E8D5B7;
+}
+
+.recommendTitle {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    margin-bottom: 12px !important;
+}
+
+.recommendCards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.recommendCard {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.recommendCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.recommendCardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.recommendName {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.recommendAddress {
+    font-size: 11px !important;
+    color: #B08060 !important;
+}
+
+.recommendTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+}

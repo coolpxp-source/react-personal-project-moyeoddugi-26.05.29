@@ -63,7 +63,7 @@ function Menu() {
             {!user?.profileImg && (user?.userName?.charAt(0) || '👤')}
         </Avatar>
         <Typography sx={{ color: '#7B4F2E', fontWeight: 'bold' }}>
-          {user?.userName || '닉네임'}
+          {user?.userNickname || '닉네임'}
         </Typography>
       </Box>
 

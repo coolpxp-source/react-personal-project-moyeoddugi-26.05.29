@@ -8,6 +8,7 @@ const sampleRouter = require("./routes/sample");
 const authRouter = require("./routes/auth");
 const postsRouter = require("./routes/posts");
 const commentsRouter = require('./routes/comments');
+const likesRouter = require('./routes/likes');
 
 const db = require("./db");
 
@@ -22,6 +23,7 @@ app.use("/sample", sampleRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/comments", commentsRouter);
+app.use("/api/likes", likesRouter);
 
 async function startServer() {
   try {

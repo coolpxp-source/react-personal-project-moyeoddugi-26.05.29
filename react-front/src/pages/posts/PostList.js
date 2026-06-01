@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Tabs, Tab, TextField, Button, Typography, Avatar, Chip, InputAdornment, Collapse } from '@mui/material';
-import { Search, FavoriteBorder, ChatBubbleOutline, BookmarkBorder } from '@mui/icons-material';
+import { Search, Favorite, FavoriteBorder, ChatBubbleOutline, BookmarkBorder } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { getPosts } from '../../api/posts';
 import { getComments, createComment, deleteComment, updateComment } from '../../api/comments'; // ▼ 추가
+import { toggleLike, getLikes } from '../../api/likes'; // ▼ 추가
 import { jwtDecode } from 'jwt-decode'; // ▼ 추가
 import styles from './PostList.module.css';
 import RightSidebar from '../../components/RightSidebar'; // 우측 배너
@@ -25,6 +26,7 @@ function PostList() {
     const user = token ? jwtDecode(token) : null; // ▼ 추가
     const [editComment, setEditComment] = useState({}); // ▼ 추가: 수정 상태 (commentId별로 관리)
     const [editInput, setEditInput] = useState({});
+    const [likes, setLikes] = useState({}); // ▼ 추가: 좋아요 데이터 (postId별로 관리)
 
     const [tab, setTab] = useState(0);
     const [posts, setPosts] = useState([]);
@@ -48,6 +50,23 @@ function PostList() {
     useEffect(() => {
         fetchPosts(BOARD_TYPES[tab]);
     }, [tab]);
+
+    // 좋아요 조회
+    useEffect(() => {
+        if (posts.length === 0) return;
+        const fetchLikes = async () => {
+            for (const post of posts) {
+                const data = await getLikes('POST', post.POST_ID, user?.userEmail);
+                if (data.result) {
+                    setLikes(prev => ({
+                        ...prev,
+                        [post.POST_ID]: { count: data.count, liked: data.liked }
+                    }));
+                }
+            }
+        };
+        fetchLikes();
+    }, [posts.length, tab]); // ▼ 수정: posts 대신 posts.length, tab으로
 
     const filteredPosts = posts.filter(post =>
         post.TITLE.toLowerCase().includes(search.toLowerCase())
@@ -147,6 +166,23 @@ function PostList() {
         }
     };
 
+    // ▼ 추가: 좋아요 토글
+    const handleLike = async (e, postId) => {
+        e.stopPropagation();
+        const data = await toggleLike(user?.userEmail, 'POST', postId);
+        if (data.result) {
+            setLikes(prev => ({
+                ...prev,
+                [postId]: {
+                    count: data.liked
+                        ? (prev[postId]?.count || 0) + 1
+                        : (prev[postId]?.count || 1) - 1,
+                    liked: data.liked
+                }
+            }));
+        }
+    };
+
     return (
         <Box className={styles.container}>
             <Tabs value={tab} onChange={(e, val) => setTab(val)}
@@ -217,9 +253,15 @@ function PostList() {
                                 {/* 5. 하단 - 좋아요, 댓글, 북마크 나란히 */}
                                 <Box className={styles.cardFooter}>
                                     <Box className={styles.footerItem}
-                                        onClick={(e) => e.stopPropagation()}>
-                                        <FavoriteBorder className={styles.iconLike}/>
-                                        <Typography className={styles.footerText}>0</Typography>
+                                        onClick={(e) => handleLike(e, post.POST_ID)}>
+                                            {/* ▼ 수정: 좋아요 여부에 따라 아이콘 변경 */}
+                                            {likes[post.POST_ID]?.liked
+                                                ? <Favorite sx={{ fontSize: 18, color: '#E0A0A0', cursor: 'pointer' }}/>
+                                                : <FavoriteBorder sx={{ fontSize: 18, color: '#E0A0A0', cursor: 'pointer' }}/>
+                                            }
+                                            <Typography className={styles.footerText}>
+                                                {likes[post.POST_ID]?.count || 0}
+                                            </Typography>
                                     </Box>
                                     <Box className={styles.footerItem}
                                         onClick={(e) => toggleComment(e, post.POST_ID)}>

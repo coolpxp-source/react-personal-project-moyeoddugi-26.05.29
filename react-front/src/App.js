@@ -16,6 +16,8 @@ import PatternWrite from './pages/patterns/PatternWrite';
 import PatternDetail from './pages/patterns/PatternDetail';
 import MyPage from './pages/mypage/MyPage';
 import MyPageEdit from './pages/mypage/MyPageEdit';
+import ShowcaseList from './pages/showcase/ShowcaseList';
+import ShowcaseWrite from './pages/showcase/ShowcaseWrite';
 
 
 function App() {
@@ -46,6 +48,8 @@ function App() {
           <Route path="/patterns/:id" element={<PatternDetail />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/mypage/edit" element={<MyPageEdit />} />
+          <Route path="/works" element={<ShowcaseList />} />
+          <Route path="/works/write" element={<ShowcaseWrite />} />
         </Routes>
       </Box>
     </Box>

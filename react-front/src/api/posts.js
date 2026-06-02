@@ -1,18 +1,13 @@
 const BASE_URL = 'http://localhost:3010/api/posts';
 
 // 게시글 목록 조회
-export const getPosts = async (boardType) => {
-    const url = boardType && boardType !== '전체' 
-        ? `${BASE_URL}?board_type=${boardType}` 
-        : BASE_URL;
-    const response = await fetch(url);
-    return response.json();
-};
-
-// 게시글 상세 조회
-export const getPost = async (postId) => {
-    const response = await fetch(`${BASE_URL}/${postId}`);
-    return response.json();
+export const getPosts = async (boardType, userEmail) => {
+    const params = new URLSearchParams();
+    if (boardType && boardType !== '전체') params.append('board_type', boardType);
+    if (userEmail) params.append('userEmail', userEmail);
+    const url = params.toString() ? `${BASE_URL}?${params}` : BASE_URL;
+    const res = await fetch(url);
+    return res.json();
 };
 
 // 게시글 작성
@@ -41,4 +36,16 @@ export const deletePost = async (postId) => {
         method: 'DELETE'
     });
     return response.json();
+};
+
+// 인기 게시글 top 5
+export const getPopularPosts = async () => {
+    const res = await fetch(`${BASE_URL}/popular`);
+    return res.json();
+};
+
+// 인기 태그 top 10
+export const getPopularTags = async () => {
+    const res = await fetch(`${BASE_URL}/popular-tags`);
+    return res.json();
 };

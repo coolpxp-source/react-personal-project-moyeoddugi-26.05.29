@@ -14,42 +14,25 @@
     padding: 24px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
 }
 
 .pageTitle {
     font-size: 18px !important;
     font-weight: 600 !important;
     color: #3D2B1A !important;
-    margin-bottom: 8px !important;
 }
 
-.field { width: 100%; }
-
-.btnRow {
+.field {
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
     gap: 8px;
-    margin-top: 8px;
 }
-
-.cancelBtn {
-    border-color: #B08060 !important;
-    color: #B08060 !important;
-    border-radius: 20px !important;
-}
-
-.submitBtn {
-    background-color: #7B4F2E !important;
-    border-radius: 20px !important;
-}
-
-.submitBtn:hover { background-color: #5C3D2E !important; }
 
 .label {
     font-size: 13px !important;
+    font-weight: 500 !important;
     color: #5C3D2E !important;
-    margin-bottom: 6px !important;
 }
 
 .imageArea {
@@ -60,8 +43,8 @@
 
 .imageItem {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
 }
 
 .imagePreview {
@@ -76,19 +59,22 @@
     position: absolute;
     top: 4px;
     right: 4px;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background-color: rgba(0,0,0,0.5);
     color: white;
     border: none;
     font-size: 10px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .imageUpload {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     border: 2px dashed #E8D5B7;
     border-radius: 8px;
     display: flex;
@@ -104,3 +90,22 @@
     font-size: 12px !important;
     color: #B08060 !important;
 }
+
+.btnRow {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.cancelBtn {
+    border-color: #B08060 !important;
+    color: #B08060 !important;
+    border-radius: 20px !important;
+}
+
+.submitBtn {
+    background-color: #7B4F2E !important;
+    border-radius: 20px !important;
+}
+
+.submitBtn:hover { background-color: #5C3D2E !important; }

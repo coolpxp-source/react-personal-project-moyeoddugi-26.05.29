@@ -43,9 +43,28 @@
 
 .searchBtn:hover { background-color: #5C3D2E !important; }
 
-.searchInput {
-    margin-left: auto;
-    width: 160px;
+.searchInput :global(.MuiOutlinedInput-root) {
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-size: 13px;
+    color: #3D2B1A;
+}
+
+.searchInput :global(.MuiOutlinedInput-root fieldset) {
+    border-color: #E8D5B7;
+}
+
+.searchInput :global(.MuiOutlinedInput-root:hover fieldset) {
+    border-color: #E8D5B7;
+}
+
+.searchInput :global(.MuiOutlinedInput-root.Mui-focused fieldset) {
+    border-color: #C4956A;
+}
+
+.searchInput :global(input::placeholder) {
+    color: #B08060;
+    opacity: 1;
 }
 
 .searchWrapper {

@@ -11,12 +11,12 @@ router.get('/:targetType/:targetId', async (req, res) => {
         connection = await db.getConnection();
         const result = await connection.execute(
             `SELECT c.COMMENT_ID, c.CONTENT, c.PARENT_ID, c.REPLY_TO,
-                    c.CREATED_AT, u.USER_ID, u.NICKNAME
-             FROM COMMENTS c
-             JOIN USERS u ON c.USER_ID = u.USER_ID
-             WHERE c.TARGET_TYPE = :targetType
-             AND c.TARGET_ID = :targetId
-             ORDER BY c.CREATED_AT ASC`,
+            c.CREATED_AT, u.USER_ID, u.NICKNAME, u.PROFILE_IMG
+            FROM COMMENTS c
+            JOIN USERS u ON c.USER_ID = u.USER_ID
+            WHERE c.TARGET_TYPE = :targetType
+            AND c.TARGET_ID = :targetId
+            ORDER BY c.CREATED_AT ASC`,
             [targetType, targetId]
         );
         const comments = result.rows.map(row => ({
@@ -27,6 +27,7 @@ router.get('/:targetType/:targetId', async (req, res) => {
             CREATED_AT: row[4],
             USER_ID: row[5],
             NICKNAME: row[6],
+            PROFILE_IMG: row[7],
         }));
         res.json({ result: true, list: comments });
     } catch (error) {

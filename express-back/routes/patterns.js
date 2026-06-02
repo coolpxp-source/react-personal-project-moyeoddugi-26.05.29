@@ -27,10 +27,10 @@ router.get('/', async (req, res) => {
     try {
         connection = await db.getConnection();
         let query = `
-            SELECT p.PATTERN_ID, p.TITLE, p.DESCRIPTION, p.NEEDLE_TYPE,
+            SELECT p.PATTERN_ID, p.USER_ID, p.TITLE, p.DESCRIPTION, p.NEEDLE_TYPE,
                    p.DIFFICULTY, p.CATEGORY, p.YARN_TYPE, p.NEEDLE_SIZE, 
                    p.FINISHED_SIZE, p.WORK_TIME, p.THUMBNAIL_IMG, 
-                   p.VIEW_COUNT, p.CREATED_AT, u.NICKNAME
+                   p.VIEW_COUNT, p.CREATED_AT, u.NICKNAME, u.PROFILE_IMG
             FROM PATTERNS p
             JOIN USERS u ON p.USER_ID = u.USER_ID
         `;
@@ -84,10 +84,10 @@ router.get('/:patternId', async (req, res) => {
     try {
         connection = await db.getConnection();
         const result = await connection.execute(
-            `SELECT p.PATTERN_ID, p.TITLE, p.DESCRIPTION, p.NEEDLE_TYPE,
+            `SELECT p.PATTERN_ID, p.USER_ID, p.TITLE, p.DESCRIPTION, p.NEEDLE_TYPE,
                     p.DIFFICULTY, p.YARN_TYPE, p.NEEDLE_SIZE, p.FINISHED_SIZE,
                     p.WORK_TIME, p.THUMBNAIL_IMG, p.VIEW_COUNT, p.CREATED_AT,
-                    u.NICKNAME
+                    u.NICKNAME, u.PROFILE_IMG
              FROM PATTERNS p
              JOIN USERS u ON p.USER_ID = u.USER_ID
              WHERE p.PATTERN_ID = :patternId`,

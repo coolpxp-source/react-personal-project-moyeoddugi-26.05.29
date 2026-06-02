@@ -1,0 +1,346 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 406px 24px 32px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #FAF6F0;
+    gap: 16px;
+}
+
+.loading {
+    text-align: center !important;
+    padding: 60px 0 !important;
+    color: #B08060 !important;
+}
+
+.profileCard {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.profileLeft {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.profileInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.nickname {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.bio {
+    font-size: 12px !important;
+    color: #B08060 !important;
+}
+
+.profileRight {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.followBtn {
+    background-color: #7B4F2E !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+    color: white !important;
+}
+
+.unfollowBtn {
+    border-color: #E8D5B7 !important;
+    color: #7B4F2E !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+}
+
+.editBtn {
+    border-color: #E8D5B7 !important;
+    color: #7B4F2E !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+}
+
+.statsRow {
+    display: flex;
+    gap: 24px;
+}
+
+.statItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.statNum {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.statLabel {
+    font-size: 11px !important;
+    color: #B08060 !important;
+}
+
+.tabs {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #E8D5B7 !important;
+    border-radius: 12px 12px 0 0;
+}
+
+.tab {
+    color: #B08060 !important;
+    font-size: 13px !important;
+}
+
+/* 도안 그리드 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid #E8D5B7;
+    transition: transform 0.15s ease;
+}
+
+.card:hover { transform: translateY(-2px); }
+
+.cardImgWrapper {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.cardImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cardImgEmpty {
+    width: 100%;
+    height: 100%;
+    background-color: #EDE0C8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.noImg {
+    font-size: 12px !important;
+    color: #B08060 !important;
+}
+
+.cardOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255,255,255,0.88);
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    backdrop-filter: blur(2px);
+}
+
+.cardTitle {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.cardTags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.cardFooter {
+    display: flex;
+    align-items: center;
+}
+
+.footerItem {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.likeIcon {
+    font-size: 14px !important;
+    color: #E0A0A0 !important;
+}
+
+.likeIconActive {
+    font-size: 14px !important;
+    color: #E05050 !important;
+}
+
+.footerText {
+    font-size: 12px !important;
+    color: #B08060 !important;
+}
+
+.empty {
+    text-align: center !important;
+    padding: 60px 0 !important;
+    color: #B08060 !important;
+    grid-column: 1 / -1;
+}
+
+/* 게시글 목록 */
+.postList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.postCard {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.postHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.postDate {
+    font-size: 11px !important;
+    color: #B08060 !important;
+    margin-left: auto !important;
+}
+
+.postTitle {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.postContent {
+    font-size: 13px !important;
+    color: #5C3D2E !important;
+    line-height: 1.6 !important;
+}
+
+.postFooter {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.postStat {
+    font-size: 12px !important;
+    color: #B08060 !important;
+}
+
+.newsSection {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.newsTitle {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #F5EDD8;
+}
+
+.newsEmpty {
+    font-size: 13px !important;
+    color: #B08060 !important;
+    text-align: center !important;
+    padding: 20px 0 !important;
+}
+
+.newsItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #F5EDD8;
+    cursor: pointer;
+}
+
+.newsItem:last-child { border-bottom: none; }
+
+.newsContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.newsHeader {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.newsNick {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #3D2B1A !important;
+}
+
+.newsDesc {
+    font-size: 12px !important;
+    color: #7B4F2E !important;
+}
+
+.newsDate {
+    font-size: 11px !important;
+    color: #B08060 !important;
+}
+
+.postImgGrid {
+    display: grid;
+    gap: 4px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.postImgItem {
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+}

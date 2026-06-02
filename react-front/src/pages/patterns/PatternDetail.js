@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Chip, Avatar, Button } from '@mui/material';
+import { Box, Typography, Chip, Button } from '@mui/material';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPattern } from '../../api/patterns';
@@ -9,6 +9,7 @@ import { getComments, createComment, deleteComment, updateComment } from '../../
 import styles from './PatternDetail.module.css';
 import RightSidebar from '../../components/RightSidebar';
 import { toggleScrap, getScrap } from '../../api/scraps';
+import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
 
 
 const DIFFICULTY_COLORS = {
@@ -228,10 +229,17 @@ function PatternDetail() {
                     <Box className={styles.infoSection}>
                         <Typography className={styles.title}>{pattern.TITLE}</Typography>
                         <Box className={styles.authorRow}>
-                            <Avatar sx={{ width: 24, height: 24, backgroundColor: '#C4956A', fontSize: 11 }}>
-                                {pattern.NICKNAME?.charAt(0)}
-                            </Avatar>
-                            <Typography className={styles.nickname}>{pattern.NICKNAME}</Typography>
+                            <AvatarItem
+                                src={pattern.PROFILE_IMG}
+                                nickname={pattern.NICKNAME}
+                                size={28}
+                                onClick={() => navigate(`/user/${pattern.USER_ID}`)}
+                            />
+                            <Typography className={styles.nickname}
+                                onClick={() => navigate(`/user/${pattern.USER_ID}`)}
+                                style={{ cursor: 'pointer' }}>
+                                {pattern.NICKNAME}
+                            </Typography>
                             <Typography className={styles.date}>
                                 {new Date(pattern.CREATED_AT).toLocaleDateString()}
                             </Typography>
@@ -310,9 +318,11 @@ function PatternDetail() {
                                 ) : (
                                     comments.filter(c => !c.PARENT_ID).map(c => (
                                         <Box key={c.COMMENT_ID} className={styles.commentItem}>
-                                            <Avatar sx={{ width: 24, height: 24, backgroundColor: '#C4956A', fontSize: 10 }}>
-                                                {c.NICKNAME?.charAt(0)}
-                                            </Avatar>
+                                            <AvatarItem
+                                                src={c.PROFILE_IMG}
+                                                nickname={c.NICKNAME}
+                                                size={24}
+                                            />
                                             <Box className={styles.commentBody}>
                                                 <Box className={styles.commentHeader}>
                                                     <Typography className={styles.commentNick}>{c.NICKNAME}</Typography>
@@ -356,9 +366,11 @@ function PatternDetail() {
                                                 {/* 대댓글 목록 */}
                                                 {comments.filter(r => r.PARENT_ID === c.COMMENT_ID).map(reply => (
                                                     <Box key={reply.COMMENT_ID} className={styles.replyItem}>
-                                                        <Avatar sx={{ width: 20, height: 20, backgroundColor: '#C4956A', fontSize: 9 }}>
-                                                            {reply.NICKNAME?.charAt(0)}
-                                                        </Avatar>
+                                                        <AvatarItem
+                                                            src={reply.PROFILE_IMG}
+                                                            nickname={reply.NICKNAME}
+                                                            size={20}
+                                                        />
                                                         <Box sx={{ flex: 1 }}>
                                                             <Box className={styles.commentHeader}>
                                                                 <Typography className={styles.commentNick}>{reply.NICKNAME}</Typography>

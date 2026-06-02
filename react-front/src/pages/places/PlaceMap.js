@@ -283,6 +283,7 @@ function PlaceMap() {
                             onChange={(e) => handleSearchInput(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                             fullWidth
+                            className={styles.searchInput}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">

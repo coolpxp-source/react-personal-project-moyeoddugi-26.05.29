@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Avatar, Button, TextField, InputAdornment } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -8,6 +8,8 @@ import { toggleLike, getLikes } from '../../api/likes';
 import { getComments, createComment } from '../../api/comments';
 import styles from './ShowcaseList.module.css';
 import RightSidebar from '../../components/RightSidebar';
+import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
+import SearchInput from '../../components/SearchInput'; // 검색창
 
 function ShowcaseList() {
     const navigate = useNavigate();
@@ -18,11 +20,17 @@ function ShowcaseList() {
     const [likes, setLikes] = useState({});
     const [comments, setComments] = useState({});
     const [commentInput, setCommentInput] = useState({});
+    const [search, setSearch] = useState('');           // ▼ 추가
+    const [popularPosts, setPopularPosts] = useState([]); // ▼ 추가
 
     useEffect(() => {
         const fetchAll = async () => {
             const data = await getShowcaseList();
             if (data.list) setPosts(data.list);
+
+            const popularRes = await fetch('http://localhost:3010/api/posts/showcase/popular');
+            const popularData = await popularRes.json();
+            if (popularData.list) setPopularPosts(popularData.list);
         };
         fetchAll();
     }, []);
@@ -77,20 +85,63 @@ function ShowcaseList() {
         }
     };
 
+    // ▼ 추가
+    const filteredPosts = posts.filter(p =>
+        (p.TITLE || '').toLowerCase().includes(search.toLowerCase()) ||
+        (p.CONTENT || '').toLowerCase().includes(search.toLowerCase()) ||
+        (p.NICKNAME || '').toLowerCase().includes(search.toLowerCase())  // ▼ 추가
+    );
+
     return (
         <Box className={styles.container}>
             <Box className={styles.header}>
                 <Typography className={styles.pageTitle}>작품 자랑</Typography>
                 <Button variant="contained" className={styles.writeBtn}
-                    onClick={() => navigate('/showcase/write')}>
+                    onClick={() => navigate('/works/write')}>
                     + 작품 올리기
                 </Button>
             </Box>
 
-            {posts.length === 0 ? (
-                <Typography className={styles.empty}>아직 자랑할 작품이 없어요 🧶</Typography>
+            {/* ▼ 검색창 */}
+            <Box className={styles.searchRow}>
+                <SearchInput
+                    value={search}
+                    onChange={setSearch}
+                    placeholder="제목, 내용, 닉네임 검색..."
+                />
+            </Box>
+
+            {/* ▼ 인기 작품 - 검색 중엔 숨김 */}
+            {popularPosts.length > 0 && search === '' && (
+                <Box className={styles.popularSection}>
+                    <Typography className={styles.popularTitle}>🔥 인기 작품</Typography>
+                    <Box className={styles.popularRow}>
+                        {popularPosts.map(post => (
+                            <Box key={post.POST_ID} className={styles.popularCard}
+                                onClick={() => navigate(`/works/${post.POST_ID}`)}>
+                                {post.THUMBNAIL_IMG ? (
+                                    <img src={`http://localhost:3010${post.THUMBNAIL_IMG}`}
+                                        alt={post.TITLE} className={styles.popularImg}/>
+                                ) : (
+                                    <Box className={styles.popularImgEmpty}/>
+                                )}
+                                <Box className={styles.popularInfo}>
+                                    <Typography className={styles.popularPostTitle}>{post.TITLE}</Typography>
+                                    <Typography className={styles.popularLike}>♡ {post.LIKE_COUNT}</Typography>
+                                </Box>
+                            </Box>
+                        ))}
+                    </Box>
+                </Box>
+            )}
+
+            {/* ▼ posts.map → filteredPosts.map */}
+            {filteredPosts.length === 0 ? (
+                <Typography className={styles.empty}>
+                    {search ? '검색 결과가 없어요 🧶' : '아직 자랑할 작품이 없어요 🧶'}
+                </Typography>
             ) : (
-                posts.map(post => (
+                filteredPosts.map(post => (
                     <Box key={post.POST_ID} className={styles.postCard}>
                         {/* 좌측 이미지 */}
                         <Box className={styles.imageSection}>
@@ -108,27 +159,32 @@ function ShowcaseList() {
                         <Box className={styles.contentSection}>
                             <Typography className={styles.postTitle}>{post.TITLE}</Typography>
                             <Box className={styles.authorRow}>
-                                {post.PROFILE_IMG ? (
-                                    <img src={`http://localhost:3010${post.PROFILE_IMG}`}
-                                        alt="profile" className={styles.authorAvatar}/>
-                                ) : (
-                                    <Box className={styles.authorAvatarDefault}>
-                                        <Typography className={styles.authorAvatarInitial}>
-                                            {post.NICKNAME?.charAt(0)}
-                                        </Typography>
-                                    </Box>
-                                )}
-                                <Typography className={styles.nickname}>{post.NICKNAME}</Typography>
+                                <AvatarItem
+                                    src={post.PROFILE_IMG}
+                                    nickname={post.NICKNAME}
+                                    onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}
+                                />
+                                <Typography className={styles.nickname}
+                                    onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}
+                                    style={{ cursor: 'pointer' }}>
+                                    {post.NICKNAME}
+                                </Typography>
                             </Box>
                             <Typography className={styles.content}>{post.CONTENT}</Typography>
-                            <Box className={styles.likeRow} onClick={(e) => handleLike(e, post.POST_ID)}>
-                                {likes[post.POST_ID]?.liked
-                                    ? <Favorite className={styles.likeIconActive}/>
-                                    : <FavoriteBorder className={styles.likeIcon}/>
-                                }
-                                <Typography className={styles.likeCount}>
-                                    {likes[post.POST_ID]?.count || 0}
-                                </Typography>
+                            <Box className={styles.bottomRow}>
+                                <Box className={styles.likeRow} onClick={(e) => handleLike(e, post.POST_ID)}>
+                                    {likes[post.POST_ID]?.liked
+                                        ? <Favorite className={styles.likeIconActive}/>
+                                        : <FavoriteBorder className={styles.likeIcon}/>
+                                    }
+                                    <Typography className={styles.likeCount}>
+                                        칭찬해요 {likes[post.POST_ID]?.count || 0}
+                                    </Typography>
+                                </Box>
+                                <Button variant="text" className={styles.detailBtn}
+                                    onClick={() => navigate(`/works/${post.POST_ID}`)}>
+                                    자세히 보기 →
+                                </Button>
                             </Box>
                         </Box>
 
@@ -137,16 +193,10 @@ function ShowcaseList() {
                             <Box className={styles.commentList}>
                                 {(comments[post.POST_ID] || []).slice(0, 3).map(c => (
                                     <Box key={c.COMMENT_ID} className={styles.commentItem}>
-                                        {c.PROFILE_IMG ? (
-                                            <img src={`http://localhost:3010${c.PROFILE_IMG}`}
-                                                alt="profile" className={styles.commentAvatar}/>
-                                        ) : (
-                                            <Box className={styles.commentAvatarDefault}>
-                                                <Typography className={styles.commentAvatarInitial}>
-                                                    {c.NICKNAME?.charAt(0)}
-                                                </Typography>
-                                            </Box>
-                                        )}
+                                        <AvatarItem
+                                            src={c.PROFILE_IMG}
+                                            nickname={c.NICKNAME}
+                                        />
                                         <Box>
                                             <Typography className={styles.commentNick}>{c.NICKNAME}</Typography>
                                             <Typography className={styles.commentText}>{c.CONTENT}</Typography>

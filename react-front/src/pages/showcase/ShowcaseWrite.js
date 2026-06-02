@@ -43,7 +43,7 @@ function ShowcaseWrite() {
         const data = await createShowcase(formData);
         if (data.result) {
             alert('작품이 등록됐어요! 🧶');
-            navigate('/showcase');
+            navigate('/works');
         } else {
             alert(data.message);
         }
@@ -100,7 +100,7 @@ function ShowcaseWrite() {
                 {/* 버튼 */}
                 <Box className={styles.btnRow}>
                     <Button variant="outlined" className={styles.cancelBtn}
-                        onClick={() => navigate('/showcase')}>
+                        onClick={() => navigate('/works')}>
                         취소
                     </Button>
                     <Button variant="contained" className={styles.submitBtn}

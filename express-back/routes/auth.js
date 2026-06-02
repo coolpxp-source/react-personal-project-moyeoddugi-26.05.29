@@ -87,6 +87,8 @@ router.post('/login', async (req, res) => {
           userNickname: result.rows[0].NICKNAME,
           userId: result.rows[0].USER_ID,
           role : result.rows[0].ROLE,
+          profileImg: result.rows[0].PROFILE_IMG || null, 
+          bio: result.rows[0].BIO || null, 
         };
         // 토큰 생성 
         // 첫번째 파라미터(페이로드) : 담고싶은 정보(비밀번호와 같은 중요한 데이터는 넣지 말 것)

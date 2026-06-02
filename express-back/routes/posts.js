@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
         connection = await db.getConnection();
         const binds = [userEmail || '']; // ▼ 여기서 선언 + userEmail 먼저 추가
         let query = `
-            SELECT p.POST_ID, p.BOARD_TYPE, p.TITLE, p.CONTENT, 
+            SELECT p.POST_ID, p.USER_ID, p.BOARD_TYPE, p.TITLE, p.CONTENT, 
                 p.VIEW_COUNT, p.CREATED_AT,
                 u.NICKNAME, u.PROFILE_IMG,
                 (SELECT IMAGE_URL FROM POST_IMAGES 
@@ -141,7 +141,7 @@ router.get('/showcase', async (req, res) => {
     try {
         connection = await db.getConnection();
         const result = await connection.execute(
-            `SELECT p.POST_ID, p.TITLE, p.CONTENT, p.CREATED_AT,
+            `SELECT p.POST_ID, p.USER_ID, p.TITLE, p.CONTENT, p.CREATED_AT,
                     u.NICKNAME, u.PROFILE_IMG,
                     (SELECT IMAGE_URL FROM POST_IMAGES 
                      WHERE POST_ID = p.POST_ID AND IS_THUMBNAIL = 'Y'
@@ -222,6 +222,37 @@ router.post('/showcase', uploadPost.array('images', 3), async (req, res) => {
         res.json({ result: true, message: '작품이 등록됐어요!' });
     } catch (error) {
         await connection.rollback();
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
+
+// 인기 작품 조회
+router.get('/showcase/popular', async (req, res) => {
+    let connection;
+    try {
+        connection = await db.getConnection();
+        const result = await connection.execute(
+            `SELECT p.POST_ID, p.TITLE, p.CONTENT,
+                    u.NICKNAME, u.PROFILE_IMG,
+                    (SELECT IMAGE_URL FROM POST_IMAGES 
+                     WHERE POST_ID = p.POST_ID AND IS_THUMBNAIL = 'Y'
+                     AND ROWNUM = 1) AS THUMBNAIL_IMG,
+                    COUNT(l.LIKE_ID) AS LIKE_COUNT
+             FROM POSTS p
+             JOIN USERS u ON p.USER_ID = u.USER_ID
+             LEFT JOIN LIKES l ON l.TARGET_TYPE = 'POST' AND l.TARGET_ID = p.POST_ID
+             WHERE p.BOARD_TYPE = '작품자랑'
+             GROUP BY p.POST_ID, p.TITLE, p.CONTENT, u.NICKNAME, u.PROFILE_IMG
+             ORDER BY LIKE_COUNT DESC
+             FETCH FIRST 3 ROWS ONLY`,
+            [],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        res.json({ result: true, list: result.rows });
+    } catch (error) {
         console.error('Error:', error);
         res.status(500).send('Error executing query');
     } finally {

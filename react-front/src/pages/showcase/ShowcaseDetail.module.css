@@ -1,0 +1,311 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 406px 24px 32px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #FAF6F0;
+    gap: 12px;
+}
+
+.loading {
+    text-align: center !important;
+    padding: 60px 0 !important;
+    color: #B08060 !important;
+}
+
+.backBtn {
+    align-self: flex-end;
+    border-color: #B08060 !important;
+    color: #B08060 !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.mainLayout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+/* 좌측 이미지 */
+.imageSection {
+    padding: 20px;
+    border-right: 1px solid #E8D5B7;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mainImageArea {
+    width: 100%;
+    height: 500px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #E8D5B7;
+}
+
+.mainImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.noImage {
+    width: 100%;
+    height: 100%;
+    background-color: #EDE0C8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.noImageText {
+    font-size: 12px !important;
+    color: #B08060 !important;
+}
+
+.thumbRow {
+    display: flex;
+    gap: 8px;
+}
+
+.thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #E8D5B7;
+    cursor: pointer;
+}
+
+.thumbActive { border: 2px solid #7B4F2E !important; }
+
+.thumbImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.likeRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.likeIcon {
+    font-size: 20px !important;
+    color: #E0A0A0 !important;
+}
+
+.likeIconActive {
+    font-size: 20px !important;
+    color: #E05050 !important;
+}
+
+.likeCount {
+    font-size: 14px !important;
+    color: #B08060 !important;
+}
+
+.contentSection {
+    border-top: 1px solid #F5EDD8;
+    padding-top: 12px;
+}
+
+.content {
+    font-size: 13px !important;
+    color: #5C3D2E !important;
+    line-height: 1.8 !important;
+    white-space: pre-line !important;
+}
+
+/* 우측 댓글 */
+.commentSection {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.authorRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #F5EDD8;
+}
+
+.nickname {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.date {
+    font-size: 11px !important;
+    color: #B08060 !important;
+}
+
+.postTitle {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.postContent {
+    font-size: 13px !important;
+    color: #5C3D2E !important;
+    line-height: 1.8 !important;
+    white-space: pre-line !important;
+    padding-bottom: 12px;        /* ▼ 추가 */
+    border-bottom: 1px solid #F5EDD8;  /* ▼ 추가 */
+}
+
+.commentTitle {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.commentList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.noComment {
+    font-size: 12px !important;
+    color: #B08060 !important;
+    text-align: center !important;
+    padding: 16px 0 !important;
+}
+
+.commentItem {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid #F5EDD8;
+}
+
+.commentBody {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.commentHeader {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.commentNick {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #5C3D2E !important;
+}
+
+.commentDate {
+    font-size: 10px !important;
+    color: #B08060 !important;
+}
+
+.commentActions {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+}
+
+.actionBtn {
+    background: none;
+    border: 1px solid #E8D5B7;
+    color: #B08060;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.commentText {
+    font-size: 12px !important;
+    color: #7B4F2E !important;
+}
+
+.replyBtn {
+    background: none;
+    border: none;
+    color: #B08060;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 0;
+    display: block;      
+    text-align: left;  
+}
+
+.replyItem {
+    display: flex;
+    gap: 6px;
+    padding: 6px 0 6px 12px;
+    border-left: 2px solid #E8D5B7;
+    margin-top: 4px;
+}
+
+.editRow {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.inputField {
+    flex: 1;
+    border: 1px solid #E8D5B7;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
+    outline: none;
+    background-color: #FAF6F0;
+}
+
+.inputField:focus { border-color: #C4956A; }
+
+.submitBtn {
+    background-color: #7B4F2E;
+    border: none;
+    color: white;
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.cancelBtn {
+    background: none;
+    border: 1px solid #E8D5B7;
+    color: #B08060;
+    font-size: 11px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.commentInput {
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid #E8D5B7;
+    padding-top: 12px;
+    margin-top: auto;
+}

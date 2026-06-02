@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Chip, TextField, Button, Avatar, InputAdornment, Pagination } from '@mui/material';
-import { Search, Favorite, FavoriteBorder } from '@mui/icons-material';
+import { Box, Typography, Chip, Button, Pagination } from '@mui/material';
+import { Favorite, FavoriteBorder } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { getPatterns } from '../../api/patterns';
 import { toggleLike, getLikes } from '../../api/likes';
 import { jwtDecode } from 'jwt-decode';
 import styles from './PatternList.module.css';
 import RightSidebar from '../../components/RightSidebar';
+import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
+import SearchInput from '../../components/SearchInput';
 
 const NEEDLE_TYPES = ['코바늘', '대바늘'];
 const DIFFICULTIES = ['전체', '입문', '초급', '중급', '고급'];
@@ -128,17 +130,10 @@ function PatternList() {
                 </Box>
 
                 {/* 검색창 */}
-                <TextField size="small" placeholder="도안 검색"
+                <SearchInput
                     value={search}
-                    onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                    className={styles.searchInput}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <Search sx={{ color: '#B08060', fontSize: 18 }}/>
-                            </InputAdornment>
-                        )
-                    }}
+                    onChange={(val) => { setSearch(val); setPage(1); }}
+                    placeholder="도안 검색"
                 />
             </Box>
 
@@ -166,11 +161,19 @@ function PatternList() {
                                     {/* 오버레이 */}
                                     <Box className={styles.cardOverlay}>
                                         <Typography className={styles.cardTitle}>{pattern.TITLE}</Typography>
+                                        {/* 작성자 */}
                                         <Box className={styles.cardMeta}>
-                                            <Avatar sx={{ width: 20, height: 20, backgroundColor: '#C4956A', fontSize: 10 }}>
-                                                {pattern.NICKNAME?.charAt(0)}
-                                            </Avatar>
-                                            <Typography className={styles.cardNick}>{pattern.NICKNAME}</Typography>
+                                            <AvatarItem
+                                                src={pattern.PROFILE_IMG}
+                                                nickname={pattern.NICKNAME}
+                                                size={20}
+                                                onClick={(e) => { e.stopPropagation(); navigate(`/user/${pattern.USER_ID}`); }}
+                                            />
+                                            <Typography className={styles.cardNick}
+                                                onClick={(e) => { e.stopPropagation(); navigate(`/user/${pattern.USER_ID}`); }}
+                                                style={{ cursor: 'pointer' }}>
+                                                {pattern.NICKNAME}
+                                            </Typography>
                                             <Typography className={styles.cardDate}>
                                                 {new Date(pattern.CREATED_AT).toLocaleDateString()}
                                             </Typography>

@@ -15,6 +15,7 @@ const patternsRouter = require('./routes/patterns');
 const scrapsRouter = require('./routes/scraps');
 const followsRouter = require('./routes/follows');
 const notificationsRouter = require('./routes/notifications');
+const usersRouter = require('./routes/users');
 
 const db = require("./db");
 
@@ -37,6 +38,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/scraps', scrapsRouter);
 app.use('/api/follows', followsRouter);
 app.use('/api/notifications', notificationsRouter);
+app.use('/api/users', usersRouter);
 
 async function startServer() {
   try {

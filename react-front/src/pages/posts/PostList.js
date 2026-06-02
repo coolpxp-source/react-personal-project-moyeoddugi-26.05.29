@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Tabs, Tab, TextField, Button, Typography, Avatar, Chip, InputAdornment, Collapse } from '@mui/material';
-import { Search, Favorite, FavoriteBorder, ChatBubbleOutline, BookmarkBorder } from '@mui/icons-material';
+import { Box, Tabs, Tab, TextField, Button, Typography, Chip, Collapse } from '@mui/material';
+import { Favorite, FavoriteBorder, ChatBubbleOutline, BookmarkBorder } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { getPosts, getPopularPosts, getPopularTags } from '../../api/posts';
 import { getComments, createComment, deleteComment, updateComment } from '../../api/comments';
@@ -8,6 +8,8 @@ import { toggleLike, getLikes } from '../../api/likes';
 import { jwtDecode } from 'jwt-decode';
 import styles from './PostList.module.css';
 import RightSidebar from '../../components/RightSidebar';
+import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
+import SearchInput from '../../components/SearchInput';
 
 const BOARD_TYPES = ['전체', '자유', '질문', '모여떠요', '떠주세요', '떠드려요'];
 
@@ -263,16 +265,10 @@ function PostList() {
             </Tabs>
 
             <Box className={styles.toolbar}>
-                <TextField size="small" placeholder="검색어를 입력하세요"
-                    value={search} onChange={(e) => setSearch(e.target.value)}
-                    className={styles.searchInput}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <Search sx={{ color: '#B08060', fontSize: 18 }}/>
-                            </InputAdornment>
-                        )
-                    }}
+                <SearchInput
+                    value={search}
+                    onChange={setSearch}
+                    placeholder="검색어를 입력하세요"
                 />
             </Box>
 
@@ -282,14 +278,11 @@ function PostList() {
                     {/* 작성창 */}
                     <Box className={styles.writeCard}>
                         <Box className={styles.writeTop}>
-                            {user?.profileImg ? (
-                                <img src={`http://localhost:3010${user.profileImg}`}
-                                    alt="profile" className={styles.writeAvatar}/>
-                            ) : (
-                                <Avatar className={styles.writeAvatarDefault}>
-                                    {user?.userNickname?.charAt(0)}
-                                </Avatar>
-                            )}
+                            <AvatarItem
+                                src={user?.profileImg}
+                                nickname={user?.userNickname}
+                                size={42}
+                            />
                             <textarea
                                 className={styles.writeTextarea}
                                 placeholder="무슨 생각을 하고 계신가요? 🧶"
@@ -359,20 +352,20 @@ function PostList() {
                                 <Box key={post.POST_ID} className={styles.feedCard}>
                                     <Box className={styles.cardLayout}>
                                         {/* 좌측 아바타 */}
-                                        {post.PROFILE_IMG ? (
-                                            <img src={`http://localhost:3010${post.PROFILE_IMG}`}
-                                                alt="profile" className={styles.profileAvatar}
-                                            />
-                                        ) : (
-                                            <Avatar className={styles.avatarLarge}>
-                                                {post.NICKNAME?.charAt(0)}
-                                            </Avatar>
-                                        )}
-
+                                        <AvatarItem
+                                            src={post.PROFILE_IMG}
+                                            nickname={post.NICKNAME}
+                                            size={42}
+                                            onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}
+                                        />
                                         {/* 우측 내용 */}
                                         <Box className={styles.cardRight}>
                                             <Box className={styles.cardHeader}>
-                                                <Typography className={styles.nickname}>{post.NICKNAME}</Typography>
+                                                <Typography className={styles.nickname}
+                                                    onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}
+                                                    style={{ cursor: 'pointer' }}>
+                                                    {post.NICKNAME}
+                                                </Typography>
                                                 <Typography className={styles.date}>
                                                     {new Date(post.CREATED_AT).toLocaleDateString()}
                                                 </Typography>
@@ -486,15 +479,11 @@ function PostList() {
                                                         comments[post.POST_ID].filter(c => !c.PARENT_ID).map((c) => (
                                                             <Box key={c.COMMENT_ID} className={styles.commentItem}
                                                                 onClick={(e) => e.stopPropagation()}>
-                                                                {post.PROFILE_IMG ? (
-                                                                    <img src={`http://localhost:3010${post.PROFILE_IMG}`}
-                                                                        alt="profile" className={styles.profileAvatar}
-                                                                    />
-                                                                ) : (
-                                                                    <Avatar className={styles.avatarSmall}>
-                                                                        {post.NICKNAME?.charAt(0)}
-                                                                    </Avatar>
-                                                                )}
+                                                                <AvatarItem
+                                                                    src={c.PROFILE_IMG}
+                                                                    nickname={c.NICKNAME}
+                                                                    size={22}
+                                                                />
                                                                 <Box className={styles.commentBody}>
                                                                     <Box className={styles.commentHeader}>
                                                                         <Typography className={styles.commentNick}>{c.NICKNAME}</Typography>
@@ -555,15 +544,11 @@ function PostList() {
                                                                         return ordered.map((reply) => (
                                                                             <Box key={reply.COMMENT_ID}
                                                                                 className={reply.REPLY_TO ? styles.replyItemNested : styles.replyItem}>
-                                                                                {post.PROFILE_IMG ? (
-                                                                                    <img src={`http://localhost:3010${post.PROFILE_IMG}`}
-                                                                                        alt="profile" className={styles.profileAvatar}
-                                                                                    />
-                                                                                ) : (
-                                                                                    <Avatar className={styles.avatarSmall}>
-                                                                                        {post.NICKNAME?.charAt(0)}
-                                                                                    </Avatar>
-                                                                                )}
+                                                                                <AvatarItem
+                                                                                    src={reply.PROFILE_IMG}
+                                                                                    nickname={reply.NICKNAME}
+                                                                                    size={22}
+                                                                                />
                                                                                 <Box className={styles.fullWidth}>
                                                                                     <Typography className={styles.commentNick}>{reply.NICKNAME}</Typography>
                                                                                     <Typography className={styles.commentText}>

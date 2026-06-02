@@ -6,37 +6,6 @@
     overflow: hidden;
 }
 
-/* Avatar 공통 */
-.avatarLarge {
-    width: 42px !important;
-    height: 42px !important;
-    background-color: #C4956A !important;
-    font-size: 16px !important;
-    flex-shrink: 0;
-}
-
-.avatarMedium {
-    width: 26px !important;
-    height: 26px !important;
-    background-color: #C4956A !important;
-    font-size: 11px !important;
-}
-
-.avatarSmall {
-    width: 22px !important;
-    height: 22px !important;
-    background-color: #C4956A !important;
-    font-size: 10px !important;
-}
-
-.profileAvatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
 /* 아이콘 공통 */
 .iconLike {
     font-size: 18px !important;
@@ -543,22 +512,6 @@
     display: flex;
     gap: 12px;
     align-items: flex-start;
-}
-
-.writeAvatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.writeAvatarDefault {
-    width: 42px !important;
-    height: 42px !important;
-    background-color: #C4956A !important;
-    font-size: 16px !important;
-    flex-shrink: 0;
 }
 
 .writeTextarea {

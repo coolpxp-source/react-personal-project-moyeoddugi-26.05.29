@@ -74,7 +74,9 @@ function PatternWrite() {
         if (form.finishedSize) formData.append('finishedSize', form.finishedSize);
         if (form.workTime) formData.append('workTime', form.workTime);
         formData.append('tags', JSON.stringify(form.tags));
-        formData.append('image', images[0]); // ▼ 첫번째 이미지가 대표이미지
+        formData.append('images', images[0]); // ▼ 첫번째 이미지가 대표이미지
+        if (images[1]) formData.append('images', images[1]);
+        if (images[2]) formData.append('images', images[2]);
 
         const res = await fetch('http://localhost:3010/api/patterns', {
             method: 'POST',

@@ -16,6 +16,7 @@ const storage = multer.diskStorage({
         cb(null, `pattern_${Date.now()}${ext}`);
     }
 });
+// multer 설정 - 최대 3장
 const upload = multer({ storage });
 
 
@@ -105,24 +106,26 @@ router.get('/:patternId', async (req, res) => {
     }
 });
 
-// 3. 도안 등록 - category 추가
-router.post('/', upload.single('image'), async (req, res) => {
+// 3. 도안 등록 - 다중 이미지
+router.post('/', upload.array('images', 3), async (req, res) => {
     const {
         userEmail, title, description, needleType,
-        difficulty, category, // ▼ 추가
-        yarnType, needleSize, finishedSize, workTime, tags
+        difficulty, category, yarnType, needleSize,
+        finishedSize, workTime, tags
     } = req.body;
-
-    // ▼ 이미지 경로
-    const thumbnailImg = req.file ? `/uploads/patterns/${req.file.filename}` : null;
 
     if (!userEmail || !title || !description || !needleType || !difficulty) {
         return res.json({ result: false, message: '필수 값이 누락됐어요.' });
     }
 
+    // ▼ 업로드된 이미지들
+    const imageFiles = req.files || [];
+    const thumbnailImg = imageFiles.length > 0 ? `/uploads/patterns/${imageFiles[0].filename}` : null;
+
     let connection;
     try {
         connection = await db.getConnection();
+
         const userResult = await connection.execute(
             `SELECT USER_ID FROM USERS WHERE EMAIL = :userEmail`,
             [userEmail]
@@ -141,11 +144,7 @@ router.post('/', upload.single('image'), async (req, res) => {
                 :yarnType, :needleSize, :finishedSize, :workTime, :thumbnailImg
             ) RETURNING PATTERN_ID INTO :patternId`,
             {
-                userId,
-                title,
-                description,
-                needleType,
-                difficulty,
+                userId, title, description, needleType, difficulty,
                 category: category || null,
                 yarnType: yarnType || null,
                 needleSize: needleSize || null,
@@ -158,7 +157,17 @@ router.post('/', upload.single('image'), async (req, res) => {
         );
 
         const patternId = result.outBinds.patternId[0];
-        // ▼ 태그 INSERT
+
+        // ▼ 이미지 저장
+        for (let i = 0; i < imageFiles.length; i++) {
+            await connection.execute(
+                `INSERT INTO PATTERN_IMAGES (PATTERN_ID, IMAGE_URL, SORT_ORDER)
+                 VALUES (:patternId, :imageUrl, :sortOrder)`,
+                [patternId, `/uploads/patterns/${imageFiles[i].filename}`, i]
+            );
+        }
+
+        // ▼ 태그 저장
         if (tags) {
             const tagList = typeof tags === 'string' ? JSON.parse(tags) : tags;
             for (const tag of tagList) {
@@ -168,13 +177,31 @@ router.post('/', upload.single('image'), async (req, res) => {
                 );
             }
         }
+
         await connection.commit();
+        res.json({ result: true, message: '도안이 등록됐어요!' });
+    } catch (error) {
+        await connection.rollback();
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
 
-
-        res.json({
-            result: result.rowsAffected > 0,
-            message: result.rowsAffected > 0 ? '도안이 등록됐어요!' : '등록에 실패했어요.'
-        });
+// ▼ 추가: 이미지 목록 조회
+router.get('/:patternId/images', async (req, res) => {
+    const { patternId } = req.params;
+    let connection;
+    try {
+        connection = await db.getConnection();
+        const result = await connection.execute(
+            `SELECT IMAGE_URL FROM PATTERN_IMAGES 
+             WHERE PATTERN_ID = :patternId 
+             ORDER BY SORT_ORDER ASC`,
+            [patternId]
+        );
+        res.json({ list: result.rows.map(r => r[0]) });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).send('Error executing query');
@@ -198,6 +225,25 @@ router.delete('/:patternId', async (req, res) => {
             result: result.rowsAffected > 0,
             message: result.rowsAffected > 0 ? '삭제됐어요!' : '삭제에 실패했어요.'
         });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
+
+// 5. 태그 조회
+router.get('/:patternId/tags', async (req, res) => {
+    const { patternId } = req.params;
+    let connection;
+    try {
+        connection = await db.getConnection();
+        const result = await connection.execute(
+            `SELECT TAG_NAME FROM PATTERN_TAGS WHERE PATTERN_ID = :patternId`,
+            [patternId]
+        );
+        res.json({ list: result.rows.map(r => r[0]) });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).send('Error executing query');

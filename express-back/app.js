@@ -12,6 +12,9 @@ const likesRouter = require('./routes/likes');
 const placesRouter = require('./routes/places');
 const placeReviewsRouter = require('./routes/placeReviews');
 const patternsRouter = require('./routes/patterns');
+const scrapsRouter = require('./routes/scraps');
+const followsRouter = require('./routes/follows');
+const notificationsRouter = require('./routes/notifications');
 
 const db = require("./db");
 
@@ -31,6 +34,9 @@ app.use("/api/places", placesRouter);
 app.use('/api/place-reviews', placeReviewsRouter);
 app.use('/api/patterns', patternsRouter);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api/scraps', scrapsRouter);
+app.use('/api/follows', followsRouter);
+app.use('/api/notifications', notificationsRouter);
 
 async function startServer() {
   try {

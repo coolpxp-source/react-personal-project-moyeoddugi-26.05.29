@@ -13,6 +13,9 @@ import PlaceMap from './pages/places/PlaceMap';
 import PlaceReport from './pages/places/PlaceReport';
 import PatternList from './pages/patterns/PatternList';
 import PatternWrite from './pages/patterns/PatternWrite';
+import PatternDetail from './pages/patterns/PatternDetail';
+import MyPage from './pages/mypage/MyPage';
+import MyPageEdit from './pages/mypage/MyPageEdit';
 
 
 function App() {
@@ -40,6 +43,9 @@ function App() {
           <Route path="/places/report" element={<PlaceReport />} />
           <Route path="/patterns" element={<PatternList />} />
           <Route path="/patterns/write" element={<PatternWrite />} />
+          <Route path="/patterns/:id" element={<PatternDetail />} />
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/mypage/edit" element={<MyPageEdit />} />
         </Routes>
       </Box>
     </Box>

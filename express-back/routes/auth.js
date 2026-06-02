@@ -4,12 +4,23 @@ const db = require("../db");
 const bcrypt = require('bcrypt'); // 비밀번호 해시화를 위한 부분
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
 require("dotenv").config();
 
 const JWT_KEY = process.env.jwt_key; 
 // 해시 함수 실행 위해 사용할 키로 아주 긴 랜덤한 문자를 사용하길 권장하며, 노출되면 안됨.
 // .env로 관리해야 함.
 const saltRounds = 10; // 해시화를 몇번 할 것인지에 대한 전역변수
+
+const profileStorage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'uploads/profiles/'),
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        cb(null, `profile_${Date.now()}${ext}`);
+    }
+});
+const uploadProfile = multer({ storage: profileStorage });
 
 
 // 1. 회원가입
@@ -74,6 +85,7 @@ router.post('/login', async (req, res) => {
           userEmail : result.rows[0].EMAIL,
           userName :  result.rows[0].USER_NAME,
           userNickname: result.rows[0].NICKNAME,
+          userId: result.rows[0].USER_ID,
           role : result.rows[0].ROLE,
         };
         // 토큰 생성 
@@ -101,6 +113,58 @@ router.post('/login', async (req, res) => {
   } finally {
     await connection.close();
   }
+});
+
+// 프로필 수정
+router.put('/update-profile', uploadProfile.single('profileImg'), async (req, res) => {
+    console.log('req.file:', req.file); // ▼ 추가
+    console.log('req.body:', req.body); // ▼ 추가
+    const { userEmail, nickname, bio } = req.body;
+    const profileImg = req.file ? `/uploads/profiles/${req.file.filename}` : null;
+
+    let connection;
+    try {
+        connection = await db.getConnection();
+
+        let query = `UPDATE USERS SET NICKNAME = :nickname, BIO = :bio`;
+        const binds = { nickname, bio: bio || null };
+
+        if (profileImg) {
+            query += `, PROFILE_IMG = :profileImg`;
+            binds.profileImg = profileImg;
+        }
+        query += ` WHERE EMAIL = :userEmail`;
+        binds.userEmail = userEmail;
+
+        await connection.execute(query, binds, { autoCommit: true });
+
+        // ▼ 수정된 정보로 새 토큰 발급
+        const userResult = await connection.execute(
+            `SELECT USER_ID, USER_NAME, NICKNAME, USER_ROLE, PROFILE_IMG, BIO 
+             FROM USERS WHERE EMAIL = :userEmail`,
+            [userEmail],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+
+        const updatedUser = userResult.rows[0];
+        const payload = {
+            userEmail,
+            userName: updatedUser.USER_NAME,
+            userNickname: updatedUser.NICKNAME,
+            userId: updatedUser.USER_ID,
+            role: updatedUser.USER_ROLE,
+            profileImg: updatedUser.PROFILE_IMG,
+            bio: updatedUser.BIO,
+        };
+        const newToken = jwt.sign(payload, JWT_KEY, { expiresIn: '1h' });
+
+        res.json({ result: true, message: '프로필이 수정됐어요!', token: newToken });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
 });
 
 

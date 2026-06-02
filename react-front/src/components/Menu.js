@@ -57,10 +57,10 @@ function Menu() {
         sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 1 }}
       >
         <Avatar 
-            src={user?.profileImg || ''}  /* 이미지 있으면 이미지, 없으면 글자 */
+            src={user?.profileImg ? `http://localhost:3010${user.profileImg}` : ''}
             sx={{ backgroundColor: '#C4956A' }}
         >
-            {!user?.profileImg && (user?.userName?.charAt(0) || '👤')}
+            {!user?.profileImg && (user?.userNickname?.charAt(0) || '👤')}
         </Avatar>
         <Typography sx={{ color: '#7B4F2E', fontWeight: 'bold' }}>
           {user?.userNickname || '닉네임'}

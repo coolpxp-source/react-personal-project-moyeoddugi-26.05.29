@@ -19,34 +19,65 @@
     font-size: 12px !important;
     white-space: nowrap;
     width: 100% !important;
-    height: 50px;
 }
 
 .writeBtn:hover { background-color: #5C3D2E !important; }
 
 .banner {
     border-radius: 12px;
-    padding: 24px 20px;  /* 패딩 늘리기 */
-    text-align: center;
+    padding: 20px;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     width: 100%;
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
 }
 
-.banner:hover { transform: scale(1.02); }
+.banner:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* 광고 태그 */
+.bannerTag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0,0,0,0.15);
+    color: #5C3D2E;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
 
 .bannerTitle {
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    color: #5C3D2E !important;
-    margin-bottom: 6px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
 }
 
 .bannerDesc {
     font-size: 12px !important;
+    color: #5C3D2E !important;
+    font-weight: 500 !important;
+}
+
+.bannerSubDesc {
+    font-size: 11px !important;
     color: #7B4F2E !important;
+}
+
+/* 자세히 보기 버튼 */
+.bannerBtn {
+    margin-top: 8px;
+    font-size: 11px;
+    color: #7B4F2E;
+    font-weight: 600;
+    align-self: flex-end;
 }

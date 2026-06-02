@@ -1,0 +1,115 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #FAF6F0;
+    box-sizing: border-box;
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.pageTitle {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.imageSection {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+}
+
+.avatarWrapper {
+    position: relative;
+    cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 80px;
+    height: 80px;
+}
+
+.profileImg {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.avatarOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+}
+
+.avatarOverlayText {
+    font-size: 11px !important;
+    color: white !important;
+}
+
+.avatarDefault {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #C4956A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatarInitial {
+    font-size: 28px !important;
+    color: white !important;
+    font-weight: 500 !important;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.label {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #5C3D2E !important;
+}
+
+.btnRow {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.cancelBtn {
+    border-color: #B08060 !important;
+    color: #B08060 !important;
+    border-radius: 20px !important;
+}
+
+.submitBtn {
+    background-color: #7B4F2E !important;
+    border-radius: 20px !important;
+}
+
+.submitBtn:hover { background-color: #5C3D2E !important; }

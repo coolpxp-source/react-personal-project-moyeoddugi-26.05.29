@@ -13,16 +13,6 @@
     overflow-y: auto;
 }
 
-.writeBtn {
-    background-color: #7B4F2E !important;
-    border-radius: 20px !important;
-    font-size: 12px !important;
-    white-space: nowrap;
-    width: 100% !important;
-}
-
-.writeBtn:hover { background-color: #5C3D2E !important; }
-
 .banner {
     border-radius: 12px;
     padding: 20px;

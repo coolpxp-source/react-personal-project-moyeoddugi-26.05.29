@@ -12,16 +12,14 @@ import { jwtDecode } from 'jwt-decode';
 
 
 const topMenuItems = [
-  { text: '게시글 작성', icon: '✏️', path: '/write' },
   { text: '나의 채팅방', icon: '💬', path: '/chat', badge: 3 },
 ];
 
 const menuItems = [
-  { text: '홈', icon: '🏠', path: '/main' },
+  { text: '모여 홈', icon: '🏠', path: '/posts' },
   { text: '도안 공유', icon: '🧶', path: '/patterns' },
   { text: '작품 자랑', icon: '🎨', path: '/works' },
   { text: '뜨개 지도', icon: '📍', path: '/places' },
-  { text: '모여 게시판', icon: '💬', path: '/posts' },
 ];
 
 function Menu() {

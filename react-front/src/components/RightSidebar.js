@@ -47,11 +47,6 @@ function RightSidebar() {
 
     return (
         <Box className={styles.sideSection}>
-            <Button variant="contained" className={styles.writeBtn}
-                onClick={() => navigate('/posts/write')}>
-                + 글쓰기
-            </Button>
-
             {dummyBanners.map((banner) => (
                 <Box key={banner.id} className={styles.banner}
                     onClick={() => window.open(banner.link, '_blank')}

@@ -34,7 +34,7 @@ function Login(){
         if(data.result){
             localStorage.setItem('token', data.token);  // 토큰 저장
             localStorage.setItem('userEmail', data.userEmail);  // 유저 정보 저장
-            navigate('/main');
+            navigate('/posts');
         } else {
             alert(data.message);
         }

@@ -1,21 +1,25 @@
 import React from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { Box, CssBaseline } from '@mui/material';
-import Main from './pages/main/Main';
-import Menu from './components/Menu'; 
-import Sub from './components/Sub';
-import Login from './pages/auth/Login'; 
-import Register from './pages/auth/Register'; 
+import Main from './pages/main/Main'; // 메인
+import Menu from './components/Menu';  // 메뉴(좌측)
+import Sub from './components/Sub'; // 미사용
+import Login from './pages/auth/Login'; // 로그인
+import Register from './pages/auth/Register'; // 회원가입
+// 게시글 작성
 import PostList from './pages/posts/PostList'; 
 import PostDetail  from './pages/posts/PostDetail'; 
-import PostWrite  from './pages/posts/PostWrite'; 
+// 뜨개 지도
 import PlaceMap from './pages/places/PlaceMap';
 import PlaceReport from './pages/places/PlaceReport';
+// 도안 공유
 import PatternList from './pages/patterns/PatternList';
 import PatternWrite from './pages/patterns/PatternWrite';
 import PatternDetail from './pages/patterns/PatternDetail';
+// 마이페이지
 import MyPage from './pages/mypage/MyPage';
 import MyPageEdit from './pages/mypage/MyPageEdit';
+// 작품 자랑
 import ShowcaseList from './pages/showcase/ShowcaseList';
 import ShowcaseWrite from './pages/showcase/ShowcaseWrite';
 
@@ -40,7 +44,6 @@ function App() {
           <Route path="/main" element={<Main />} />
           <Route path="/posts" element={<PostList />} />
           <Route path="/posts/:id" element={<PostDetail />} />
-          <Route path="/posts/write" element={<PostWrite />} />
           <Route path="/places" element={<PlaceMap />} />
           <Route path="/places/report" element={<PlaceReport />} />
           <Route path="/patterns" element={<PatternList />} />

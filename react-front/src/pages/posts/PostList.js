@@ -95,7 +95,8 @@ function PostList() {
     }, []);
 
     const filteredPosts = posts.filter(post =>
-        post.TITLE.toLowerCase().includes(search.toLowerCase())
+        (post.TITLE || '').toLowerCase().includes(search.toLowerCase())
+        || (post.CONTENT || '').toLowerCase().includes(search.toLowerCase())
     );
 
     // 피드에서 작성

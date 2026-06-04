@@ -39,6 +39,19 @@ router.post('/toggle', async (req, res) => {
                 [followerId, followingId],
                 { autoCommit: true }
             );
+
+            // ▼ 알림 추가
+            const senderResult = await connection.execute(
+                `SELECT NICKNAME FROM USERS WHERE USER_ID = :followerId`,
+                [followerId]
+            );
+            const senderNick = senderResult.rows[0][0];
+            await connection.execute(
+                `INSERT INTO NOTIFICATIONS (RECEIVER_ID, SENDER_ID, NOTI_TYPE, MESSAGE)
+                VALUES (:followingId, :followerId, 'FOLLOW', :message)`,
+                [followingId, followerId, `${senderNick}님이 팔로우했어요.`],
+                { autoCommit: true }
+            );
             res.json({ result: true, following: true });
         }
     } catch (error) {

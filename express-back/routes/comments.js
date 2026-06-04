@@ -68,6 +68,64 @@ router.post('/', async (req, res) => {
             { autoCommit: true }
         );
 
+        // ▼ 알림 추가
+        if (result.rowsAffected > 0) {
+            const ownerTable = targetType === 'PATTERN' ? 'PATTERNS' : 'POSTS';
+            const ownerCol = targetType === 'PATTERN' ? 'PATTERN_ID' : 'POST_ID';
+
+            const senderResult = await connection.execute(
+                `SELECT NICKNAME FROM USERS WHERE USER_ID = :userId`, [userId]
+            );
+            const senderNick = senderResult.rows[0][0];
+
+            const targetResult = await connection.execute(
+                `SELECT TITLE FROM ${ownerTable} WHERE ${ownerCol} = :targetId`, [targetId]
+            );
+            const targetTitle = targetResult.rows[0]?.[0] || '';
+
+            // 게시글/도안 작성자 알림
+            const ownerResult = await connection.execute(
+                `SELECT USER_ID FROM ${ownerTable} WHERE ${ownerCol} = :targetId`, [targetId]
+            );
+            if (ownerResult.rows.length > 0) {
+                const receiverId = ownerResult.rows[0][0];
+                if (receiverId !== userId) {
+                    await connection.execute(
+                        `INSERT INTO NOTIFICATIONS (RECEIVER_ID, SENDER_ID, NOTI_TYPE, TARGET_TYPE, TARGET_ID, MESSAGE)
+                        VALUES (:receiverId, :userId, 'COMMENT', :targetType, :targetId, :message)`,
+                        [receiverId, userId, targetType, targetId, `${senderNick}님이 "${targetTitle}"에 댓글을 달았어요.`],
+                        { autoCommit: true }
+                    );
+                }
+            }
+
+            // 답글인 경우 원댓글 작성자 알림 (별도로 처리)
+            if (parentId) {
+                const parentResult = await connection.execute(
+                    `SELECT u.USER_ID FROM COMMENTS c
+                    JOIN USERS u ON c.USER_ID = u.USER_ID
+                    WHERE c.COMMENT_ID = :parentId`,
+                    [parentId]
+                );
+                if (parentResult.rows.length > 0) {
+                    const parentUserId = parentResult.rows[0][0];
+                    const ownerResult2 = await connection.execute(
+                        `SELECT USER_ID FROM ${ownerTable} WHERE ${ownerCol} = :targetId`, [targetId]
+                    );
+                    const ownerId = ownerResult2.rows[0]?.[0];
+                    // 자기 자신이거나 게시글 작성자랑 같으면 중복 알림 안 보냄
+                    if (parentUserId !== userId && parentUserId !== ownerId) {
+                        await connection.execute(
+                            `INSERT INTO NOTIFICATIONS (RECEIVER_ID, SENDER_ID, NOTI_TYPE, TARGET_TYPE, TARGET_ID, MESSAGE)
+                            VALUES (:parentUserId, :userId, 'COMMENT', :targetType, :targetId, :message)`,
+                            [parentUserId, userId, targetType, targetId, `${senderNick}님이 답글을 달았어요.`],
+                            { autoCommit: true }
+                        );
+                    }
+                }
+            }
+        }
+
         res.json({
             result: result.rowsAffected > 0,
             message: result.rowsAffected > 0 ? '댓글이 등록됐어요!' : '등록에 실패했어요.'

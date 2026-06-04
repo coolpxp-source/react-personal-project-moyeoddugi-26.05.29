@@ -8,11 +8,14 @@ import { Home } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './Menu.module.css';
 import { jwtDecode } from 'jwt-decode';
+import { useState, useEffect } from 'react';
+import { getUnreadCount } from '../api/notifications';
 
 
 
 const topMenuItems = [
-  { text: '나의 채팅방', icon: '💬', path: '/chat', badge: 3 },
+  { text: '알림', icon: '🔔', path: '/notifications' },
+  { text: '나의 채팅방', icon: '💬', path: '/chat' },
 ];
 
 const menuItems = [
@@ -30,8 +33,21 @@ function Menu() {
       localStorage.removeItem('token');
       navigate('/');
   }
-  return (
+  const [unreadCount, setUnreadCount] = useState(0);
 
+  useEffect(() => {
+      if (!user?.userEmail) return;
+      const fetchCount = async () => {
+          const data = await getUnreadCount(user.userEmail);
+          if (data.result) setUnreadCount(data.count);
+      };
+      fetchCount();
+      // 30초마다 갱신
+      const interval = setInterval(fetchCount, 30000);
+      return () => clearInterval(interval);
+  }, [user?.userEmail]);
+
+    return (
     <Drawer
       variant="permanent"
       sx={{
@@ -46,7 +62,7 @@ function Menu() {
       }}
     >
       {/* 로고 이미지 부분 */}
-      <Link to="/main" style={{ display: 'flex', justifyContent: 'center', padding: '12px' }}>
+      <Link to="/posts" style={{ display: 'flex', justifyContent: 'center', padding: '12px' }}>
           <img src="/logo/logo_title.png" alt="모여뜨기" style={{ width: '120px' }}/>
       </Link>
       
@@ -73,16 +89,16 @@ function Menu() {
             sx={{ '&:hover': { backgroundColor: '#F0E6D3' } }}>
             <ListItemIcon sx={{ minWidth: 36 }}>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} sx={{ color: '#5C3D2E' }}/>
-            {item.badge && (
-              <Box sx={{ 
-                backgroundColor: '#E53935', color: 'white',
-                borderRadius: '50%', width: 20, height: 20,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '11px'
+            {item.text === '알림' && unreadCount > 0 && (
+              <Box sx={{
+                  backgroundColor: '#E53935', color: 'white',
+                  borderRadius: '50%', width: 20, height: 20,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '11px'
               }}>
-                {item.badge}
+                  {unreadCount > 99 ? '99+' : unreadCount}
               </Box>
-            )}
+          )}
           </ListItemButton>
         ))}
       </List>

@@ -8,8 +8,8 @@ import { jwtDecode } from 'jwt-decode';
 import { getComments, createComment, deleteComment, updateComment } from '../../api/comments';
 import styles from './PatternDetail.module.css';
 import RightSidebar from '../../components/RightSidebar';
-import { toggleScrap, getScrap } from '../../api/scraps';
 import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
+import useScrap from '../../hooks/useScrap'; // 스크랩
 
 
 const DIFFICULTY_COLORS = {
@@ -37,12 +37,13 @@ function PatternDetail() {
     // 이미지 슬라이더
     const [images, setImages] = useState([]); 
     const [currentImg, setCurrentImg] = useState(0);
-    const [scrapped, setScrapped] = useState(false);
     // 댓글 state
     const [editComment, setEditComment] = useState({});
     const [editInput, setEditInput] = useState({});
     const [openReply, setOpenReply] = useState({});
     const [replyInput, setReplyInput] = useState({});
+    // 스크랩
+    const { scrapped, handleScrap } = useScrap(user?.userEmail, 'PATTERN', id);
 
     useEffect(() => {
         const fetchAll = async () => {
@@ -69,8 +70,6 @@ function PatternDetail() {
             } else if (data.data.THUMBNAIL_IMG) {
                 setImages([data.data.THUMBNAIL_IMG]);
             }
-            const scrapData = await getScrap('PATTERN', id, user?.userEmail);
-            if (scrapData.result) setScrapped(scrapData.scrapped);
         };
         fetchAll();
     }, [id]);
@@ -96,10 +95,6 @@ function PatternDetail() {
             if (updated.list) setComments(updated.list);
             setCommentInput('');
         }
-    };
-    const handleScrap = async () => {
-        const data = await toggleScrap(user?.userEmail, 'PATTERN', id);
-        if (data.result) setScrapped(data.scrapped);
     };
 
     const handleShare = () => {

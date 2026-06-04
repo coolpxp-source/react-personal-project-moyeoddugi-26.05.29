@@ -43,6 +43,39 @@ router.post('/toggle', async (req, res) => {
                 [userId, targetType, targetId],
                 { autoCommit: true }
             );
+
+            // ▼ 알림 추가
+            const ownerTable = targetType === 'PATTERN' ? 'PATTERNS' : 'POSTS';
+            const ownerCol = targetType === 'PATTERN' ? 'PATTERN_ID' : 'POST_ID';
+            const ownerResult = await connection.execute(
+                `SELECT USER_ID FROM ${ownerTable} WHERE ${ownerCol} = :targetId`,
+                [targetId]
+            );
+            if (ownerResult.rows.length > 0) {
+                const receiverId = ownerResult.rows[0][0];
+                if (receiverId !== userId) {
+                    const senderResult = await connection.execute(
+                        `SELECT NICKNAME FROM USERS WHERE USER_ID = :userId`,
+                        [userId]
+                    );
+                    const senderNick = senderResult.rows[0][0];
+
+                    // ▼ 제목 조회 추가
+                    const targetResult = await connection.execute(
+                        `SELECT TITLE FROM ${ownerTable} WHERE ${ownerCol} = :targetId`,
+                        [targetId]
+                    );
+                    const targetTitle = targetResult.rows[0]?.[0] || '';
+                    const message = `${senderNick}님이 "${targetTitle}"에 좋아요를 눌렀어요.`;
+
+                    await connection.execute(
+                        `INSERT INTO NOTIFICATIONS (RECEIVER_ID, SENDER_ID, NOTI_TYPE, TARGET_TYPE, TARGET_ID, MESSAGE)
+                        VALUES (:receiverId, :userId, 'LIKE', :targetType, :targetId, :message)`,
+                        [receiverId, userId, targetType, targetId, message],
+                        { autoCommit: true }
+                    );
+                }
+            }
             res.json({ result: true, liked: true, message: '좋아요!' });
         }
     } catch (error) {

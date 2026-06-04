@@ -21,6 +21,8 @@ import UserPage from './pages/user/UserPage';
 import ShowcaseList from './pages/showcase/ShowcaseList';
 import ShowcaseWrite from './pages/showcase/ShowcaseWrite';
 import ShowcaseDetail from './pages/showcase/ShowcaseDetail';
+// 알림창
+import Notifications from './pages/notifications/Notifications';
 
 import { Navigate } from 'react-router-dom'; // ▼ 추가
 import { jwtDecode } from 'jwt-decode';
@@ -60,6 +62,7 @@ function App() {
           <Route path="/works" element={<ShowcaseList />} />
           <Route path="/works/write" element={<ShowcaseWrite />} />
           <Route path="/works/:postId" element={<ShowcaseDetail />} />
+          <Route path="/notifications" element={<Notifications />} />
 
         </Routes>
       </Box>

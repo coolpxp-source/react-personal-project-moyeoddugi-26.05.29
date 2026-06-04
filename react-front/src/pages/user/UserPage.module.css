@@ -344,3 +344,20 @@
     display: block;
     cursor: pointer;
 }
+
+.sectionTitle {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    padding: 8px 0;
+    border-bottom: 1px solid #F5EDD8;
+    margin-bottom: 12px !important;
+}
+
+.moreBtn {
+    color: #7B4F2E !important;
+    font-size: 12px !important;
+    padding: 4px 0 !important;
+    display: block !important;
+    margin: 8px auto 0 !important;
+}

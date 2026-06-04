@@ -10,6 +10,7 @@ import { Favorite, FavoriteBorder } from '@mui/icons-material';
 import styles from './UserPage.module.css';
 import RightSidebar from '../../components/RightSidebar';
 import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
+import { getScraps } from '../../api/scraps'; // 스크랩
 
 const DIFFICULTY_COLORS = {
     '입문': { bg: '#E8F5E9', color: '#2E7D32' },
@@ -41,6 +42,10 @@ function UserPage() {
     const [followerCount, setFollowerCount] = useState(0);
     const [likes, setLikes] = useState({});
     const [followingNews, setFollowingNews] = useState([]);
+    const [scrappedPatterns, setScrappedPatterns] = useState([]); // 도안 스크랩
+    const [scrappedPosts, setScrappedPosts] = useState([]); // 게시글 스크랩
+    const [showAllPatterns, setShowAllPatterns] = useState(false); // 스크랩 페이지에서 보이는 최대 갯수 제한
+    const [showAllPosts, setShowAllPosts] = useState(false);
 
     useEffect(() => {
         const fetchAll = async () => {
@@ -73,7 +78,11 @@ function UserPage() {
                         setFollowingNews(news);
                     }
                 }
+                const scrapData = await getScraps(me.userEmail, 'PATTERN');
+                if (scrapData.list) setScrappedPatterns(scrapData.list);
             }
+            const scrapPostData = await getScraps(me.userEmail, 'POST');
+            if (scrapPostData.list) setScrappedPosts(scrapPostData.list);
         };
         fetchAll();
     }, [userId]);
@@ -304,7 +313,86 @@ function UserPage() {
             )}
             {/* 스크랩 탭 */}
             {isMe && tab === 2 && (
-                <Typography className={styles.empty}>스크랩한 도안이 없어요 🧶</Typography>
+                <Box className={styles.postList}>
+                    {/* 스크랩 도안 */}
+                    <Typography className={styles.sectionTitle}>📌 스크랩한 도안</Typography>
+                    {scrappedPatterns.length === 0 ? (
+                        <Typography className={styles.empty}>스크랩한 도안이 없어요 🧶</Typography>
+                    ) : (
+                        <>
+                            <Box className={styles.grid}>
+                                {(showAllPatterns ? scrappedPatterns : scrappedPatterns.slice(0, 6)).map(pattern => (
+                                    <Box key={pattern.PATTERN_ID} className={styles.card}
+                                        onClick={() => navigate(`/patterns/${pattern.PATTERN_ID}`)}>
+                                        <Box className={styles.cardImgWrapper}>
+                                            {pattern.THUMBNAIL_IMG ? (
+                                                <img src={`http://localhost:3010${pattern.THUMBNAIL_IMG}`}
+                                                    alt={pattern.TITLE} className={styles.cardImg}/>
+                                            ) : (
+                                                <Box className={styles.cardImgEmpty}>
+                                                    <Typography className={styles.noImg}>도안 이미지</Typography>
+                                                </Box>
+                                            )}
+                                            <Box className={styles.cardOverlay}>
+                                                <Typography className={styles.cardTitle}>{pattern.TITLE}</Typography>
+                                                <Box className={styles.cardMeta}>
+                                                    <AvatarItem src={pattern.PROFILE_IMG} nickname={pattern.NICKNAME} size={20}/>
+                                                    <Typography className={styles.cardNick}>{pattern.NICKNAME}</Typography>
+                                                </Box>
+                                            </Box>
+                                        </Box>
+                                    </Box>
+                                ))}
+                            </Box>
+                            {scrappedPatterns.length > 6 && (
+                                <Button variant="text" className={styles.moreBtn}
+                                    onClick={() => setShowAllPatterns(prev => !prev)}>
+                                    {showAllPatterns ? '접기 ↑' : `더보기 (+${scrappedPatterns.length - 6}) ↓`}
+                                </Button>
+                            )}
+                        </>
+                    )}
+
+                    {/* 스크랩 게시글 */}
+                    <Typography className={styles.sectionTitle} style={{ marginTop: 16 }}>📌 스크랩한 게시글</Typography>
+                    {scrappedPosts.length === 0 ? (
+                        <Typography className={styles.empty}>스크랩한 게시글이 없어요 🧶</Typography>
+                    ) : (
+                        <>
+                            {(showAllPosts ? scrappedPosts : scrappedPosts.slice(0, 3)).map(post => (
+                                <Box key={post.POST_ID} className={styles.postCard}
+                                    onClick={() => navigate('/community')}>
+                                    <Box className={styles.postHeader}>
+                                        {post.BOARD_TYPE && (
+                                            <Chip label={post.BOARD_TYPE} size="small"
+                                                style={{
+                                                    backgroundColor: BADGE_COLORS[post.BOARD_TYPE]?.bg,
+                                                    color: BADGE_COLORS[post.BOARD_TYPE]?.color,
+                                                    fontSize: 11, height: 20
+                                                }}
+                                            />
+                                        )}
+                                        <Typography className={styles.postDate}>
+                                            {new Date(post.CREATED_AT).toLocaleDateString()}
+                                        </Typography>
+                                    </Box>
+                                    {post.TITLE && (
+                                        <Typography className={styles.postTitle}>{post.TITLE}</Typography>
+                                    )}
+                                    <Typography className={styles.postContent}>
+                                        {post.CONTENT?.length > 150 ? post.CONTENT.slice(0, 150) + '...' : post.CONTENT}
+                                    </Typography>
+                                </Box>
+                            ))}
+                            {scrappedPosts.length > 3 && (
+                                <Button variant="text" className={styles.moreBtn}
+                                    onClick={() => setShowAllPosts(prev => !prev)}>
+                                    {showAllPosts ? '접기 ↑' : `더보기 (+${scrappedPosts.length - 3}) ↓`}
+                                </Button>
+                            )}
+                        </>
+                    )}
+                </Box>
             )}
 
             {/* 팔로잉 새 소식 탭 */}

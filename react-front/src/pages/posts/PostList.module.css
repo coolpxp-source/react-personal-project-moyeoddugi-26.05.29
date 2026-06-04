@@ -629,3 +629,10 @@
 }
 
 .writeSubmitBtn:hover { background-color: #5C3D2E; }
+
+/* 북마크 */
+.iconBookmarkActive {
+    font-size: 18px !important;
+    color: #7B4F2E !important;
+    cursor: pointer;
+}

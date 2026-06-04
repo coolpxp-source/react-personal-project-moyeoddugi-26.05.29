@@ -13,3 +13,8 @@ export const getScrap = async (targetType, targetId, userEmail) => {
     const res = await fetch(`${BASE_URL}/${targetType}/${targetId}?userEmail=${userEmail}`);
     return res.json();
 };
+
+export const getScraps = async (userEmail, targetType) => {
+    const res = await fetch(`${BASE_URL}/list?userEmail=${userEmail}&targetType=${targetType}`);
+    return res.json();
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Tabs, Tab, TextField, Button, Typography, Chip, Collapse } from '@mui/material';
-import { Favorite, FavoriteBorder, ChatBubbleOutline, BookmarkBorder } from '@mui/icons-material';
+import { Favorite, FavoriteBorder, ChatBubbleOutline, BookmarkBorder, Bookmark } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { getPosts, getPopularPosts, getPopularTags } from '../../api/posts';
 import { getComments, createComment, deleteComment, updateComment } from '../../api/comments';
@@ -10,6 +10,8 @@ import styles from './PostList.module.css';
 import RightSidebar from '../../components/RightSidebar';
 import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
 import SearchInput from '../../components/SearchInput';
+import { toggleScrap, getScrap } from '../../api/scraps'; // 스크랩
+
 
 const BOARD_TYPES = ['전체', '자유', '질문', '모여떠요', '떠주세요', '떠드려요'];
 
@@ -46,6 +48,8 @@ function PostList() {
     const [writeImages, setWriteImages] = useState([]);
     const [writePreviews, setWritePreviews] = useState([]);
     const [isWriting, setIsWriting] = useState(false);
+    // 스크랩(북마크)
+    const [scraps, setScraps] = useState({});
 
     // ▼ 교체: 게시글 + 좋아요 초기값 한번에
     useEffect(() => {
@@ -80,6 +84,10 @@ function PostList() {
                             liked: data.liked
                         }
                     }));
+                }
+                const scrapData = await getScrap('POST', post.POST_ID, user?.userEmail);
+                if (scrapData.result) {
+                    setScraps(prev => ({ ...prev, [post.POST_ID]: scrapData.scrapped }));
                 }
             }
         };
@@ -252,6 +260,15 @@ function PostList() {
                     liked: data.liked
                 }
             }));
+        }
+    };
+
+    // handleScrap 함수
+    const handleScrap = async (e, postId) => {
+        e.stopPropagation();
+        const data = await toggleScrap(user?.userEmail, 'POST', postId);
+        if (data.result) {
+            setScraps(prev => ({ ...prev, [postId]: data.scrapped }));
         }
     };
 
@@ -468,8 +485,12 @@ function PostList() {
                                                         {comments[post.POST_ID]?.length ?? post.COMMENT_COUNT ?? 0}
                                                     </Typography>
                                                 </Box>
-                                                <BookmarkBorder className={styles.iconBookmark}
-                                                    onClick={(e) => e.stopPropagation()}/>
+                                                {scraps[post.POST_ID]
+                                                    ? <Bookmark className={styles.iconBookmarkActive}
+                                                        onClick={(e) => handleScrap(e, post.POST_ID)}/>
+                                                    : <BookmarkBorder className={styles.iconBookmark}
+                                                        onClick={(e) => handleScrap(e, post.POST_ID)}/>
+                                                }
                                             </Box>
 
                                             {/* 댓글 토글 */}

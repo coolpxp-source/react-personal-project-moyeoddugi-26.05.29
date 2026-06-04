@@ -55,7 +55,7 @@ function Login(){
                         <Box className={styles.logoArea}>
                             <img src="/logo/logo.svg" alt="모여뜨기 로고" className={styles.logoImg}/>
                         </Box>
-
+    
                         <TextField fullWidth label="이메일" name="email"
                             value={form.email} onChange={handleChange} 
                             autoComplete="off"

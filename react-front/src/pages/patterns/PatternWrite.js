@@ -30,6 +30,18 @@ function PatternWrite() {
     });
     const [images, setImages] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
+    const [tagInput, setTagInput] = useState('');
+
+    const handleTagInput = (e) => {
+        if (e.key === 'Enter' && e.target.value.trim()) {
+            e.preventDefault();
+            const newTag = e.target.value.trim();
+            if (form.tags.includes(newTag)) return alert('이미 추가된 태그예요.');
+            if (form.tags.length >= 5) return alert('태그는 최대 5개까지 가능해요.');
+            setForm(prev => ({ ...prev, tags: [...prev.tags, newTag] }));
+            setTagInput('');
+        }
+    };
 
     const handleChange = (e) => {
         setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -220,6 +232,8 @@ function PatternWrite() {
                     <Typography className={styles.sectionTitle}>태그</Typography>
                     <Box className={styles.field}>
                         <Typography className={styles.label}>태그 추가(선택) 최대 5개</Typography>
+
+                        {/* 프리셋 태그 */}
                         <Box className={styles.chipRow}>
                             {PRESET_TAGS.map(tag => (
                                 <Chip key={tag} label={tag} size="small"
@@ -239,6 +253,33 @@ function PatternWrite() {
                                 />
                             ))}
                         </Box>
+
+                        {/* ▼ 직접 입력 */}
+                        <Box className={styles.tagInputRow}>
+                            <input
+                                className={styles.tagInput}
+                                placeholder="태그 직접 입력 후 Enter"
+                                value={tagInput}
+                                onChange={(e) => setTagInput(e.target.value)}
+                                onKeyDown={handleTagInput}
+                                disabled={form.tags.length >= 5}
+                            />
+                        </Box>
+
+                        {/* ▼ 선택된 태그 표시 */}
+                        {form.tags.length > 0 && (
+                            <Box className={styles.selectedTags}>
+                                {form.tags.map(tag => (
+                                    <Chip key={tag} label={`#${tag}`} size="small"
+                                        onDelete={() => removeTag(tag)}
+                                        style={{
+                                            backgroundColor: '#F5EDD8',
+                                            color: '#7B4F2E',
+                                        }}
+                                    />
+                                ))}
+                            </Box>
+                        )}
                     </Box>
                 </Box>
 

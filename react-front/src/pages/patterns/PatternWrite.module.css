@@ -145,3 +145,30 @@
 }
 
 .submitBtn:hover { background-color: #5C3D2E !important; }
+
+.tagInputRow {
+    margin-top: 8px;
+}
+
+.tagInput {
+    width: 100%;
+    border: 1px solid #E8D5B7;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    outline: none;
+    background-color: #FAF6F0;
+    color: #3D2B1A;
+    box-sizing: border-box;
+}
+
+.tagInput:focus { border-color: #C4956A; }
+.tagInput:disabled { opacity: 0.5; cursor: not-allowed; }
+.tagInput::placeholder { color: #B08060; }
+
+.selectedTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}

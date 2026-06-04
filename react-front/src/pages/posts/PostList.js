@@ -3,14 +3,15 @@ import { Box, Tabs, Tab, TextField, Button, Typography, Chip, Collapse } from '@
 import { Favorite, FavoriteBorder, ChatBubbleOutline, BookmarkBorder, Bookmark } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { getPosts, getPopularPosts, getPopularTags } from '../../api/posts';
+import { getPopularPatterns, getMostCommentedPatterns } from '../../api/patterns';
 import { getComments, createComment, deleteComment, updateComment } from '../../api/comments';
-import { toggleLike, getLikes } from '../../api/likes';
+import { toggleLike } from '../../api/likes';
 import { jwtDecode } from 'jwt-decode';
 import styles from './PostList.module.css';
 import RightSidebar from '../../components/RightSidebar';
 import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
 import SearchInput from '../../components/SearchInput';
-import { toggleScrap, getScrap } from '../../api/scraps'; // 스크랩
+import { toggleScrap } from '../../api/scraps'; // 스크랩
 
 
 const BOARD_TYPES = ['전체', '자유', '질문', '모여떠요', '떠주세요', '떠드려요'];
@@ -53,54 +54,41 @@ function PostList() {
     // 게시글 수정 state
     const [editPost, setEditPost] = useState({});      // { postId: true/false }
     const [editPostInput, setEditPostInput] = useState({}); // { postId: content }
+    // 인기 도안
+    const [popularPatterns, setPopularPatterns] = useState([]);
+    const [mostCommentedPatterns, setMostCommentedPatterns] = useState([]);
 
     // ▼ 교체: 게시글 + 좋아요 초기값 한번에
     useEffect(() => {
         const fetchAll = async () => {
-            const data = await getPosts(BOARD_TYPES[tab]);
+            const data = await getPosts(BOARD_TYPES[tab], user?.userEmail);
             if (data.list) {
                 setPosts(data.list);
                 const initialLikes = {};
+                const initialScraps = {};
                 data.list.forEach(post => {
                     initialLikes[post.POST_ID] = {
                         count: post.LIKE_COUNT || 0,
                         liked: post.IS_LIKED > 0 // ▼ 한번에 처리
                     };
+                    initialScraps[post.POST_ID] = post.IS_SCRAPPED > 0;
                 });
                 setLikes(initialLikes);
+                setScraps(initialScraps);
             }
         };
         fetchAll();
     }, [tab]);
 
-    // ▼ 교체: 개인 좋아요 여부만 조회
     useEffect(() => {
-        if (posts.length === 0) return;
-        const fetchLikedStatus = async () => {
-            for (const post of posts) {
-                const data = await getLikes('POST', post.POST_ID, user?.userEmail);
-                if (data.result) {
-                    setLikes(prev => ({
-                        ...prev,
-                        [post.POST_ID]: {
-                            count: prev[post.POST_ID]?.count || 0,
-                            liked: data.liked
-                        }
-                    }));
-                }
-                const scrapData = await getScrap('POST', post.POST_ID, user?.userEmail);
-                if (scrapData.result) {
-                    setScraps(prev => ({ ...prev, [post.POST_ID]: scrapData.scrapped }));
-                }
-            }
-        };
-        fetchLikedStatus();
-    }, [posts.length, tab]);
+         const fetchSidebar = async () => {
+            // 기존 인기 게시글/태그 제거하고 교체
+            const popularData = await getPopularPatterns();
+            if (popularData.list) setPopularPatterns(popularData.list);
 
-    useEffect(() => {
-        const fetchSidebar = async () => {
-            const popularData = await getPopularPosts();
-            if (popularData.list) setPopularPosts(popularData.list);
+            const commentedData = await getMostCommentedPatterns();
+            if (commentedData.list) setMostCommentedPatterns(commentedData.list);
+
             const tagData = await getPopularTags();
             if (tagData.list) setPopularTags(tagData.list);
         };
@@ -486,6 +474,7 @@ function PostList() {
                                                             src={`http://localhost:3010${img}`}
                                                             alt={`post-img-${idx}`}
                                                             className={styles.postImgItem}
+                                                            loading="lazy"
                                                             style={{
                                                                 // 3장일 때 첫번째 이미지 full width
                                                                 gridColumn: post.IMAGES.length === 3 && idx === 0 ? '1 / -1' : 'auto',
@@ -732,31 +721,61 @@ function PostList() {
 
                 {/* 우측 위젯 */}
                 <Box className={styles.sideWidget}>
+                    {/* 인기 도안 */}
                     <Box className={styles.widgetCard}>
-                        <Typography className={styles.widgetTitle}>🔥 인기 게시글</Typography>
+                        <Typography className={styles.widgetTitle}>🔥 인기 도안</Typography>
                         <Box className={styles.widgetList}>
-                            {popularPosts.length === 0 ? (
+                            {popularPatterns.length === 0 ? (
                                 <Typography className={styles.widgetEmpty}>아직 없어요</Typography>
                             ) : (
-                                popularPosts.map((p, idx) => (
-                                    <Box key={p.POST_ID} className={styles.popularItem}>
+                                popularPatterns.map((p, idx) => (
+                                    <Box key={p.PATTERN_ID} className={styles.popularItem}
+                                        onClick={() => navigate(`/patterns/${p.PATTERN_ID}`)}>
                                         <Typography className={styles.popularIdx}>{idx + 1}</Typography>
                                         <Box className={styles.popularContent}>
                                             <Typography className={styles.popularTitle}>{p.TITLE}</Typography>
-                                            <Chip label={p.BOARD_TYPE} size="small"
-                                                style={{
-                                                    backgroundColor: BADGE_COLORS[p.BOARD_TYPE]?.bg,
-                                                    color: BADGE_COLORS[p.BOARD_TYPE]?.color,
-                                                    fontSize: 10, height: 18
-                                                }}
-                                            />
+                                            <Typography className={styles.popularSub}>
+                                                {p.NICKNAME} · ♡ {p.LIKE_COUNT}
+                                            </Typography>
                                         </Box>
+                                        {p.THUMBNAIL_IMG && (
+                                            <img src={`http://localhost:3010${p.THUMBNAIL_IMG}`}
+                                                alt={p.TITLE} className={styles.popularThumb}/>
+                                        )}
                                     </Box>
                                 ))
                             )}
                         </Box>
                     </Box>
 
+                    {/* 댓글 많은 도안 */}
+                    <Box className={styles.widgetCard}>
+                        <Typography className={styles.widgetTitle}>💬 댓글 많은 도안</Typography>
+                        <Box className={styles.widgetList}>
+                            {mostCommentedPatterns.length === 0 ? (
+                                <Typography className={styles.widgetEmpty}>아직 없어요</Typography>
+                            ) : (
+                                mostCommentedPatterns.map((p, idx) => (
+                                    <Box key={p.PATTERN_ID} className={styles.popularItem}
+                                        onClick={() => navigate(`/patterns/${p.PATTERN_ID}`)}>
+                                        <Typography className={styles.popularIdx}>{idx + 1}</Typography>
+                                        <Box className={styles.popularContent}>
+                                            <Typography className={styles.popularTitle}>{p.TITLE}</Typography>
+                                            <Typography className={styles.popularSub}>
+                                                {p.NICKNAME} · 💬 {p.COMMENT_COUNT}
+                                            </Typography>
+                                        </Box>
+                                        {p.THUMBNAIL_IMG && (
+                                            <img src={`http://localhost:3010${p.THUMBNAIL_IMG}`}
+                                                alt={p.TITLE} className={styles.popularThumb}/>
+                                        )}
+                                    </Box>
+                                ))
+                            )}
+                        </Box>
+                    </Box>
+
+                    {/* 인기 태그 */}
                     <Box className={styles.widgetCard}>
                         <Typography className={styles.widgetTitle}>🏷 인기 태그</Typography>
                         <Box className={styles.tagCloud}>
@@ -766,6 +785,7 @@ function PostList() {
                                 popularTags.map((tag, idx) => (
                                     <Chip key={idx} label={`#${tag.TAG_NAME}`} size="small"
                                         className={styles.tagChip}
+                                        onClick={() => navigate(`/patterns?tag=${tag.TAG_NAME}`)}
                                     />
                                 ))
                             )}

@@ -30,3 +30,13 @@ export const deletePattern = async (patternId) => {
     });
     return res.json();
 };
+
+export const getPopularPatterns = async () => {
+    const res = await fetch('http://localhost:3010/api/patterns/popular');
+    return res.json();
+};
+
+export const getMostCommentedPatterns = async () => {
+    const res = await fetch('http://localhost:3010/api/patterns/most-commented');
+    return res.json();
+};

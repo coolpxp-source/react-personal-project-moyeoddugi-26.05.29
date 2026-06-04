@@ -53,7 +53,7 @@ function PatternList() {
     useEffect(() => {
         if (patterns.length === 0) return;
         const fetchLikes = async () => {
-            for (const pattern of patterns) {
+            await Promise.all(patterns.map(async (pattern) => {
                 const data = await getLikes('PATTERN', pattern.PATTERN_ID, user?.userEmail);
                 if (data.result) {
                     setLikes(prev => ({
@@ -61,7 +61,7 @@ function PatternList() {
                         [pattern.PATTERN_ID]: { count: data.count, liked: data.liked }
                     }));
                 }
-            }
+            }));
         };
         fetchLikes();
     }, [patterns.length]);
@@ -151,7 +151,8 @@ function PatternList() {
                                 <Box className={styles.cardImgWrapper}>
                                     {pattern.THUMBNAIL_IMG ? (
                                         <img src={`http://localhost:3010${pattern.THUMBNAIL_IMG}`}
-                                            alt={pattern.TITLE} className={styles.cardImgEl}/>
+                                            alt={pattern.TITLE} className={styles.cardImgEl}
+                                            loading="lazy"/>
                                     ) : (
                                         <Box className={styles.cardImgEmpty}>
                                             <Typography className={styles.noImg}>도안 이미지</Typography>

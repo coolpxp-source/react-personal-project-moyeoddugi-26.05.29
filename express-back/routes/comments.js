@@ -78,8 +78,9 @@ router.post('/', async (req, res) => {
             );
             const senderNick = senderResult.rows[0][0];
 
+            const contentCol = targetType === 'PATTERN' ? 'DESCRIPTION' : 'CONTENT';
             const targetResult = await connection.execute(
-                `SELECT TITLE, CONTENT FROM ${ownerTable} WHERE ${ownerCol} = :targetId`,
+                `SELECT TITLE, ${contentCol} AS CONTENT FROM ${ownerTable} WHERE ${ownerCol} = :targetId`,
                 [targetId],
                 { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );

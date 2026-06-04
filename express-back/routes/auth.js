@@ -25,39 +25,49 @@ const uploadProfile = multer({ storage: profileStorage });
 
 // 1. 회원가입
 router.post('/join', async (req, res) => {
-  const { userEmail, pwd, userName, nickname  } = req.body;
-  const hashPwd = await bcrypt.hash(pwd, saltRounds);
-  let connection;
-  try {
-    connection = await db.getConnection();
-    const result = await connection.execute(
-      `
-        INSERT INTO USERS(EMAIL, PASSWORD , USER_NAME, NICKNAME) VALUES(:userEmail, :hashPwd, :userName, :nickname) 
-      `, // pwd -> hashPwd : 암호화된 비밀번호로 저장.
-      [userEmail , hashPwd, userName, nickname],
-      {autoCommit : true}
-    );
-    let isLogin = false;
-    let message = "회원가입 실패";
-    if(result.rowsAffected > 0){ // rowsAffected : 몇개의 행에 영향을 줬는지
-      isLogin = true;
-      message = "회원가입 성공!";
+    const { userEmail, pwd, userName, nickname } = req.body;
+    const hashPwd = await bcrypt.hash(pwd, saltRounds);
+    let connection;
+    try {
+        connection = await db.getConnection();
+
+        // ▼ 이메일 중복 체크
+        const emailCheck = await connection.execute(
+            `SELECT COUNT(*) FROM USERS WHERE EMAIL = :userEmail`,
+            [userEmail]
+        );
+        if (emailCheck.rows[0][0] > 0) {
+            return res.json({ result: false, message: '이미 사용 중인 이메일이에요.' });
+        }
+
+        // ▼ 닉네임 중복 체크
+        const nickCheck = await connection.execute(
+            `SELECT COUNT(*) FROM USERS WHERE NICKNAME = :nickname`,
+            [nickname]
+        );
+        if (nickCheck.rows[0][0] > 0) {
+            return res.json({ result: false, message: '이미 사용 중인 닉네임이에요.' });
+        }
+
+        const result = await connection.execute(
+            `INSERT INTO USERS(EMAIL, PASSWORD, USER_NAME, NICKNAME)
+             VALUES(:userEmail, :hashPwd, :userName, :nickname)`,
+            [userEmail, hashPwd, userName, nickname],
+            { autoCommit: true }
+        );
+
+        res.json({
+            result: result.rowsAffected > 0,
+            message: result.rowsAffected > 0 ? '회원가입 성공!' : '회원가입 실패'
+        });
+
+    } catch (error) {
+        console.error('Error executing query', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
     }
-
-    res.json({
-        result : isLogin,
-        message : message,
-        // list : result.rows
-    });
-    
-  } catch (error) {
-    console.error('Error executing query', error);
-    res.status(500).send('Error executing query');
-  } finally {
-    await connection.close();
-  }
 });
-
 // 2. 로그인
 router.post('/login', async (req, res) => {
   const { userEmail, pwd } = req.body;

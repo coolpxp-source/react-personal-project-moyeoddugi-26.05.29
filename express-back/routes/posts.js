@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
     let connection;
     try {
         connection = await db.getConnection();
-        const binds = [userEmail || '']; // ▼ 여기서 선언 + userEmail 먼저 추가
+        const binds = [userEmail || '', userEmail || '']; // ▼ 여기서 선언 + userEmail 먼저 추가
         let query = `
             SELECT p.POST_ID, p.USER_ID, p.BOARD_TYPE, p.TITLE, p.CONTENT, 
                 p.VIEW_COUNT, p.CREATED_AT,
@@ -51,7 +51,12 @@ router.get('/', async (req, res) => {
                     JOIN USERS u2 ON l2.USER_ID = u2.USER_ID
                     WHERE l2.TARGET_TYPE = 'POST' 
                     AND l2.TARGET_ID = p.POST_ID
-                    AND u2.EMAIL = :userEmail) AS IS_LIKED
+                    AND u2.EMAIL = :userEmail) AS IS_LIKED,
+                (SELECT COUNT(*) FROM SCRAPS s2
+                    JOIN USERS u3 ON s2.USER_ID = u3.USER_ID
+                    WHERE s2.TARGET_TYPE = 'POST' 
+                    AND s2.TARGET_ID = p.POST_ID
+                    AND u3.EMAIL = :userEmail) AS IS_SCRAPPED
             FROM POSTS p
             JOIN USERS u ON p.USER_ID = u.USER_ID
         `;
@@ -144,14 +149,16 @@ router.get('/showcase', async (req, res) => {
             `SELECT p.POST_ID, p.USER_ID, p.TITLE, p.CONTENT, p.CREATED_AT,
                     u.NICKNAME, u.PROFILE_IMG,
                     (SELECT IMAGE_URL FROM POST_IMAGES 
-                     WHERE POST_ID = p.POST_ID AND IS_THUMBNAIL = 'Y'
-                     AND ROWNUM = 1) AS THUMBNAIL_IMG,
+                    WHERE POST_ID = p.POST_ID AND IS_THUMBNAIL = 'Y'
+                    AND ROWNUM = 1) AS THUMBNAIL_IMG,
                     (SELECT COUNT(*) FROM LIKES 
-                     WHERE TARGET_TYPE = 'POST' AND TARGET_ID = p.POST_ID) AS LIKE_COUNT
-             FROM POSTS p
-             JOIN USERS u ON p.USER_ID = u.USER_ID
-             WHERE p.BOARD_TYPE = '작품자랑'
-             ORDER BY p.CREATED_AT DESC`,
+                    WHERE TARGET_TYPE = 'POST' AND TARGET_ID = p.POST_ID) AS LIKE_COUNT,
+                    (SELECT COUNT(*) FROM COMMENTS
+                    WHERE TARGET_TYPE = 'POST' AND TARGET_ID = p.POST_ID) AS COMMENT_COUNT
+            FROM POSTS p
+            JOIN USERS u ON p.USER_ID = u.USER_ID
+            WHERE p.BOARD_TYPE = '작품자랑'
+            ORDER BY p.CREATED_AT DESC`,
             [],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );

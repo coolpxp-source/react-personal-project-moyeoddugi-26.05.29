@@ -130,7 +130,7 @@
 
 .popularItem {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
     cursor: pointer;
     padding: 4px 0;
@@ -706,4 +706,17 @@
     padding: 4px 12px;
     border-radius: 6px;
     cursor: pointer;
+}
+
+.popularSub {
+    font-size: 10px !important;
+    color: #B08060 !important;
+}
+
+.popularThumb {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
 }

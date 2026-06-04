@@ -38,19 +38,21 @@ function ShowcaseList() {
     useEffect(() => {
         if (posts.length === 0) return;
         const fetchLikesAndComments = async () => {
-            for (const post of posts) {
-                const likeData = await getLikes('POST', post.POST_ID, user?.userEmail);
+            await Promise.all(posts.map(async (post) => {
+                const [likeData, commentData] = await Promise.all([
+                    getLikes('POST', post.POST_ID, user?.userEmail),
+                    getComments('POST', post.POST_ID)
+                ]);
                 if (likeData.result) {
                     setLikes(prev => ({
                         ...prev,
                         [post.POST_ID]: { count: likeData.count, liked: likeData.liked }
                     }));
                 }
-                const commentData = await getComments('POST', post.POST_ID);
                 if (commentData.list) {
                     setComments(prev => ({ ...prev, [post.POST_ID]: commentData.list }));
                 }
-            }
+            }));
         };
         fetchLikesAndComments();
     }, [posts.length]);
@@ -147,7 +149,8 @@ function ShowcaseList() {
                         <Box className={styles.imageSection}>
                             {post.THUMBNAIL_IMG ? (
                                 <img src={`http://localhost:3010${post.THUMBNAIL_IMG}`}
-                                    alt={post.TITLE} className={styles.thumbnail}/>
+                                    alt={post.TITLE} className={styles.thumbnail}
+                                    loading="lazy"/>
                             ) : (
                                 <Box className={styles.noImage}>
                                     <Typography className={styles.noImageText}>사진 없음</Typography>

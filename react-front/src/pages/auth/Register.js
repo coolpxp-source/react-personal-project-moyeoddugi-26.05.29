@@ -113,7 +113,12 @@ function Register(){
             alert('회원가입 성공! 로그인해주세요.');
             navigate('/');
         } else {
-            alert(data.message);
+            // ▼ alert 대신 에러 상태로 표시
+            if (data.message.includes('이메일')) {
+                setErrors(prev => ({ ...prev, email: data.message }));
+            } else if (data.message.includes('닉네임')) {
+                setErrors(prev => ({ ...prev, nickname: data.message }));
+            }
         }
     };
     

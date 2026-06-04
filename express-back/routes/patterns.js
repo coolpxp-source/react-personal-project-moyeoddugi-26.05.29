@@ -77,6 +77,62 @@ router.get('/', async (req, res) => {
     }
 });
 
+// 인기 도안 top 5 (좋아요 순)
+router.get('/popular', async (req, res) => {
+    let connection;
+    try {
+        connection = await db.getConnection();
+        const result = await connection.execute(
+            `SELECT p.PATTERN_ID, p.TITLE, p.THUMBNAIL_IMG,
+                    u.NICKNAME,
+                    COUNT(l.LIKE_ID) AS LIKE_COUNT
+            FROM PATTERNS p
+            JOIN USERS u ON p.USER_ID = u.USER_ID
+            LEFT JOIN LIKES l ON l.TARGET_TYPE = 'PATTERN' 
+                AND l.TARGET_ID = p.PATTERN_ID
+            GROUP BY p.PATTERN_ID, p.TITLE, p.THUMBNAIL_IMG, u.NICKNAME
+            ORDER BY LIKE_COUNT DESC
+            FETCH FIRST 5 ROWS ONLY`,
+            [],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        res.json({ result: true, list: result.rows });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
+
+// 댓글 많은 도안 top 5
+router.get('/most-commented', async (req, res) => {
+    let connection;
+    try {
+        connection = await db.getConnection();
+        const result = await connection.execute(
+            `SELECT p.PATTERN_ID, p.TITLE, p.THUMBNAIL_IMG,
+                    u.NICKNAME,
+                    COUNT(c.COMMENT_ID) AS COMMENT_COUNT
+            FROM PATTERNS p
+            JOIN USERS u ON p.USER_ID = u.USER_ID
+            LEFT JOIN COMMENTS c ON c.TARGET_TYPE = 'PATTERN' 
+                AND c.TARGET_ID = p.PATTERN_ID
+            GROUP BY p.PATTERN_ID, p.TITLE, p.THUMBNAIL_IMG, u.NICKNAME
+            ORDER BY COMMENT_COUNT DESC
+            FETCH FIRST 5 ROWS ONLY`,
+            [],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        res.json({ result: true, list: result.rows });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
+
 // 2. 도안 상세 조회
 router.get('/:patternId', async (req, res) => {
     const { patternId } = req.params;
@@ -292,5 +348,7 @@ router.get('/:patternId/tags', async (req, res) => {
         await connection.close();
     }
 });
+
+
 
 module.exports = router;

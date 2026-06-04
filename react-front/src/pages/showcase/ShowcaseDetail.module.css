@@ -309,3 +309,85 @@
     padding-top: 12px;
     margin-top: auto;
 }
+
+.postActions {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+}
+
+.postActionBtn {
+    background: none;
+    border: 1px solid #E8D5B7;
+    color: #B08060;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.postActionBtn:hover {
+    background-color: #F5EDD8;
+    color: #7B4F2E;
+}
+
+.editBox {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.editTitleInput {
+    border: 1px solid #E8D5B7;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 15px;
+    font-weight: 600;
+    outline: none;
+    color: #3D2B1A;
+    background-color: #FAF6F0;
+}
+
+.editTitleInput:focus { border-color: #C4956A; }
+
+.editTextarea {
+    border: 1px solid #E8D5B7;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+    color: #5C3D2E;
+    background-color: #FAF6F0;
+    resize: none;
+    min-height: 80px;
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+.editTextarea:focus { border-color: #C4956A; }
+
+.editBtns {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.editSubmit {
+    background-color: #7B4F2E;
+    border: none;
+    color: white;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.editCancel {
+    background: none;
+    border: 1px solid #E8D5B7;
+    color: #B08060;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}

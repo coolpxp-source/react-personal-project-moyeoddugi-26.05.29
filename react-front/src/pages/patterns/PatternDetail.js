@@ -44,6 +44,9 @@ function PatternDetail() {
     const [replyInput, setReplyInput] = useState({});
     // 스크랩
     const { scrapped, handleScrap } = useScrap(user?.userEmail, 'PATTERN', id);
+    // 수정
+    const [isEditing, setIsEditing] = useState(false);
+    const [editForm, setEditForm] = useState({});
 
     useEffect(() => {
         const fetchAll = async () => {
@@ -150,6 +153,43 @@ function PatternDetail() {
             <Typography className={styles.loading}>불러오는 중... 🧶</Typography>
         </Box>
     );
+
+    // 수정
+    const handlePatternEdit = async () => {
+        const res = await fetch(`http://localhost:3010/api/patterns/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(editForm),
+        });
+        const data = await res.json();
+        if (data.result) {
+            // ▼ 대문자 키로 맞춰서 업데이트
+            setPattern(prev => ({
+                ...prev,
+                TITLE: editForm.title,
+                DESCRIPTION: editForm.description,
+                DIFFICULTY: editForm.difficulty,
+                YARN_TYPE: editForm.yarnType,
+                NEEDLE_SIZE: editForm.needleSize,
+                FINISHED_SIZE: editForm.finishedSize,
+                WORK_TIME: editForm.workTime,
+            }));
+            setIsEditing(false);
+            alert('도안이 수정됐어요! 🧶');
+        }
+    };
+
+    // 삭제
+    const handlePatternDelete = async () => {
+        if (!window.confirm('도안을 삭제할까요?')) return;
+        const res = await fetch(`http://localhost:3010/api/patterns/${id}`, {
+            method: 'DELETE',
+        });
+        const data = await res.json();
+        alert('삭제 됐어요! 🧶');
+        if (data.result) navigate('/patterns');
+    };
+
     return (
         <Box className={styles.container}>
             {/* 뒤로가기 */}
@@ -239,6 +279,26 @@ function PatternDetail() {
                                 {new Date(pattern.CREATED_AT).toLocaleDateString()}
                             </Typography>
                             <Typography className={styles.viewCount}>조회 {pattern.VIEW_COUNT}</Typography>
+                            {/* ▼ 추가 */}
+                            {pattern.NICKNAME === user?.userNickname && (
+                                <Box className={styles.postActions}>
+                                    <button className={styles.postActionBtn}
+                                        onClick={() => {
+                                            setEditForm({
+                                                title: pattern.TITLE,
+                                                description: pattern.DESCRIPTION,
+                                                difficulty: pattern.DIFFICULTY,
+                                                yarnType: pattern.YARN_TYPE || '',
+                                                needleSize: pattern.NEEDLE_SIZE || '',
+                                                finishedSize: pattern.FINISHED_SIZE || '',
+                                                workTime: pattern.WORK_TIME || '',
+                                            });
+                                            setIsEditing(true);
+                                        }}>수정</button>
+                                    <button className={styles.postActionBtn}
+                                        onClick={handlePatternDelete}>삭제</button>
+                                </Box>
+                            )}
                         </Box>
 
                         {/* 도안 정보 */}
@@ -457,6 +517,78 @@ function PatternDetail() {
                     </Box>
                 </Box>
             </Box>
+            {/* 수정 모달 */}
+            {isEditing && (
+                <Box className={styles.modalOverlay} onClick={() => setIsEditing(false)}>
+                    <Box className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
+                        <Typography className={styles.modalTitle}>도안 수정</Typography>
+
+                        <Box className={styles.modalField}>
+                            <Typography className={styles.modalLabel}>제목</Typography>
+                            <input className={styles.modalInput}
+                                value={editForm.title || ''}
+                                onChange={(e) => setEditForm(prev => ({ ...prev, title: e.target.value }))}
+                            />
+                        </Box>
+
+                        <Box className={styles.modalField}>
+                            <Typography className={styles.modalLabel}>설명</Typography>
+                            <textarea className={styles.modalTextarea}
+                                value={editForm.description || ''}
+                                onChange={(e) => setEditForm(prev => ({ ...prev, description: e.target.value }))}
+                            />
+                        </Box>
+
+                        <Box className={styles.modalField}>
+                            <Typography className={styles.modalLabel}>난이도</Typography>
+                            <select className={styles.modalSelect}
+                                value={editForm.difficulty || ''}
+                                onChange={(e) => setEditForm(prev => ({ ...prev, difficulty: e.target.value }))}>
+                                {['입문', '초급', '중급', '고급'].map(d => (
+                                    <option key={d} value={d}>{d}</option>
+                                ))}
+                            </select>
+                        </Box>
+
+                        <Box className={styles.modalField}>
+                            <Typography className={styles.modalLabel}>실 종류</Typography>
+                            <input className={styles.modalInput}
+                                value={editForm.yarnType || ''}
+                                onChange={(e) => setEditForm(prev => ({ ...prev, yarnType: e.target.value }))}
+                            />
+                        </Box>
+
+                        <Box className={styles.modalField}>
+                            <Typography className={styles.modalLabel}>바늘 호수</Typography>
+                            <input className={styles.modalInput}
+                                value={editForm.needleSize || ''}
+                                onChange={(e) => setEditForm(prev => ({ ...prev, needleSize: e.target.value }))}
+                            />
+                        </Box>
+
+                        <Box className={styles.modalField}>
+                            <Typography className={styles.modalLabel}>완성 크기</Typography>
+                            <input className={styles.modalInput}
+                                value={editForm.finishedSize || ''}
+                                onChange={(e) => setEditForm(prev => ({ ...prev, finishedSize: e.target.value }))}
+                            />
+                        </Box>
+
+                        <Box className={styles.modalField}>
+                            <Typography className={styles.modalLabel}>소요 시간</Typography>
+                            <input className={styles.modalInput}
+                                value={editForm.workTime || ''}
+                                onChange={(e) => setEditForm(prev => ({ ...prev, workTime: e.target.value }))}
+                            />
+                        </Box>
+
+                        <Box className={styles.modalBtns}>
+                            <button className={styles.modalSubmit} onClick={handlePatternEdit}>완료</button>
+                            <button className={styles.modalCancel} onClick={() => setIsEditing(false)}>취소</button>
+                        </Box>
+                    </Box>
+                </Box>
+            )}
             <RightSidebar />
         </Box>
     );

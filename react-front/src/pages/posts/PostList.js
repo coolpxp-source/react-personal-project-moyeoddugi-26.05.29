@@ -50,6 +50,9 @@ function PostList() {
     const [isWriting, setIsWriting] = useState(false);
     // 스크랩(북마크)
     const [scraps, setScraps] = useState({});
+    // 게시글 수정 state
+    const [editPost, setEditPost] = useState({});      // { postId: true/false }
+    const [editPostInput, setEditPostInput] = useState({}); // { postId: content }
 
     // ▼ 교체: 게시글 + 좋아요 초기값 한번에
     useEffect(() => {
@@ -272,6 +275,38 @@ function PostList() {
         }
     };
 
+    // 게시글 수정 완료
+    const handlePostEdit = async (postId) => {
+        const content = editPostInput[postId]?.trim();
+        if (!content) return;
+        const res = await fetch(`http://localhost:3010/api/posts/${postId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: '', content }),
+        });
+        const data = await res.json();
+        if (data.result) {
+            setPosts(prev => prev.map(p =>
+                p.POST_ID === postId ? { ...p, CONTENT: content } : p
+            ));
+            setEditPost(prev => ({ ...prev, [postId]: false }));
+            alert('수정됐어요! 🧶'); // ▼ 추가
+        }
+    };
+
+    // 게시글 삭제
+    const handlePostDelete = async (postId) => {
+        if (!window.confirm('게시글을 삭제할까요?')) return;
+        const res = await fetch(`http://localhost:3010/api/posts/${postId}`, {
+            method: 'DELETE',
+        });
+        const data = await res.json();
+        if (data.result) {
+            setPosts(prev => prev.filter(p => p.POST_ID !== postId));
+            alert('삭제됐어요! 🧶');
+        }
+    };
+
     return (
         <Box className={styles.container}>
             <Tabs value={tab} onChange={(e, val) => setTab(val)}
@@ -393,17 +428,50 @@ function PostList() {
                                                         fontSize: 11, height: 20, marginLeft: 'auto'
                                                     }}
                                                 />
+                                                {/* ▼ 본인 게시글만 수정/삭제 표시 */}
+                                                {post.NICKNAME === user?.userNickname && (
+                                                    <Box className={styles.postActions}>
+                                                        <button className={styles.postActionBtn}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setEditPost(prev => ({ ...prev, [post.POST_ID]: true }));
+                                                                setEditPostInput(prev => ({ ...prev, [post.POST_ID]: post.CONTENT }));
+                                                            }}>수정</button>
+                                                        <button className={styles.postActionBtn}
+                                                            onClick={(e) => { e.stopPropagation(); handlePostDelete(post.POST_ID); }}>
+                                                            삭제</button>
+                                                    </Box>
+                                                )}
                                             </Box>
 
                                             {post.TITLE && (
                                                 <Typography className={styles.postTitle}>{post.TITLE}</Typography>
                                             )}
-
-                                            <Typography className={styles.postContent}>
-                                                {post.CONTENT?.length > 150
-                                                    ? post.CONTENT.slice(0, 150) + '...'
-                                                    : post.CONTENT}
-                                            </Typography>
+                                            {/* 내용 post content */}
+                                            {editPost[post.POST_ID] ? (
+                                                <Box className={styles.postEditBox}>
+                                                    <textarea
+                                                        className={styles.postEditTextarea}
+                                                        value={editPostInput[post.POST_ID] || ''}
+                                                        onChange={(e) => setEditPostInput(prev => ({
+                                                            ...prev, [post.POST_ID]: e.target.value
+                                                        }))}
+                                                    />
+                                                    <Box className={styles.postEditBtns}>
+                                                        <button className={styles.postEditSubmit}
+                                                            onClick={() => handlePostEdit(post.POST_ID)}>완료</button>
+                                                        <button className={styles.postEditCancel}
+                                                            onClick={() => setEditPost(prev => ({ ...prev, [post.POST_ID]: false }))}>
+                                                            취소</button>
+                                                    </Box>
+                                                </Box>
+                                            ) : (
+                                                <Typography className={styles.postContent}>
+                                                    {post.CONTENT?.length > 150
+                                                        ? post.CONTENT.slice(0, 150) + '...'
+                                                        : post.CONTENT}
+                                                </Typography>
+                                            )}
 
                                             {/* ▼ 이미지 여러장 표시 */}
                                             {post.IMAGES && post.IMAGES.length > 0 && (

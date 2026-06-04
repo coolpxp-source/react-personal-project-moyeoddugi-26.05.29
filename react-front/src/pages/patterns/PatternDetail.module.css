@@ -385,3 +385,136 @@
     gap: 6px;
     margin-top: 6px;
 }
+
+.postActions {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+}
+
+.postActionBtn {
+    background: none;
+    border: 1px solid #E8D5B7;
+    color: #B08060;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.postActionBtn:hover {
+    background-color: #F5EDD8;
+    color: #7B4F2E;
+}
+
+/* 모달 */
+.modalOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalBox {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    width: 480px;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modalTitle {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #F5EDD8;
+}
+
+.modalField {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.modalLabel {
+    font-size: 12px !important;
+    color: #B08060 !important;
+    font-weight: 500 !important;
+}
+
+.modalInput {
+    border: 1px solid #E8D5B7;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+    color: #3D2B1A;
+    background-color: #FAF6F0;
+}
+
+.modalInput:focus { border-color: #C4956A; }
+
+.modalTextarea {
+    border: 1px solid #E8D5B7;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+    color: #3D2B1A;
+    background-color: #FAF6F0;
+    resize: none;
+    min-height: 100px;
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+.modalTextarea:focus { border-color: #C4956A; }
+
+.modalSelect {
+    border: 1px solid #E8D5B7;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+    color: #3D2B1A;
+    background-color: #FAF6F0;
+    cursor: pointer;
+}
+
+.modalBtns {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-top: 8px;
+    border-top: 1px solid #F5EDD8;
+}
+
+.modalSubmit {
+    background-color: #7B4F2E;
+    border: none;
+    color: white;
+    font-size: 13px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.modalSubmit:hover { background-color: #5C3D2E; }
+
+.modalCancel {
+    background: none;
+    border: 1px solid #E8D5B7;
+    color: #B08060;
+    font-size: 13px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}

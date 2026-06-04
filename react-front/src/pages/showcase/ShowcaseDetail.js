@@ -27,6 +27,9 @@ function ShowcaseDetail() {
     const [editInput, setEditInput] = useState({});
     const [openReply, setOpenReply] = useState({});
     const [replyInput, setReplyInput] = useState({});
+    const [isEditing, setIsEditing] = useState(false);
+    const [editTitle, setEditTitle] = useState('');
+    const [editContent, setEditContent] = useState('');
 
     useEffect(() => {
         const fetchAll = async () => {
@@ -75,6 +78,7 @@ function ShowcaseDetail() {
         if (data.result) {
             const updated = await getComments('POST', postId);
             if (updated.list) setComments(updated.list);
+            alert('삭제됐어요! 🧶');
         }
     };
 
@@ -86,6 +90,7 @@ function ShowcaseDetail() {
             const updated = await getComments('POST', postId);
             if (updated.list) setComments(updated.list);
             setEditComment(prev => ({ ...prev, [commentId]: false }));
+
         }
     };
 
@@ -114,6 +119,32 @@ function ShowcaseDetail() {
             <Typography className={styles.loading}>불러오는 중... 🧶</Typography>
         </Box>
     );
+
+    // 게시글 수정
+    const handlePostEdit = async () => {
+        const res = await fetch(`http://localhost:3010/api/posts/showcase/${postId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: editTitle, content: editContent }),
+        });
+        const data = await res.json();
+        if (data.result) {
+            setPost(prev => ({ ...prev, TITLE: editTitle, CONTENT: editContent }));
+            setIsEditing(false);
+            alert('수정됐어요! 🧶');
+        }
+    };
+
+    // 게시글 삭제
+    const handlePostDelete = async () => {
+        if (!window.confirm('작품을 삭제할까요?')) return;
+        const res = await fetch(`http://localhost:3010/api/posts/${postId}`, {
+            method: 'DELETE',
+        });
+        const data = await res.json();
+        alert('삭제됐어요! 🧶');
+        if (data.result) navigate('/works');
+    };
 
     return (
         <Box className={styles.container}>
@@ -184,9 +215,45 @@ function ShowcaseDetail() {
                                 </Typography>
                             </Box>
                         </Box>
+                        {/* ▼ 본인만 수정/삭제 표시 */}
+                        {post.NICKNAME === user?.userNickname && (
+                            <Box className={styles.postActions}>
+                                <button className={styles.postActionBtn}
+                                    onClick={() => {
+                                        setIsEditing(true);
+                                        setEditTitle(post.TITLE || '');
+                                        setEditContent(post.CONTENT || '');
+                                    }}>수정</button>
+                                <button className={styles.postActionBtn}
+                                    onClick={handlePostDelete}>삭제</button>
+                            </Box>
+                        )}
 
-                        <Typography className={styles.postTitle}>{post.TITLE}</Typography>
-                        <Typography className={styles.postContent}>{post.CONTENT}</Typography>
+                        {isEditing ? (
+                            <Box className={styles.editBox}>
+                                <input
+                                    className={styles.editTitleInput}
+                                    value={editTitle}
+                                    onChange={(e) => setEditTitle(e.target.value)}
+                                    placeholder="제목"
+                                />
+                                <textarea
+                                    className={styles.editTextarea}
+                                    value={editContent}
+                                    onChange={(e) => setEditContent(e.target.value)}
+                                    placeholder="내용"
+                                />
+                                <Box className={styles.editBtns}>
+                                    <button className={styles.editSubmit} onClick={handlePostEdit}>완료</button>
+                                    <button className={styles.editCancel} onClick={() => setIsEditing(false)}>취소</button>
+                                </Box>
+                            </Box>
+                        ) : (
+                            <>
+                                <Typography className={styles.postTitle}>{post.TITLE}</Typography>
+                                <Typography className={styles.postContent}>{post.CONTENT}</Typography>
+                            </>
+                        )}
 
                         {/* 댓글 목록 */}
                         <Box className={styles.commentList}>

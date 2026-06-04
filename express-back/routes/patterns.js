@@ -210,6 +210,47 @@ router.get('/:patternId/images', async (req, res) => {
     }
 });
 
+// 도안 수정
+router.put('/:patternId', async (req, res) => {
+    const { patternId } = req.params;
+    const { title, description, difficulty, yarnType, needleSize, finishedSize, workTime } = req.body;
+    let connection;
+    try {
+        connection = await db.getConnection();
+        const result = await connection.execute(
+            `UPDATE PATTERNS SET 
+                TITLE = :title,
+                DESCRIPTION = :description,
+                DIFFICULTY = :difficulty,
+                YARN_TYPE = :yarnType,
+                NEEDLE_SIZE = :needleSize,
+                FINISHED_SIZE = :finishedSize,
+                WORK_TIME = :workTime
+             WHERE PATTERN_ID = :patternId`,
+            {
+                title,
+                description,
+                difficulty,
+                yarnType: yarnType || null,
+                needleSize: needleSize || null,
+                finishedSize: finishedSize || null,
+                workTime: workTime || null,
+                patternId
+            },
+            { autoCommit: true }
+        );
+        res.json({
+            result: result.rowsAffected > 0,
+            message: result.rowsAffected > 0 ? '수정됐어요!' : '수정에 실패했어요.'
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
+
 // 4. 도안 삭제
 router.delete('/:patternId', async (req, res) => {
     const { patternId } = req.params;

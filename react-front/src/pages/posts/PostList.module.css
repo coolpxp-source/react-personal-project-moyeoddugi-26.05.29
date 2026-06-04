@@ -636,3 +636,74 @@
     color: #7B4F2E !important;
     cursor: pointer;
 }
+
+.postActions {
+    display: flex;
+    gap: 4px;
+    margin-left: 8px;
+}
+
+.postActionBtn {
+    background: none;
+    border: 1px solid #E8D5B7;
+    color: #B08060;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.postActionBtn:hover {
+    background-color: #F5EDD8;
+    color: #7B4F2E;
+}
+
+.postEditBox {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.postEditTextarea {
+    width: 100%;
+    border: 1px solid #E8D5B7;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #3D2B1A;
+    resize: none;
+    outline: none;
+    min-height: 80px;
+    background-color: #FAF6F0;
+    font-family: inherit;
+    line-height: 1.6;
+    box-sizing: border-box;
+}
+
+.postEditTextarea:focus { border-color: #C4956A; }
+
+.postEditBtns {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.postEditSubmit {
+    background-color: #7B4F2E;
+    border: none;
+    color: white;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.postEditCancel {
+    background: none;
+    border: 1px solid #E8D5B7;
+    color: #B08060;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}

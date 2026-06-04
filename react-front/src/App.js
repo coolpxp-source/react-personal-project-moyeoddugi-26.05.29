@@ -23,6 +23,8 @@ import ShowcaseWrite from './pages/showcase/ShowcaseWrite';
 import ShowcaseDetail from './pages/showcase/ShowcaseDetail';
 // 알림창
 import Notifications from './pages/notifications/Notifications';
+// 채팅방
+import Chat from './pages/chat/Chat';
 
 import { Navigate } from 'react-router-dom'; // ▼ 추가
 import { jwtDecode } from 'jwt-decode';
@@ -63,6 +65,7 @@ function App() {
           <Route path="/works/write" element={<ShowcaseWrite />} />
           <Route path="/works/:postId" element={<ShowcaseDetail />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/chat" element={<Chat />} />
 
         </Routes>
       </Box>

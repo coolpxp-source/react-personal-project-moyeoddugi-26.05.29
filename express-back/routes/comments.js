@@ -79,11 +79,15 @@ router.post('/', async (req, res) => {
             const senderNick = senderResult.rows[0][0];
 
             const targetResult = await connection.execute(
-                `SELECT TITLE FROM ${ownerTable} WHERE ${ownerCol} = :targetId`, [targetId]
+                `SELECT TITLE, CONTENT FROM ${ownerTable} WHERE ${ownerCol} = :targetId`,
+                [targetId],
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
-            const targetTitle = targetResult.rows[0]?.[0] || '';
-
-            // 게시글/도안 작성자 알림
+            const targetTitle = targetResult.rows[0]?.TITLE;
+            const targetContent = targetResult.rows[0]?.CONTENT;
+            const displayName = (targetTitle && targetTitle.trim())
+                ? targetTitle.trim()
+                : (targetContent?.trim().slice(0, 20) || '게시글');
             const ownerResult = await connection.execute(
                 `SELECT USER_ID FROM ${ownerTable} WHERE ${ownerCol} = :targetId`, [targetId]
             );
@@ -93,7 +97,7 @@ router.post('/', async (req, res) => {
                     await connection.execute(
                         `INSERT INTO NOTIFICATIONS (RECEIVER_ID, SENDER_ID, NOTI_TYPE, TARGET_TYPE, TARGET_ID, MESSAGE)
                         VALUES (:receiverId, :userId, 'COMMENT', :targetType, :targetId, :message)`,
-                        [receiverId, userId, targetType, targetId, `${senderNick}님이 "${targetTitle}"에 댓글을 달았어요.`],
+                        [receiverId, userId, targetType, targetId, `${senderNick}님이 "${displayName}"에 댓글을 달았어요.`],
                         { autoCommit: true }
                     );
                 }

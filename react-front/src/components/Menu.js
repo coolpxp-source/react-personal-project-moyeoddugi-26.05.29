@@ -1,17 +1,16 @@
 import React from 'react';
 import { 
   Drawer, List, ListItemButton, ListItemText, 
-  ListItemIcon, Typography, Toolbar, Avatar, Box, Divider, TextField  
+  ListItemIcon, Typography, Box, Divider, TextField  
 } from '@mui/material';
-import { Search } from '@mui/icons-material'; // 아이콘
-import { Home } from '@mui/icons-material';
+import { Search } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './Menu.module.css';
 import { jwtDecode } from 'jwt-decode';
 import { useState, useEffect } from 'react';
 import { getUnreadCount } from '../api/notifications';
-
-
+import { getTotalUnreadCount } from '../api/chat';
+import AvatarItem from './AvatarItem';
 
 const topMenuItems = [
   { text: '알림', icon: '🔔', path: '/notifications' },
@@ -29,143 +28,107 @@ function Menu() {
   const token = localStorage.getItem('token');
   const user = token ? jwtDecode(token) : null;
   const navigate = useNavigate();
+
   const handleLogout = () => {
       localStorage.removeItem('token');
       navigate('/');
-  }
+  };
+
   const [unreadCount, setUnreadCount] = useState(0);
+  const [chatUnreadCount, setChatUnreadCount] = useState(0);
 
   useEffect(() => {
       if (!user?.userEmail) return;
       const fetchCount = async () => {
           const data = await getUnreadCount(user.userEmail);
           if (data.result) setUnreadCount(data.count);
+          const chatCount = await getTotalUnreadCount(user.userEmail);
+          setChatUnreadCount(chatCount);
       };
       fetchCount();
-      // 30초마다 갱신
-      const interval = setInterval(fetchCount, 30000);
+      const interval = setInterval(fetchCount,3000);
       return () => clearInterval(interval);
   }, [user?.userEmail]);
 
-    return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width: 300, // 너비 설정
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: 320, // Drawer 내부의 너비 설정
-          boxSizing: 'border-box',
-          backgroundColor: '#FAF6F0',
-          borderRight: '1px solid #E8D5B7'
-        },
-      }}
-    >
-      {/* 로고 이미지 부분 */}
-      <Link to="/posts" style={{ display: 'flex', justifyContent: 'center', padding: '12px' }}>
-          <img src="/logo/logo_title.png" alt="모여뜨기" style={{ width: '120px' }}/>
+  return (
+    <Drawer variant="permanent" classes={{ paper: styles.drawerPaper }}
+        sx={{ width: 300, flexShrink: 0 }}>
+
+      {/* 로고 */}
+      <Link to="/posts" className={styles.logoLink}>
+          <img src="/logo/logo_title.png" alt="모여뜨기" className={styles.logoImg}/>
       </Link>
-      
-      {/* 프로필 영역 */}
-      <Box 
-        sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 1 }}
-      >
-        <Avatar 
-            src={user?.profileImg ? `http://localhost:3010${user.profileImg}` : ''}
-            sx={{ backgroundColor: '#C4956A' }}
-        >
-            {!user?.profileImg && (user?.userNickname?.charAt(0) || '👤')}
-        </Avatar>
-        <Typography sx={{ color: '#7B4F2E', fontWeight: 'bold' }}>
-          {user?.userNickname || '닉네임'}
-        </Typography>
+
+      {/* 프로필 */}
+      <Box className={styles.profileBox}>
+          <AvatarItem
+              src={user?.profileImg}
+              nickname={user?.userNickname}
+              size={40}
+              onClick={() => navigate('/mypage')}
+          />
+          <Typography className={styles.profileNick}>
+              {user?.userNickname || '닉네임'}
+          </Typography>
       </Box>
 
-      <Divider sx={{ borderColor: '#E8D5B7' }} />
+      <Divider className={styles.divider}/>
+
       {/* 상단 메뉴 */}
       <List>
-        {topMenuItems.map((item) => (
-          <ListItemButton component={Link} to={item.path} key={item.text}
-            sx={{ '&:hover': { backgroundColor: '#F0E6D3' } }}>
-            <ListItemIcon sx={{ minWidth: 36 }}>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} sx={{ color: '#5C3D2E' }}/>
-            {item.text === '알림' && unreadCount > 0 && (
-              <Box sx={{
-                  backgroundColor: '#E53935', color: 'white',
-                  borderRadius: '50%', width: 20, height: 20,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '11px'
-              }}>
-                  {unreadCount > 99 ? '99+' : unreadCount}
-              </Box>
-          )}
-          </ListItemButton>
-        ))}
+          {topMenuItems.map((item) => (
+              <ListItemButton component={Link} to={item.path} key={item.text}
+                  className={styles.menuItem}>
+                  <ListItemIcon className={styles.menuIcon}>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} className={styles.menuText}/>
+                  {item.text === '알림' && unreadCount > 0 && (
+                      <Box className={styles.badge}>
+                          {unreadCount > 99 ? '99+' : unreadCount}
+                      </Box>
+                  )}
+                  {item.text === '나의 채팅방' && chatUnreadCount > 0 && (
+                      <Box className={styles.badge}>
+                          {chatUnreadCount > 99 ? '99+' : chatUnreadCount}
+                      </Box>
+                  )}
+              </ListItemButton>
+          ))}
       </List>
-      <Divider sx={{ borderColor: '#E8D5B7' }} />
-      {/* 검색창 */}
-      <Box sx={{ px: 2, py: 1 }}>
-        <TextField
-          fullWidth size="small" placeholder="검색"
-          InputProps={{
-            startAdornment: <Search sx={{ color: '#B08060', mr: 1 }} />
-          }}
-          sx={{ 
-            '& .MuiOutlinedInput-root': { borderRadius: 3 },
-            backgroundColor: '#F5F0E8'
-          }}
-        />
-      </Box>
+
+      <Divider className={styles.divider}/>
 
       {/* 마이페이지 */}
       <List>
-        <ListItemButton component={Link} to="/mypage"
-          sx={{ '&:hover': { backgroundColor: '#F0E6D3' } }}>
-          <ListItemIcon sx={{ minWidth: 36 }}>👤</ListItemIcon>
-          <ListItemText primary="마이페이지" sx={{ color: '#5C3D2E' }}/>
-        </ListItemButton>
+          <ListItemButton component={Link} to="/mypage" className={styles.menuItem}>
+              <ListItemIcon className={styles.menuIcon}>👤</ListItemIcon>
+              <ListItemText primary="마이페이지" className={styles.menuText}/>
+          </ListItemButton>
       </List>
-      <Divider sx={{ borderColor: '#E8D5B7' }} />
+
+      <Divider className={styles.divider}/>
 
       {/* 메뉴 목록 */}
       <List>
-        {menuItems.map((item) => (
-          <ListItemButton 
-            component={Link} 
-            to={item.path} 
-            key={item.text}
-            sx={{ '&:hover': { backgroundColor: '#F0E6D3' } }}
-          >
-            <ListItemIcon sx={{ minWidth: 36 }}>
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText 
-              primary={item.text} 
-              sx={{ color: '#5C3D2E' }}
-            />
-          </ListItemButton>
-        ))}
+          {menuItems.map((item) => (
+              <ListItemButton component={Link} to={item.path} key={item.text}
+                  className={styles.menuItem}>
+                  <ListItemIcon className={styles.menuIcon}>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} className={styles.menuText}/>
+              </ListItemButton>
+          ))}
       </List>
 
-      <Divider sx={{ borderColor: '#E8D5B7' }} />
+      <Divider className={styles.divider}/>
 
       {/* 로그아웃 */}
       <List>
-        <ListItemButton
-          component={Link} 
-          to="/"
-          sx={{ '&:hover': { backgroundColor: '#F0E6D3' } }}
-          onClick={handleLogout}
-        >
-          <ListItemText 
-            primary="로그아웃" 
-            sx={{ color: '#B08060' }}
-          />
-        </ListItemButton>
+          <ListItemButton component={Link} to="/" className={styles.menuItem}
+              onClick={handleLogout}>
+              <ListItemText primary="로그아웃" className={styles.logoutText}/>
+          </ListItemButton>
       </List>
-      
     </Drawer>
   );
-};
+}
 
 export default Menu;

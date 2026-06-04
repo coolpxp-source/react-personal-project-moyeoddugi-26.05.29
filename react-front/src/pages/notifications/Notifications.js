@@ -21,11 +21,16 @@ function Notifications() {
     const user = token ? jwtDecode(token) : null;
 
     const [notifications, setNotifications] = useState([]);
+    const [localUnreadCount, setLocalUnreadCount] = useState(0);
 
     useEffect(() => {
         const fetchAll = async () => {
             const data = await getNotifications(user?.userEmail);
-            if (data.list) setNotifications(data.list);
+            if (data.list) {
+                setNotifications(data.list);
+                // ▼ 안 읽은 수 초기값 설정
+                setLocalUnreadCount(data.list.filter(n => n.IS_READ === 'N').length);
+            }
         };
         fetchAll();
     }, []);
@@ -40,6 +45,8 @@ function Notifications() {
         setNotifications(prev =>
             prev.map(n => n.NOTI_ID === noti.NOTI_ID ? { ...n, IS_READ: 'Y' } : n)
         );
+        // ▼ 즉시 차감
+        setLocalUnreadCount(prev => Math.max(0, prev - 1));
         // 클릭 시 해당 페이지로 이동
         if (noti.TARGET_TYPE === 'POST') navigate('/posts');
         else if (noti.TARGET_TYPE === 'PATTERN') navigate(`/patterns/${noti.TARGET_ID}`);
@@ -59,7 +66,7 @@ function Notifications() {
             {notifications.length === 0 ? (
                 <Typography className={styles.empty}>알림이 없어요 🧶</Typography>
             ) : (
-                notifications.map(noti => (
+                notifications.filter(noti => noti.NOTI_TYPE !== 'CHAT').map(noti => (
                     <Box key={noti.NOTI_ID}
                         className={`${styles.notiItem} ${noti.IS_READ === 'N' ? styles.unread : ''}`}
                         onClick={() => handleClick(noti)}>

@@ -189,6 +189,8 @@ router.post('/showcase', uploadPost.array('images', 3), async (req, res) => {
         }
         const userId = userResult.rows[0][0];
 
+        
+
         const result = await connection.execute(
             `INSERT INTO POSTS (USER_ID, TITLE, CONTENT, BOARD_TYPE)
              VALUES (:userId, :title, :content, '작품자랑')
@@ -199,6 +201,11 @@ router.post('/showcase', uploadPost.array('images', 3), async (req, res) => {
             },
             { autoCommit: false }
         );
+
+        const nickResult = await connection.execute(
+            `SELECT NICKNAME FROM USERS WHERE USER_ID = :userId`, [Number(userId)]
+        );
+        const userNickname = nickResult.rows[0][0];
 
         const postId = result.outBinds.postId[0];
 
@@ -363,6 +370,12 @@ router.post('/', uploadPost.array('images', 3), async (req, res) => {
         }
         const userId = userResult.rows[0][0];
 
+        const nickResult = await connection.execute(
+            `SELECT NICKNAME FROM USERS WHERE USER_ID = :userId`,
+            [Number(userId)]
+        );
+        const userNickname = nickResult.rows[0][0];
+
         console.log('userId:', userId, typeof userId);
         console.log('boardType:', boardType, typeof boardType);
         console.log('title:', title, typeof title);
@@ -398,7 +411,45 @@ router.post('/', uploadPost.array('images', 3), async (req, res) => {
                 }
             );
         }
+        // ▼ 모여떠요 게시글이면 채팅방 자동 생성
+        if (boardType === '모여떠요') {
+            const inviteCode = Math.random().toString(36).substr(2, 8).toUpperCase();
+            // ▼ title 없으면 content 앞 20자로 대체
+            const roomName = (title && title.trim()) 
+                ? title.trim() 
+                : (content?.trim().slice(0, 20) || '모여뜨기 채팅방');
+            
+            await connection.execute(
+                `INSERT INTO CHAT_ROOMS (POST_ID, ROOM_NAME, MAX_MEMBERS, INVITE_CODE, ROOM_TYPE)
+                VALUES (:postId, :roomName, :maxMembers, :inviteCode, 'GROUP')`,
+                {
+                    postId: Number(postId),
+                    roomName,  // ← 수정
+                    maxMembers: 20,
+                    inviteCode
+                }
+            );
 
+            // 방장을 멤버로 자동 등록
+            const roomIdResult = await connection.execute(
+                `SELECT MAX(ROOM_ID) FROM CHAT_ROOMS WHERE POST_ID = :postId`,
+                [Number(postId)]
+            );
+            const roomId = roomIdResult.rows[0][0];
+
+            await connection.execute(
+                `UPDATE CHAT_MEMBERS SET LAST_READ_MESSAGE_ID = 0
+                WHERE ROOM_ID = :roomId AND USER_ID = :userId`,
+                [Number(roomId), Number(userId)]
+            );
+
+            await connection.execute(
+                `INSERT INTO CHAT_MESSAGES (ROOM_ID, USER_ID, CONTENT)
+                VALUES (:roomId, :userId, :content)`,
+                [Number(roomId), Number(userId), `${userNickname}님이 채팅방을 개설했어요 🧶`],
+            );
+        }
+        res.json({ result: true, roomId, message: '채팅방에 입장했어요!' });
         await connection.commit();
         res.json({ result: true, message: '게시글이 등록됐어요!' });
     } catch (error) {

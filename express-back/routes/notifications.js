@@ -58,7 +58,8 @@ router.get('/unread-count', async (req, res) => {
 
         const result = await connection.execute(
             `SELECT COUNT(*) AS CNT FROM NOTIFICATIONS
-             WHERE RECEIVER_ID = :userId AND IS_READ = 'N'`,
+            WHERE RECEIVER_ID = :userId AND IS_READ = 'N' 
+            AND NOTI_TYPE NOT IN ('CHAT')`,
             [userId],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );

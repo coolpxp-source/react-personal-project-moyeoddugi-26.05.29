@@ -16,6 +16,7 @@ const scrapsRouter = require('./routes/scraps');
 const followsRouter = require('./routes/follows');
 const notificationsRouter = require('./routes/notifications');
 const usersRouter = require('./routes/users');
+const chatRouter = require('./routes/chat');
 
 const db = require("./db");
 
@@ -39,6 +40,7 @@ app.use('/api/scraps', scrapsRouter);
 app.use('/api/follows', followsRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/chat', chatRouter);
 
 async function startServer() {
   try {

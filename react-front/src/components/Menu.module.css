@@ -1,0 +1,87 @@
+.drawerPaper {
+    width: 320px !important;
+    box-sizing: border-box !important;
+    background-color: #FAF6F0 !important;
+    border-right: 1px solid #E8D5B7 !important;
+}
+
+.logoLink {
+    display: flex;
+    justify-content: center;
+    padding: 12px;
+}
+
+.logoImg {
+    width: 120px;
+}
+
+.profileBox {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.profileNick {
+    color: #7B4F2E !important;
+    font-weight: bold !important;
+}
+
+.divider {
+    border-color: #E8D5B7 !important;
+}
+
+.menuItem {
+    transition: background-color 0.15s !important;
+}
+
+.menuItem:hover {
+    background-color: #F0E6D3 !important;
+}
+
+.menuIcon {
+    min-width: 36px !important;
+}
+
+.menuText span {
+    color: #5C3D2E;
+    font-size: 14px;
+}
+
+.logoutText span {
+    color: #B08060;
+    font-size: 14px;
+}
+
+.badge {
+    background-color: #E53935;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.searchBox {
+    padding: 8px 16px;
+}
+
+.searchInput {
+    background-color: #F5F0E8;
+}
+
+.searchInput :global(.MuiOutlinedInput-root) {
+    border-radius: 12px;
+}
+
+.searchIcon {
+    color: #B08060;
+    margin-right: 8px;
+    font-size: 18px !important;
+}

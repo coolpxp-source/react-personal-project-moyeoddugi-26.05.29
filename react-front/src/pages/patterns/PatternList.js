@@ -34,7 +34,7 @@ function PatternList() {
     const [likes, setLikes] = useState({});
     const [page, setPage] = useState(1);
     const PER_PAGE = 6;
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const fetchPatterns = async () => {
         const data = await getPatterns(
             needleType,
@@ -47,7 +47,7 @@ function PatternList() {
     useEffect(() => {
         fetchPatterns();
         setPage(1);
-    }, [needleType, difficulty, category, needleType]);
+    }, [needleType, difficulty, category]);
 
     // 좋아요 조회
     useEffect(() => {
@@ -64,7 +64,7 @@ function PatternList() {
             }));
         };
         fetchLikes();
-    }, [patterns.length]);
+    }, [patterns.length, user?.userEmail]);
 
     const handleLike = async (e, patternId) => {
         e.stopPropagation();
@@ -171,8 +171,7 @@ function PatternList() {
                                                 onClick={(e) => { e.stopPropagation(); navigate(`/user/${pattern.USER_ID}`); }}
                                             />
                                             <Typography className={styles.cardNick}
-                                                onClick={(e) => { e.stopPropagation(); navigate(`/user/${pattern.USER_ID}`); }}
-                                                style={{ cursor: 'pointer' }}>
+                                                onClick={(e) => { e.stopPropagation(); navigate(`/user/${pattern.USER_ID}`); }}>
                                                 {pattern.NICKNAME}
                                             </Typography>
                                             <Typography className={styles.cardDate}>
@@ -207,8 +206,8 @@ function PatternList() {
                                             <Box className={styles.footerItem}
                                                 onClick={(e) => handleLike(e, pattern.PATTERN_ID)}>
                                                 {likes[pattern.PATTERN_ID]?.liked
-                                                    ? <Favorite sx={{ fontSize: 14, color: '#E0A0A0' }}/>
-                                                    : <FavoriteBorder sx={{ fontSize: 14, color: '#E0A0A0' }}/>
+                                                    ? <Favorite className={styles.likeIcon}/>
+                                                    : <FavoriteBorder className={styles.likeIcon}/>
                                                 }
                                                 <Typography className={styles.footerText}>
                                                     {likes[pattern.PATTERN_ID]?.count || 0}

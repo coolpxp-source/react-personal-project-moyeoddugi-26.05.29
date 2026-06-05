@@ -1,4 +1,4 @@
-import { Box, TextField, Button, Typography, Paper } from '@mui/material';
+import { Box, TextField, Button, Typography } from '@mui/material';
 import React, { useState } from "react";
 import { useNavigate , Link } from "react-router-dom";
 import { register } from '../../api/auth';
@@ -76,7 +76,6 @@ function Register(){
     };
 
     const handleSubmit = async() => {
-        // TODO: 회원가입 API 연결
         // 빈 값 검사
         if(!form.email || !form.password || !form.userName || !form.nickname){
             alert('모든 항목을 입력해주세요.');
@@ -141,7 +140,7 @@ function Register(){
                     <TextField
                     fullWidth label="이메일" name="email"
                     value={form.email} onChange={handleChange}
-                    sx={{ mb: 2 }}
+                    className={styles.field}
                     autoComplete="off"
                     error={!!errors.email}
                     helperText={errors.email}
@@ -149,21 +148,21 @@ function Register(){
                     <TextField
                     fullWidth label="이름" name="userName"
                     value={form.userName} onChange={handleChange}
-                    sx={{ mb: 2 }}
+                    className={styles.field}
                     error={!!errors.userName}
                     helperText={errors.userName}
                     />
                     <TextField
                     fullWidth label="닉네임" name="nickname"
                     value={form.nickname} onChange={handleChange}
-                    sx={{ mb: 2 }}
+                    className={styles.field}
                     error={!!errors.nickname}
                     helperText={errors.nickname || `${form.nickname.length}/8`}
                     />
                     <TextField
                     fullWidth label="비밀번호" name="password"
                     type="password" value={form.password} onChange={handleChange}
-                    sx={{ mb: 2 }}
+                    className={styles.field}
                     autoComplete="new-password"
                     error={!!errors.password}
                     helperText={errors.password}
@@ -171,7 +170,7 @@ function Register(){
                     <TextField
                     fullWidth label="비밀번호 확인" name="passwordCheck"
                     type="password" value={form.passwordCheck} onChange={handleChange}
-                    sx={{ mb: 3 }}
+                    className={styles.fieldLast }
                     autoComplete="new-password"
                     error={!!errors.passwordCheck}
                     helperText={errors.passwordCheck}

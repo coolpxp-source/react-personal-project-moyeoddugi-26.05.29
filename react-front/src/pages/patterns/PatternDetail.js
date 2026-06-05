@@ -48,6 +48,7 @@ function PatternDetail() {
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState({});
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         const fetchAll = async () => {
             const data = await getPattern(id);
@@ -62,7 +63,6 @@ function PatternDetail() {
                 setLiked(likeData.liked);
                 setLikeCount(likeData.count);
             }
-
             const commentData = await getComments('PATTERN', id);
             if (commentData.list) setComments(commentData.list);
 
@@ -75,7 +75,7 @@ function PatternDetail() {
             }
         };
         fetchAll();
-    }, [id]);
+    }, [id,user?.userEmail]);
 
     const handleLike = async () => {
         const data = await toggleLike(user?.userEmail, 'PATTERN', id);
@@ -186,8 +186,10 @@ function PatternDetail() {
             method: 'DELETE',
         });
         const data = await res.json();
-        alert('삭제 됐어요! 🧶');
-        if (data.result) navigate('/patterns');
+        if (data.result) {
+            alert('삭제됐어요! 🧶');
+            navigate('/patterns');
+        }
     };
 
     return (
@@ -231,8 +233,8 @@ function PatternDetail() {
                             <Button variant="contained" className={styles.likeBtn}
                                 onClick={handleLike}
                                 startIcon={liked
-                                    ? <Favorite sx={{ fontSize: 16 }}/>
-                                    : <FavoriteBorder sx={{ fontSize: 16 }}/>
+                                    ? <Favorite className={styles.likeIconSm}/>
+                                    : <FavoriteBorder className={styles.likeIconSm}/>
                                 }
                                 style={{ backgroundColor: liked ? '#E0A0A0' : '#EDE0C8', color: 'white' }}>
                                 좋아요 {likeCount}
@@ -271,8 +273,7 @@ function PatternDetail() {
                                 onClick={() => navigate(`/user/${pattern.USER_ID}`)}
                             />
                             <Typography className={styles.nickname}
-                                onClick={() => navigate(`/user/${pattern.USER_ID}`)}
-                                style={{ cursor: 'pointer' }}>
+                                onClick={() => navigate(`/user/${pattern.USER_ID}`)}>
                                 {pattern.NICKNAME}
                             </Typography>
                             <Typography className={styles.date}>
@@ -357,7 +358,7 @@ function PatternDetail() {
                                 <Box className={styles.tagRow}>
                                     {tags.map((tag, idx) => (
                                         <Chip key={idx} label={tag} size="small"
-                                            style={{ backgroundColor: '#F5EDD8', color: '#7B4F2E', fontSize: 11 }}
+                                            className={styles.tagChip}
                                         />
                                     ))}
                                 </Box>
@@ -426,7 +427,7 @@ function PatternDetail() {
                                                             nickname={reply.NICKNAME}
                                                             size={20}
                                                         />
-                                                        <Box sx={{ flex: 1 }}>
+                                                        <Box className={styles.replyBody}>
                                                             <Box className={styles.commentHeader}>
                                                                 <Typography className={styles.commentNick}>{reply.NICKNAME}</Typography>
                                                                 <Typography className={styles.commentDate}>

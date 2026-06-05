@@ -1,60 +1,36 @@
+/* ===== 전체 컨테이너 ===== */
 .container {
     display: flex;
     flex-direction: row;
-    height: 100vh;        /* min-height 대신 height */
+    height: 100vh;
     width: 100%;
     background-image: url('../../../public/images/back3.jpg');
     background-size: cover;
     background-position: center;
-    position: fixed;      /* 화면에 고정 */
-    top: 0;
-    left: 0;
+    position: fixed;
+    top: 0; left: 0;
 }
 
-/* 왼쪽 이미지 영역 */
+/* ===== 왼쪽 배경 이미지 영역 ===== */
 .leftSection {
     flex: 1;
     min-height: 100vh;
 }
 
-/* 이미지 위에 로고 올리기 */
-.overlay {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-}
-
-.logoArea {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 16px;
-}
-
-.logoImg {
-    width: 220px;
-}
-
-.logoSub {
-    color: #B08060 !important;
-}
-
-/* 오른쪽 폼 영역 */
+/* ===== 오른쪽 로그인 폼 영역 ===== */
 .rightSection {
     width: 550px;
-    height: 100vh;        /* min-height 대신 height */
-    overflow-y: auto;     /* 내용 많으면 스크롤 */
+    height: 100vh;
+    overflow-y: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.75); /* 반투명 흰색 */
-    backdrop-filter: blur(8px);                   /* 뒤 배경 흐릿하게 */
+    background-color: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(8px);
     border-left: 1px solid #EEE5D6;
 }
 
-/* Paper 없애고 바로 폼 */
+/* 폼 래퍼 */
 .formWrap {
     width: 320px;
     display: flex;
@@ -62,31 +38,31 @@
     gap: 12px;
 }
 
-.title {
-  text-align: center;
-  color: #7B4F2E;
-  font-weight: bold;
-  margin-bottom: 8px;
+/* ===== 로고 ===== */
+.logoArea {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
 }
 
-.subTitle {
-  text-align: center;
-  color: #B08060;
-  margin-bottom: 24px;
-}
+.logoImg { width: 220px; }
 
+/* ===== 로그인 버튼 ===== */
 .button {
-  background-color: #7B4F2E !important;
-  margin-bottom: 16px !important;
+    background-color: #7B4F2E !important;
+    margin-bottom: 16px !important;
 }
 
-.button:hover {
-  background-color: #5C3D2E !important;
+.button:hover { background-color: #5C3D2E !important; }
+
+/* ===== 링크/구분선 ===== */
+.subTitle {
+    text-align: center;
+    color: #B08060;
+    margin-bottom: 24px;
 }
 
-.link {
-  color: #7B4F2E;
-}
+.link { color: #7B4F2E; }
 
 .divider {
     text-align: center;
@@ -94,7 +70,7 @@
     margin: 16px 0;
 }
 
-/* 구글 버튼 (MUI Button) */
+/* ===== 소셜 로그인 버튼 ===== */
 .socialButton {
     margin-bottom: 8px !important;
     border-color: #C4956A !important;
@@ -127,7 +103,7 @@
     transform: scale(1.02);
 }
 
-/* 새 계정 만들기 */
+/* 새 계정 만들기 버튼 */
 .newAccountButton {
     border-color: #7B4F2E !important;
     color: #7B4F2E !important;

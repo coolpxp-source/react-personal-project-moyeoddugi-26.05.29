@@ -1,7 +1,8 @@
+/* ===== 전체 컨테이너 ===== */
 .container {
     display: flex;
     flex-direction: column;
-    padding: 16px 406px 24px 32px;
+    padding: 16px 406px 24px 20px;
     height: 100%;
     overflow-y: auto;
     background-color: #FAF6F0;
@@ -14,6 +15,7 @@
     color: #B08060 !important;
 }
 
+/* ===== 프로필 카드 ===== */
 .profileCard {
     background-color: #ffffff;
     border: 1px solid #E8D5B7;
@@ -54,6 +56,13 @@
     gap: 12px;
 }
 
+/* 팔로우/DM 버튼 행 */
+.btnRow {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
 .followBtn {
     background-color: #7B4F2E !important;
     border-radius: 20px !important;
@@ -75,6 +84,19 @@
     font-size: 12px !important;
 }
 
+.dmBtn {
+    border: 1px solid #E8D5B7 !important;
+    color: #7B4F2E !important;
+    font-size: 13px !important;
+    padding: 6px 16px !important;
+    border-radius: 20px !important;
+    cursor: pointer;
+    background: none !important;
+}
+
+.dmBtn:hover { background-color: #F5EDD8 !important; }
+
+/* 팔로워/팔로잉/도안 통계 */
 .statsRow {
     display: flex;
     gap: 24px;
@@ -98,6 +120,7 @@
     color: #B08060 !important;
 }
 
+/* ===== 탭 ===== */
 .tabs {
     background-color: #ffffff !important;
     border-bottom: 1px solid #E8D5B7 !important;
@@ -109,7 +132,7 @@
     font-size: 13px !important;
 }
 
-/* 도안 그리드 */
+/* ===== 도안 그리드 ===== */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -153,11 +176,10 @@
     color: #B08060 !important;
 }
 
+/* 카드 하단 오버레이 */
 .cardOverlay {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0; left: 0; right: 0;
     background-color: rgba(255,255,255,0.88);
     padding: 10px 12px;
     display: flex;
@@ -176,6 +198,17 @@
     display: flex;
     gap: 4px;
     flex-wrap: wrap;
+}
+
+.cardMeta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.cardNick {
+    font-size: 11px !important;
+    color: #7B4F2E !important;
 }
 
 .cardFooter {
@@ -212,7 +245,7 @@
     grid-column: 1 / -1;
 }
 
-/* 게시글 목록 */
+/* ===== 게시글 목록 ===== */
 .postList {
     display: flex;
     flex-direction: column;
@@ -265,6 +298,52 @@
     color: #B08060 !important;
 }
 
+/* 게시글 이미지 그리드 — 높이는 JS에서 동적으로 지정 */
+.postImgGrid {
+    display: grid;
+    gap: 4px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.postImgItem {
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+}
+
+/* ===== 스크랩 탭 ===== */
+.sectionTitle {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    padding: 8px 0;
+    border-bottom: 1px solid #F5EDD8;
+    margin-bottom: 12px !important;
+}
+
+/* 스크랩 게시글 섹션 상단 여백 */
+.sectionTitleMargin {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    padding: 8px 0;
+    border-bottom: 1px solid #F5EDD8;
+    margin-bottom: 12px !important;
+    margin-top: 16px !important;
+}
+
+.moreBtn {
+    color: #7B4F2E !important;
+    font-size: 12px !important;
+    padding: 4px 0 !important;
+    display: block !important;
+    margin: 8px auto 0 !important;
+}
+
+/* ===== 팔로잉 새 소식 탭 ===== */
 .newsSection {
     background-color: #ffffff;
     border: 1px solid #E8D5B7;
@@ -328,56 +407,4 @@
 .newsDate {
     font-size: 11px !important;
     color: #B08060 !important;
-}
-
-.postImgGrid {
-    display: grid;
-    gap: 4px;
-    border-radius: 12px;
-    overflow: hidden;
-    margin-top: 4px;
-}
-
-.postImgItem {
-    width: 100%;
-    object-fit: cover;
-    display: block;
-    cursor: pointer;
-}
-
-.sectionTitle {
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    color: #3D2B1A !important;
-    padding: 8px 0;
-    border-bottom: 1px solid #F5EDD8;
-    margin-bottom: 12px !important;
-}
-
-.moreBtn {
-    color: #7B4F2E !important;
-    font-size: 12px !important;
-    padding: 4px 0 !important;
-    display: block !important;
-    margin: 8px auto 0 !important;
-}
-
-.dmBtn {
-    border: 1px solid #E8D5B7 !important;
-    color: #7B4F2E !important;
-    font-size: 13px !important;
-    padding: 6px 16px !important;
-    border-radius: 20px !important;
-    cursor: pointer;
-    background: none !important;
-}
-
-.dmBtn:hover {
-    background-color: #F5EDD8 !important;
-
-    .btnRow {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
 }

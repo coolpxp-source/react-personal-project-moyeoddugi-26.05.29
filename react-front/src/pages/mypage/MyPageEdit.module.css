@@ -1,3 +1,4 @@
+/* ===== 전체 컨테이너 ===== */
 .container {
     display: flex;
     flex-direction: column;
@@ -10,6 +11,7 @@
     box-sizing: border-box;
 }
 
+/* ===== 카드 ===== */
 .card {
     background-color: #ffffff;
     border: 1px solid #E8D5B7;
@@ -28,6 +30,7 @@
     color: #3D2B1A !important;
 }
 
+/* ===== 프로필 이미지 ===== */
 .imageSection {
     display: flex;
     justify-content: center;
@@ -50,11 +53,10 @@
     border-radius: 50%;
 }
 
+/* 이미지 위 변경 오버레이 */
 .avatarOverlay {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0; left: 0; right: 0;
     background-color: rgba(0,0,0,0.4);
     display: flex;
     align-items: center;
@@ -67,6 +69,7 @@
     color: white !important;
 }
 
+/* 기본 아바타 (이미지 없을 때) */
 .avatarDefault {
     width: 80px;
     height: 80px;
@@ -83,6 +86,7 @@
     font-weight: 500 !important;
 }
 
+/* ===== 입력 필드 ===== */
 .field {
     display: flex;
     flex-direction: column;
@@ -95,6 +99,7 @@
     color: #5C3D2E !important;
 }
 
+/* ===== 버튼 행 ===== */
 .btnRow {
     display: flex;
     justify-content: flex-end;
@@ -113,3 +118,6 @@
 }
 
 .submitBtn:hover { background-color: #5C3D2E !important; }
+
+/* 숨김 input (파일 업로드용) */
+.hiddenInput { display: none; }

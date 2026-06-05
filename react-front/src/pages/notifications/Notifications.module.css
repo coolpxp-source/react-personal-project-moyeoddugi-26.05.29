@@ -1,13 +1,15 @@
+/* ===== 전체 컨테이너 ===== */
 .container {
     display: flex;
     flex-direction: column;
-    padding: 16px 406px 24px 32px;
+    padding: 16px 406px 24px 20px;
     height: 100%;
     overflow-y: auto;
     background-color: #FAF6F0;
     gap: 8px;
 }
 
+/* ===== 헤더 (타이틀 + 전체 읽음 버튼) ===== */
 .header {
     display: flex;
     align-items: center;
@@ -31,6 +33,7 @@
     color: #B08060 !important;
 }
 
+/* ===== 알림 아이템 ===== */
 .notiItem {
     display: flex;
     align-items: center;
@@ -46,6 +49,7 @@
 
 .notiItem:hover { background-color: #FDFAF6; }
 
+/* 읽지 않은 알림 배경색 */
 .unread { background-color: #FFF8F0 !important; }
 
 .notiLeft {
@@ -74,6 +78,7 @@
     color: #B08060 !important;
 }
 
+/* 읽지 않은 알림 빨간 점 */
 .unreadDot {
     width: 8px;
     height: 8px;

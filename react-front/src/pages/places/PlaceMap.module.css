@@ -1,12 +1,14 @@
+/* ===== 전체 컨테이너 ===== */
 .container {
     display: flex;
     flex-direction: column;
     height: 100%;
     background-color: #FAF6F0;
     overflow: auto;
-    padding: 16px 406px 16px 40px;  /* ← 오른쪽 배너 너비만큼 */
+    padding: 16px 406px 16px 20px;
 }
 
+/* ===== 필터 영역 ===== */
 .filterRow {
     display: flex;
     flex-direction: column;
@@ -17,22 +19,61 @@
     border-radius: 15px;
 }
 
+.filterGroup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filterLabel {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #5C3D2E !important;
+    white-space: nowrap;
+}
+
+/* 허용 여부 칩 */
 .statusChips {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
 }
 
+/* 시설 태그 칩 */
 .tagChips {
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
 }
 
+/* ===== 검색창 ===== */
 .searchRow {
     display: flex;
     gap: 8px;
     align-items: center;
+}
+
+.searchWrapper {
+    position: relative;
+    flex: 1;
+}
+
+.searchInput :global(.MuiOutlinedInput-root) {
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-size: 13px;
+    color: #3D2B1A;
+}
+
+.searchInput :global(.MuiOutlinedInput-root fieldset) { border-color: #E8D5B7; }
+.searchInput :global(.MuiOutlinedInput-root:hover fieldset) { border-color: #E8D5B7; }
+.searchInput :global(.MuiOutlinedInput-root.Mui-focused fieldset) { border-color: #C4956A; }
+.searchInput :global(input::placeholder) { color: #B08060; opacity: 1; }
+
+.searchIcon {
+    color: #B08060 !important;
+    font-size: 16px !important;
 }
 
 .searchBtn {
@@ -43,40 +84,11 @@
 
 .searchBtn:hover { background-color: #5C3D2E !important; }
 
-.searchInput :global(.MuiOutlinedInput-root) {
-    border-radius: 20px;
-    background-color: #ffffff;
-    font-size: 13px;
-    color: #3D2B1A;
-}
-
-.searchInput :global(.MuiOutlinedInput-root fieldset) {
-    border-color: #E8D5B7;
-}
-
-.searchInput :global(.MuiOutlinedInput-root:hover fieldset) {
-    border-color: #E8D5B7;
-}
-
-.searchInput :global(.MuiOutlinedInput-root.Mui-focused fieldset) {
-    border-color: #C4956A;
-}
-
-.searchInput :global(input::placeholder) {
-    color: #B08060;
-    opacity: 1;
-}
-
-.searchWrapper {
-    position: relative;
-    flex: 1;
-}
-
+/* 검색 미리보기 드롭다운 */
 .searchDropdown {
     position: absolute;
     top: 100%;
-    left: 0;
-    right: 0;
+    left: 0; right: 0;
     background-color: #ffffff;
     border: 1px solid #E8D5B7;
     border-radius: 8px;
@@ -92,7 +104,6 @@
 }
 
 .searchDropdownItem:last-child { border-bottom: none; }
-
 .searchDropdownItem:hover { background-color: #FAF6F0; }
 
 .dropdownName {
@@ -106,13 +117,14 @@
     color: #B08060 !important;
 }
 
+/* ===== 지도 레이아웃 ===== */
 .mapLayout {
     display: flex;
     flex: 1;
     overflow: visible;
     padding: 16px;
     gap: 16px;
-    min-height: 0; /* ▼ 추가: flex 자식이 부모 높이 넘치지 않게 */
+    min-height: 0;
 }
 
 .mapArea {
@@ -120,21 +132,21 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 0; /* ▼ 추가 */
+    min-height: 0;
 }
 
-/* ▼ 수정: 지도가 남은 공간 꽉 채우게 */
 .map {
     width: 100%;
     flex: 1;
     border-radius: 12px;
     border: 1px solid #E8D5B7;
-    min-height: 500px; /* ▼ 수정 */
+    min-height: 500px;
 }
 
+/* 범례 */
 .legend {
     position: absolute;
-    bottom: 10px;   /* 버튼 위 */
+    bottom: 10px;
     left: 12px;
     display: flex;
     gap: 12px;
@@ -161,11 +173,10 @@
     color: #7B4F2E !important;
 }
 
-/* ▼ 수정: 버튼 지도 안 오른쪽 하단으로 */
+/* 카페 제보하기 버튼 (지도 우측 하단 고정) */
 .reportBtn {
     position: absolute !important;
-    bottom: 12px;
-    right: 12px;
+    bottom: 12px; right: 12px;
     background-color: #7B4F2E !important;
     border-radius: 20px !important;
     z-index: 1;
@@ -174,6 +185,7 @@
 
 .reportBtn:hover { background-color: #5C3D2E !important; }
 
+/* ===== 장소 상세 패널 ===== */
 .placeDetail {
     width: 240px;
     background-color: #ffffff;
@@ -183,8 +195,8 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: calc(100vh - 200px); /* ▼ 추가 */
-    overflow-y: auto;                /* ▼ 추가 */
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
 }
 
 .placeName {
@@ -198,6 +210,7 @@
     color: #B08060 !important;
 }
 
+/* 시설 태그 */
 .tagRow {
     display: flex;
     flex-wrap: wrap;
@@ -210,6 +223,7 @@
     font-size: 10px !important;
 }
 
+/* 닫기 버튼 */
 .closeBtn {
     color: #B08060 !important;
     font-size: 12px !important;
@@ -217,83 +231,7 @@
     flex: 1 !important;
 }
 
-/* 추천 섹션 */
-.recommendSection {
-    padding: 16px;
-    background-color: #FAF6F0;
-    border-top: 1px solid #E8D5B7;
-}
-
-.recommendTitle {
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    color: #3D2B1A !important;
-    margin-bottom: 12px !important;
-}
-
-.recommendCards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-}
-
-.recommendCard {
-    background-color: #ffffff;
-    border: 1px solid #E8D5B7;
-    border-radius: 12px;
-    padding: 12px;
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.recommendCard:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.recommendCardHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-}
-
-.recommendName {
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: #3D2B1A !important;
-}
-
-.recommendAddress {
-    font-size: 11px !important;
-    color: #B08060 !important;
-}
-
-.recommendTags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: 4px;
-}
-
-.filterGroup {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.filterLabel {
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    color: #5C3D2E !important;
-    white-space: nowrap;
-}
-
-/* 리뷰 */
+/* ===== 리뷰 섹션 ===== */
 .reviewSection {
     border-top: 1px solid #E8D5B7;
     padding-top: 12px;
@@ -355,6 +293,7 @@
     margin-left: auto !important;
 }
 
+/* 리뷰 작성 */
 .reviewInputSection {
     border-top: 1px solid #E8D5B7;
     padding-top: 12px;
@@ -374,6 +313,13 @@
     gap: 6px;
 }
 
+/* 리뷰 버튼 행 (닫기 + 등록) */
+.reviewBtnRow {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
 .reviewSubmitBtn {
     background-color: #7B4F2E !important;
     white-space: nowrap;
@@ -382,3 +328,67 @@
 }
 
 .reviewSubmitBtn:hover { background-color: #5C3D2E !important; }
+
+.flex1 { flex: 1 !important; }
+
+/* ===== 추천 카페 섹션 ===== */
+.recommendSection {
+    padding: 16px;
+    background-color: #FAF6F0;
+    border-top: 1px solid #E8D5B7;
+}
+
+.recommendTitle {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    margin-bottom: 12px !important;
+}
+
+.recommendCards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.recommendCard {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.recommendCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.recommendCardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.recommendName {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.recommendAddress {
+    font-size: 11px !important;
+    color: #B08060 !important;
+}
+
+.recommendTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+}

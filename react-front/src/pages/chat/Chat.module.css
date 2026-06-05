@@ -1,4 +1,4 @@
-/* 채팅 전체 컨테이너 */
+/* ===== 전체 컨테이너 ===== */
 .container {
     display: flex;
     height: 100%;
@@ -7,7 +7,7 @@
     gap: 0;
 }
 
-/* 좌측 채팅방 목록 */
+/* ===== 좌측 채팅방 목록 ===== */
 .roomList {
     width: 350px;
     flex-shrink: 0;
@@ -33,6 +33,7 @@
     color: #3D2B1A !important;
 }
 
+/* + 참여 버튼 */
 .joinBtn {
     background-color: #7B4F2E;
     border: none;
@@ -49,6 +50,7 @@
 
 .joinBtn:hover { background-color: #5C3D2E; }
 
+/* 초대 코드 입력창 */
 .inviteBox {
     display: flex;
     gap: 6px;
@@ -77,6 +79,49 @@
     cursor: pointer;
 }
 
+/* 모임/DM 탭 */
+.tabRow {
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px;
+    border-bottom: 1px solid #F5EDD8;
+}
+
+.tabBtn {
+    flex: 1;
+    background: none;
+    border: 1px solid #E8D5B7;
+    border-radius: 20px;
+    padding: 6px 0;
+    font-size: 12px;
+    color: #B08060;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.tabBtnActive {
+    background-color: #7B4F2E !important;
+    border-color: #7B4F2E !important;
+    color: white !important;
+}
+
+/* 탭 미읽음 뱃지 */
+.tabBadge {
+    background-color: #E53935;
+    color: white;
+    border-radius: 10px;
+    padding: 1px 5px;
+    font-size: 10px;
+    font-weight: 600;
+    min-width: 14px;
+    text-align: center;
+    line-height: 1.4;
+}
+
 .emptyRoom {
     font-size: 12px !important;
     color: #B08060 !important;
@@ -84,6 +129,7 @@
     padding: 40px 16px !important;
 }
 
+/* 채팅방 목록 아이템 */
 .roomItem {
     display: flex;
     gap: 8px;
@@ -139,7 +185,19 @@
     color: #B08060 !important;
 }
 
-/* 우측 채팅창 */
+/* 미읽음 뱃지 */
+.unreadBadge {
+    background-color: #E53935;
+    color: white;
+    border-radius: 10px;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    min-width: 16px;
+    text-align: center;
+}
+
+/* ===== 우측 채팅창 ===== */
 .chatArea {
     flex: 1;
     display: flex;
@@ -149,6 +207,7 @@
     border-right: 1px solid #E8D5B7;
 }
 
+/* 채팅방 헤더 */
 .chatHeader {
     display: flex;
     align-items: center;
@@ -195,6 +254,7 @@
     gap: -4px;
 }
 
+/* 초대 코드 버튼 (DM방에선 숨김) */
 .inviteCodeBtn {
     background-color: #F5EDD8;
     border: none;
@@ -215,7 +275,7 @@
     cursor: pointer;
 }
 
-/* 메시지 목록 */
+/* ===== 메시지 목록 ===== */
 .messageList {
     flex: 1;
     overflow-y: auto;
@@ -226,6 +286,7 @@
     background-color: #FAF6F0;
 }
 
+/* 날짜 구분선 */
 .dateDivider {
     display: flex;
     justify-content: center;
@@ -240,15 +301,29 @@
     border-radius: 12px;
 }
 
+/* 시스템 메시지 (입장/퇴장) */
+.systemMessage {
+    display: flex;
+    justify-content: center;
+    padding: 4px 0;
+}
+
+.systemMessageText {
+    font-size: 11px !important;
+    color: #B08060 !important;
+    background-color: #EDE0C8;
+    padding: 2px 12px;
+    border-radius: 12px;
+}
+
+/* 메시지 버블 */
 .messageItem {
     display: flex;
     gap: 8px;
     align-items: flex-end;
 }
 
-.messageItemMe {
-    flex-direction: row-reverse;
-}
+.messageItemMe { flex-direction: row-reverse; }
 
 .messageBubbleWrap {
     display: flex;
@@ -294,9 +369,7 @@
     word-break: break-word !important;
 }
 
-.messageBubbleMe .messageText {
-    color: white !important;
-}
+.messageBubbleMe .messageText { color: white !important; }
 
 .messageTime {
     font-size: 10px !important;
@@ -305,7 +378,7 @@
     flex-shrink: 0;
 }
 
-/* 메시지 입력 */
+/* ===== 메시지 입력창 ===== */
 .messageInput {
     display: flex;
     gap: 8px;
@@ -342,6 +415,7 @@
 
 .sendBtn:hover { background-color: #5C3D2E; }
 
+/* ===== 채팅방 미선택 상태 ===== */
 .emptyChat {
     flex: 1;
     display: flex;
@@ -352,101 +426,4 @@
 .emptyChatText {
     font-size: 14px !important;
     color: #B08060 !important;
-}
-
-.systemMessage {
-    display: flex;
-    justify-content: center;
-    padding: 4px 0;
-}
-
-.systemMessageText {
-    font-size: 11px !important;
-    color: #B08060 !important;
-    background-color: #EDE0C8;
-    padding: 2px 12px;
-    border-radius: 12px;
-}
-
-.roomItemBottom {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.unreadBadge {
-    background-color: #E53935;
-    color: white;
-    border-radius: 10px;
-    padding: 1px 6px;
-    font-size: 10px;
-    font-weight: 600;
-    min-width: 16px;
-    text-align: center;
-}
-
-.tabRow {
-    display: flex;
-    gap: 8px;
-    padding: 8px 16px;
-    border-bottom: 1px solid #F5EDD8;
-}
-
-.tabBtn {
-    flex: 1;
-    background: none;
-    border: 1px solid #E8D5B7;
-    border-radius: 20px;
-    padding: 6px 0;
-    font-size: 12px;
-    color: #B08060;
-    cursor: pointer;
-}
-
-.tabBtnActive {
-    background-color: #7B4F2E !important; /* ← !important 추가 */
-    border-color: #7B4F2E !important;
-    color: white !important;
-}
-
-.dmBtn {
-    background: none;
-    border: 1px solid #E8D5B7;
-    color: #7B4F2E;
-    font-size: 13px;
-    padding: 6px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-}
-
-.dmBtn:hover {
-    background-color: #F5EDD8;
-}
-
-.tabBtn {
-    flex: 1;
-    background: none;
-    border: 1px solid #E8D5B7;
-    border-radius: 20px;
-    padding: 6px 0;
-    font-size: 12px;
-    color: #B08060;
-    cursor: pointer;
-    position: relative;      /* ← 추가 */
-    display: flex;            /* ← 추가 */
-    align-items: center;      /* ← 추가 */
-    justify-content: center;  /* ← 추가 */
-    gap: 4px;                 /* ← 추가 */
-}
-
-.tabBadge {
-    background-color: #E53935;
-    color: white;
-    border-radius: 10px;
-    padding: 1px 5px;
-    font-size: 10px;
-    font-weight: 600;
-    min-width: 14px;
-    text-align: center;
-    line-height: 1.4;
 }

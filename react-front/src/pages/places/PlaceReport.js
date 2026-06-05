@@ -200,7 +200,7 @@ function PlaceReport() {
                         )}
                     </Box>
                     <input id="imageInput" type="file" accept="image/*"
-                        style={{ display: 'none' }}
+                        className={styles.hiddenInput}
                         onChange={handleImageChange}
                     />
                 </Box>

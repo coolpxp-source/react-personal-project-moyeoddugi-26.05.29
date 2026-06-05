@@ -7,7 +7,6 @@ import styles from './PatternWrite.module.css';
 
 const NEEDLE_TYPES = ['코바늘', '대바늘'];
 const DIFFICULTIES = ['입문', '초급', '중급', '고급'];
-const CATEGORIES = ['소품', '가방', '모자', '의류', '인형', '선물용', '기타'];
 const PRESET_TAGS = ['소품', '가방', '모자', '의류', '인형', '선물용'];
 
 
@@ -223,7 +222,7 @@ function PatternWrite() {
                         )}
                     </Box>
                     <input id="patternImage" type="file" accept="image/*" multiple
-                        style={{ display: 'none' }} onChange={handleImageChange}
+                        className={styles.hiddenInput} onChange={handleImageChange}
                     />
                 </Box>
 
@@ -272,10 +271,7 @@ function PatternWrite() {
                                 {form.tags.map(tag => (
                                     <Chip key={tag} label={`#${tag}`} size="small"
                                         onDelete={() => removeTag(tag)}
-                                        style={{
-                                            backgroundColor: '#F5EDD8',
-                                            color: '#7B4F2E',
-                                        }}
+                                        className={styles.selectedTagChip}
                                     />
                                 ))}
                             </Box>

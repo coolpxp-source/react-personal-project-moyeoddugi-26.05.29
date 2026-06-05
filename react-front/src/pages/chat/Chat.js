@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { getMyChatRooms, getChatRoom, getMessages, sendMessage, joinChatRoom, leaveChatRoom, markAsRead } from '../../api/chat';
@@ -115,6 +115,7 @@ function Chat() {
     };
 
     // 채팅방 나가기
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleLeave = async () => {
         if (!window.confirm('채팅방을 나갈까요?')) return;
         const data = await leaveChatRoom(selectedRoom.ROOM_ID, user?.userEmail);
@@ -138,7 +139,7 @@ function Chat() {
             hour: '2-digit', minute: '2-digit'
         });
     };
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         if (location.state?.roomId) {
             handleRoomSelect({ ROOM_ID: location.state.roomId });

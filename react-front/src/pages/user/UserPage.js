@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Avatar, Button, Tabs, Tab, Chip } from '@mui/material';
+import { Box, Typography, Button, Tabs, Tab, Chip } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { getUser, getUserPatterns, getUserPosts } from '../../api/users';
-import { getFollowCount, getFollowStatus, toggleFollow, getFollowing } from '../../api/follows';
+import {getFollowStatus, toggleFollow, getFollowing } from '../../api/follows';
 import { getPatterns } from '../../api/patterns';
 import { toggleLike, getLikes } from '../../api/likes';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
@@ -82,17 +82,19 @@ function UserPage() {
                 const scrapData = await getScraps(me.userEmail, 'PATTERN');
                 if (scrapData.list) setScrappedPatterns(scrapData.list);
             }
-            const scrapPostData = await getScraps(me.userEmail, 'POST');
-            if (scrapPostData.list) setScrappedPosts(scrapPostData.list);
+            if (isMe) {
+                const scrapPostData = await getScraps(me.userEmail, 'POST');
+                if (scrapPostData.list) setScrappedPosts(scrapPostData.list);
+            }
         };
         fetchAll();
-    }, [userId]);
+    }, [userId, isMe, me]);
 
     // 좋아요 조회
     useEffect(() => {
         if (patterns.length === 0) return;
         const fetchLikes = async () => {
-            for (const p of patterns) {
+            await Promise.all(patterns.map(async (p) => {
                 const data = await getLikes('PATTERN', p.PATTERN_ID, me?.userEmail);
                 if (data.result) {
                     setLikes(prev => ({
@@ -100,10 +102,10 @@ function UserPage() {
                         [p.PATTERN_ID]: { count: data.count, liked: data.liked }
                     }));
                 }
-            }
+            }));
         };
         fetchLikes();
-    }, [patterns.length]);
+    }, [patterns.length, me?.userEmail]);
 
     const handleFollow = async () => {
         const data = await toggleFollow(me?.userEmail, userId);
@@ -368,7 +370,7 @@ function UserPage() {
                     )}
 
                     {/* 스크랩 게시글 */}
-                    <Typography className={styles.sectionTitle} style={{ marginTop: 16 }}>📌 스크랩한 게시글</Typography>
+                    <Typography className={styles.sectionTitleMargin}>📌 스크랩한 게시글</Typography>
                     {scrappedPosts.length === 0 ? (
                         <Typography className={styles.empty}>스크랩한 게시글이 없어요 🧶</Typography>
                     ) : (

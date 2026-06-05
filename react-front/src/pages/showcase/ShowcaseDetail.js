@@ -30,7 +30,8 @@ function ShowcaseDetail() {
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState('');
     const [editContent, setEditContent] = useState('');
-
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         const fetchAll = async () => {
             const data = await getShowcase(postId);
@@ -144,8 +145,10 @@ function ShowcaseDetail() {
             method: 'DELETE',
         });
         const data = await res.json();
-        alert('삭제됐어요! 🧶');
-        if (data.result) navigate('/works');
+        if (data.result) {
+            alert('삭제됐어요! 🧶');
+            navigate('/works');
+        }
     };
 
     const requireLogin = () => {
@@ -217,8 +220,7 @@ function ShowcaseDetail() {
                             />
                             <Box>
                                 <Typography className={styles.nickname}
-                                    onClick={() => navigate(`/user/${post.USER_ID}`)}
-                                    style={{ cursor: 'pointer' }}>
+                                    onClick={() => navigate(`/user/${post.USER_ID}`)}>
                                     {post.NICKNAME}
                                 </Typography>
                                 <Typography className={styles.date}>

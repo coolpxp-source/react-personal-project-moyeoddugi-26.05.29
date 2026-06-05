@@ -378,7 +378,7 @@ function PostList() {
                                         </button>
                                     )}
                                     <input id="writeImage" type="file" accept="image/*" multiple
-                                        style={{ display: 'none' }} onChange={handleWriteImageChange}/>
+                                        className={styles.hiddenInput} onChange={handleWriteImageChange}/>
                                 </Box>
 
                                 <Box className={styles.writeBtns}>
@@ -413,8 +413,7 @@ function PostList() {
                                         <Box className={styles.cardRight}>
                                             <Box className={styles.cardHeader}>
                                                 <Typography className={styles.nickname}
-                                                    onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}
-                                                    style={{ cursor: 'pointer' }}>
+                                                    onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}>
                                                     {post.NICKNAME}
                                                 </Typography>
                                                 <Typography className={styles.date}>
@@ -643,7 +642,7 @@ function PostList() {
                                                                                     <Typography className={styles.commentText}>
                                                                                         {reply.CONTENT?.startsWith('@') ? (
                                                                                             <>
-                                                                                                <span style={{ color: '#7B4F2E', fontWeight: 600 }}>
+                                                                                                <span className={styles.mentionText}>
                                                                                                     {reply.CONTENT.split(' ')[0]}
                                                                                                 </span>
                                                                                                 {' ' + reply.CONTENT.split(' ').slice(1).join(' ')}

@@ -1,8 +1,9 @@
 .drawerPaper {
-    width: 320px !important;
     box-sizing: border-box !important;
     background-color: #FAF6F0 !important;
     border-right: 1px solid #E8D5B7 !important;
+    width: 320px !important;
+    flex-shrink: 0 !important;
 }
 
 .logoLink {

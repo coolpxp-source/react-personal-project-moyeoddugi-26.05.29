@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Avatar, Button, TextField } from '@mui/material';
+import { Box, Typography, Button, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import styles from './MyPageEdit.module.css';
@@ -78,7 +78,7 @@ function MyPageEdit() {
                         </Box>
                     </Box>
                     <input id="profileImgInput" type="file" accept="image/*"
-                        style={{ display: 'none' }} onChange={handleImageChange}/>
+                        className={styles.hiddenInput} onChange={handleImageChange}/>
                 </Box>
 
                 {/* 닉네임 */}

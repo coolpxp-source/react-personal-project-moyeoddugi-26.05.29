@@ -1,13 +1,15 @@
+/* ===== 전체 컨테이너 ===== */
 .container {
     display: flex;
     flex-direction: column;
-    padding: 16px 406px 24px 32px;
+    padding: 16px 406px 24px 20px;
     height: 100%;
     overflow-y: auto;
     background-color: #FAF6F0;
     gap: 16px;
 }
 
+/* ===== 헤더 (타이틀 + 작성 버튼) ===== */
 .header {
     display: flex;
     align-items: center;
@@ -28,217 +30,13 @@
 
 .writeBtn:hover { background-color: #5C3D2E !important; }
 
-.empty {
-    text-align: center !important;
-    padding: 60px 0 !important;
-    color: #B08060 !important;
-}
-
-/* 포스트 카드 */
-.postCard {
-    background-color: #ffffff;
-    border: 1px solid #E8D5B7;
-    border-radius: 12px;
-    display: grid;
-    grid-template-columns: 200px 1fr 320px; /* ▼ 댓글 너비 늘리기 */
-    overflow: hidden;
-    height: 220px;
-}
-
-/* 좌측 이미지 */
-.imageSection {
-    width: 200px;
-    height: 220px;
-    overflow: hidden;
-    align-self: stretch;  /* ← 추가: 카드 높이에 맞게 늘어남 */
-}
-
-.thumbnail {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.noImage {
-    width: 100%;
-    height: 100%;
-    min-height: 200px;
-    background-color: #EDE0C8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.noImageText {
-    font-size: 12px !important;
-    color: #B08060 !important;
-}
-
-/* 중앙 내용 */
-.contentSection {
-    padding: 16px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    border-right: 1px solid #E8D5B7;
-    overflow: hidden;
-}
-
-.postTitle {
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    color: #3D2B1A !important;
-}
-
-.authorRow {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.nickname {
-    font-size: 12px !important;
-    color: #7B4F2E !important;
-    font-weight: 500 !important;
-}
-
-.content {
-    font-size: 13px !important;
-    color: #5C3D2E !important;
-    line-height: 1.6 !important;
-    flex: 1;
-    overflow: hidden;           /* ← 추가 */
-    display: -webkit-box;       /* ← 추가 */
-    -webkit-line-clamp: 3;      /* ← 3줄까지만 표시 */
-    -webkit-box-orient: vertical; /* ← 추가 */
-}
-
-.likeIcon {
-    font-size: 16px !important;
-    color: #E0A0A0 !important;
-}
-
-.likeIconActive {
-    font-size: 16px !important;
-    color: #E05050 !important;
-}
-
-.likeCount {
-    font-size: 13px !important;
-    color: #B08060 !important;
-}
-
-/* 우측 댓글 */
-.commentSection {
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 8px;
-    overflow: hidden;  /* ← 추가 */
-}
-
-.commentList {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1;
-    overflow-y: hidden;
-}
-
-.commentItem {
-    display: flex;
-    gap: 6px;
-    align-items: flex-start;
-}
-
-.commentNick {
-    font-size: 13px !important; /* ▼ 11px → 13px */
-    font-weight: 500 !important;
-    color: #5C3D2E !important;
-}
-
-.commentText {
-    font-size: 13px !important; /* ▼ 11px → 13px */
-    color: #7B4F2E !important;
-    line-height: 1.5 !important;
-}
-
-.commentInputRow {
-    display: flex;
-    gap: 4px;
-    border-top: 1px solid #F5EDD8;
-    padding-top: 8px;
-}
-
-.commentInput {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 13px;
-    color: #5C3D2E;
-    background: transparent;
-    padding: 4px 0;
-}
-
-.commentInput::placeholder { color: #B08060; }
-
-.commentBtn {
-    background: none;
-    border: none;
-    color: #7B4F2E;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0 4px;
-    white-space: nowrap;
-}
-
-/* 자세히 보기 버튼 */
-.detailBtn {
-    color: #7B4F2E !important;
-    font-size: 12px !important;
-    padding: 0 !important;
-    align-self: flex-end;
-    margin-top: auto !important;
-}
-
-.bottomRow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: auto;
-}
-
-.likeRow {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-    margin-top: auto;
-}
-
+/* ===== 검색창 ===== */
 .searchRow {
     display: flex;
     align-items: center;
 }
 
-.searchInput {
-    width: 100%;
-    border: 1px solid #E8D5B7;
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 13px;
-    outline: none;
-    background-color: #ffffff;
-    color: #3D2B1A;
-}
-
-.searchInput::placeholder { color: #B08060; }
-.searchInput:focus { border-color: #C4956A; }
-
-/* 인기 작품 */
+/* ===== 인기 작품 섹션 (검색 중엔 숨김) ===== */
 .popularSection {
     background-color: #ffffff;
     border: 1px solid #E8D5B7;
@@ -307,4 +105,202 @@
     color: #E0A0A0 !important;
     white-space: nowrap;
     margin-left: 6px !important;
+}
+
+/* ===== 게시글 카드 (3단 그리드: 이미지 | 내용 | 댓글) ===== */
+.postCard {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    display: grid;
+    grid-template-columns: 200px 1fr 320px;
+    overflow: hidden;
+    height: 220px;
+}
+
+/* 좌측 이미지 */
+.imageSection {
+    width: 200px;
+    height: 220px;
+    overflow: hidden;
+    align-self: stretch;
+}
+
+.thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.noImage {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    background-color: #EDE0C8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.noImageText {
+    font-size: 12px !important;
+    color: #B08060 !important;
+}
+
+/* 중앙 내용 */
+.contentSection {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-right: 1px solid #E8D5B7;
+    overflow: hidden;
+}
+
+.postTitle {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.authorRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nickname {
+    font-size: 12px !important;
+    color: #7B4F2E !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+}
+
+/* 본문 3줄 clamp */
+.content {
+    font-size: 13px !important;
+    color: #5C3D2E !important;
+    line-height: 1.6 !important;
+    flex: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+
+    /* 최신 표준 방식 (브라우저 지원에 따라 추가) */
+    line-clamp: 3; 
+}
+
+/* 하단 (좋아요 + 자세히 보기) */
+.bottomRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+}
+
+.likeRow {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    margin-top: auto;
+}
+
+.likeIcon {
+    font-size: 16px !important;
+    color: #E0A0A0 !important;
+}
+
+.likeIconActive {
+    font-size: 16px !important;
+    color: #E05050 !important;
+}
+
+.likeCount {
+    font-size: 13px !important;
+    color: #B08060 !important;
+}
+
+.detailBtn {
+    color: #7B4F2E !important;
+    font-size: 12px !important;
+    padding: 0 !important;
+    align-self: flex-end;
+    margin-top: auto !important;
+}
+
+/* 우측 댓글 */
+.commentSection {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.commentList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    overflow-y: hidden;
+}
+
+.commentItem {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+}
+
+.commentNick {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #5C3D2E !important;
+}
+
+.commentText {
+    font-size: 13px !important;
+    color: #7B4F2E !important;
+    line-height: 1.5 !important;
+}
+
+/* 댓글 입력창 */
+.commentInputRow {
+    display: flex;
+    gap: 4px;
+    border-top: 1px solid #F5EDD8;
+    padding-top: 8px;
+}
+
+.commentInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    color: #5C3D2E;
+    background: transparent;
+    padding: 4px 0;
+}
+
+.commentInput::placeholder { color: #B08060; }
+
+.commentBtn {
+    background: none;
+    border: none;
+    color: #7B4F2E;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 4px;
+    white-space: nowrap;
+}
+
+/* ===== 기타 ===== */
+.empty {
+    text-align: center !important;
+    padding: 60px 0 !important;
+    color: #B08060 !important;
 }

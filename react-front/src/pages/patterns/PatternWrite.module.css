@@ -1,3 +1,4 @@
+/* ===== 전체 컨테이너 ===== */
 .container {
     display: flex;
     flex-direction: column;
@@ -7,6 +8,7 @@
     background-color: #FAF6F0;
 }
 
+/* ===== 카드 ===== */
 .card {
     background-color: #ffffff;
     border: 1px solid #E8D5B7;
@@ -25,6 +27,7 @@
     border-bottom: 1px solid #E8D5B7;
 }
 
+/* ===== 섹션 ===== */
 .section {
     display: flex;
     flex-direction: column;
@@ -41,6 +44,7 @@
     color: #5C3D2E !important;
 }
 
+/* ===== 입력 필드 ===== */
 .field {
     display: flex;
     flex-direction: column;
@@ -52,19 +56,21 @@
     color: #7B4F2E !important;
 }
 
+/* 칩 선택 행 */
 .chipRow {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
 
+/* 세부 정보 2단 그리드 */
 .detailGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
 }
 
-/* 이미지 */
+/* ===== 이미지 업로드 ===== */
 .imageArea {
     display: flex;
     gap: 12px;
@@ -85,10 +91,10 @@
     border: 1px solid #E8D5B7;
 }
 
+/* 이미지 삭제 버튼 */
 .removeImgBtn {
     position: absolute !important;
-    top: 4px;
-    right: 4px;
+    top: 4px; right: 4px;
     min-width: 24px !important;
     width: 24px;
     height: 24px;
@@ -99,6 +105,7 @@
     border-radius: 50% !important;
 }
 
+/* 이미지 추가 버튼 */
 .imageUpload {
     width: 120px;
     height: 120px;
@@ -118,15 +125,42 @@
     color: #B08060 !important;
 }
 
-/* 태그 */
+/* ===== 태그 ===== */
+.tagInputRow { margin-top: 8px; }
 
-.addTagBtn {
-    background-color: #7B4F2E !important;
-    white-space: nowrap;
-    border-radius: 8px !important;
+.tagInput {
+    width: 100%;
+    border: 1px solid #E8D5B7;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    outline: none;
+    background-color: #FAF6F0;
+    color: #3D2B1A;
+    box-sizing: border-box;
 }
 
-/* 버튼 */
+.tagInput:focus { border-color: #C4956A; }
+.tagInput:disabled { opacity: 0.5; cursor: not-allowed; }
+.tagInput::placeholder { color: #B08060; }
+
+/* 선택된 태그 목록 */
+.selectedTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.selectedTagChip {
+    background-color: #F5EDD8 !important;
+    color: #7B4F2E !important;
+}
+
+/* 숨김 input (파일 업로드용) */
+.hiddenInput { display: none; }
+
+/* ===== 버튼 행 ===== */
 .btnRow {
     display: flex;
     justify-content: flex-end;
@@ -145,30 +179,3 @@
 }
 
 .submitBtn:hover { background-color: #5C3D2E !important; }
-
-.tagInputRow {
-    margin-top: 8px;
-}
-
-.tagInput {
-    width: 100%;
-    border: 1px solid #E8D5B7;
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 13px;
-    outline: none;
-    background-color: #FAF6F0;
-    color: #3D2B1A;
-    box-sizing: border-box;
-}
-
-.tagInput:focus { border-color: #C4956A; }
-.tagInput:disabled { opacity: 0.5; cursor: not-allowed; }
-.tagInput::placeholder { color: #B08060; }
-
-.selectedTags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 8px;
-}

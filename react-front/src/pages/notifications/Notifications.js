@@ -19,17 +19,13 @@ function Notifications() {
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
     const user = token ? jwtDecode(token) : null;
-
     const [notifications, setNotifications] = useState([]);
-    const [localUnreadCount, setLocalUnreadCount] = useState(0);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         const fetchAll = async () => {
             const data = await getNotifications(user?.userEmail);
             if (data.list) {
                 setNotifications(data.list);
-                // ▼ 안 읽은 수 초기값 설정
-                setLocalUnreadCount(data.list.filter(n => n.IS_READ === 'N').length);
             }
         };
         fetchAll();
@@ -45,8 +41,6 @@ function Notifications() {
         setNotifications(prev =>
             prev.map(n => n.NOTI_ID === noti.NOTI_ID ? { ...n, IS_READ: 'Y' } : n)
         );
-        // ▼ 즉시 차감
-        setLocalUnreadCount(prev => Math.max(0, prev - 1));
         // 클릭 시 해당 페이지로 이동
         if (noti.TARGET_TYPE === 'POST') navigate('/posts');
         else if (noti.TARGET_TYPE === 'PATTERN') navigate(`/patterns/${noti.TARGET_ID}`);

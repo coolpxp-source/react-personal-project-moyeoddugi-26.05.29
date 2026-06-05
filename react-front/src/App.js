@@ -53,8 +53,9 @@ function App() {
       {!isAuthPage && <Menu />}
       <Box component="main" sx={{ 
           flexGrow: 1,
-          p: isAuthPage ? 0 : 0,
-          width: `calc(100% - 330px)`,
+          p: 0,
+          marginLeft: '320px', // ← width 대신 marginLeft 사용
+          width: 'calc(100% - 320px)',
           overflow: 'hidden'
       }}>
         <Routes>

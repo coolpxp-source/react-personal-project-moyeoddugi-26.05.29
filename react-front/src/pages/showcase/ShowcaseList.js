@@ -55,9 +55,11 @@ function ShowcaseList() {
             }));
         };
         fetchLikesAndComments();
-    }, [posts.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [posts.length]); // 무한 루프 방지
 
     const handleLike = async (e, postId) => {
+        if (!requireLogin()) return;
         e.stopPropagation();
         const data = await toggleLike(user?.userEmail, 'POST', postId);
         if (data.result) {
@@ -72,6 +74,7 @@ function ShowcaseList() {
     };
 
     const handleCommentSubmit = async (postId) => {
+        if (!requireLogin()) return;
         const content = commentInput[postId]?.trim();
         if (!content) return;
         const data = await createComment({
@@ -93,6 +96,15 @@ function ShowcaseList() {
         (p.CONTENT || '').toLowerCase().includes(search.toLowerCase()) ||
         (p.NICKNAME || '').toLowerCase().includes(search.toLowerCase())  // ▼ 추가
     );
+
+    const requireLogin = () => {
+        if (!user) {
+            alert('로그인이 필요해요!');
+            navigate('/');
+            return false;
+        }
+        return true;
+    };
 
     return (
         <Box className={styles.container}>
@@ -168,8 +180,7 @@ function ShowcaseList() {
                                     onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}
                                 />
                                 <Typography className={styles.nickname}
-                                    onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}
-                                    style={{ cursor: 'pointer' }}>
+                                    onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}>
                                     {post.NICKNAME}
                                 </Typography>
                             </Box>

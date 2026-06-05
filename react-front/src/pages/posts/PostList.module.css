@@ -1,3 +1,4 @@
+/* ===== 전체 컨테이너 ===== */
 .container {
     display: flex;
     flex-direction: column;
@@ -6,64 +7,38 @@
     overflow: hidden;
 }
 
-/* 아이콘 공통 */
-.iconLike {
-    font-size: 18px !important;
-    color: #E0A0A0 !important;
-    cursor: pointer;
-}
-
-.iconChat {
-    font-size: 18px !important;
-    cursor: pointer;
-}
-
-.iconLikeActive {
-    font-size: 18px !important;
-    color: #E05050 !important;
-    cursor: pointer;
-}
-
-.iconBookmark {
-    font-size: 18px !important;
-    color: #B08060 !important;
-    cursor: pointer;
-}
-
-/* ▼ 수정: padding-right 배너 너비만큼 */
+/* ===== 탭 ===== */
 .tabs {
     background-color: #ffffff !important;
     border-bottom: 1px solid #E8D5B7 !important;
     padding-right: 390px !important;
-    padding-left: 16px !important;  /* ← 탭은 살짝만 */
+    padding-left: 16px !important;
 }
 
-/* ▼ 수정: padding-right 배너 너비 + 여백 맞춤 */
+/* ===== 검색창 툴바 ===== */
 .toolbar {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 406px 12px 40px; /* 좌측 메뉴랑 피드카드 사이의 여백 */
+    padding: 12px 406px 12px 40px;
     background-color: #ffffff;
     border-bottom: 1px solid #E8D5B7;
 }
 
-.searchInput { flex: 1; }
-
-/* 메인 레이아웃 - 피드 + 사이드 */
-/* ▼ 수정: padding-right 배너 너비 + 여백 맞춤 */
+/* ===== 메인 레이아웃 (피드 + 사이드 위젯) ===== */
 .mainLayout {
     display: flex;
-    flex-direction: row; /* ▼ 수정 */
-    padding: 16px 406px 16px 40px;
+    flex-direction: row;
+    padding: 16px 406px 16px 20px;
     flex: 1;
     overflow-y: auto;
     gap: 16px;
     align-items: flex-start;
 }
 
+/* 피드 섹션 */
 .feedSection {
-    flex: 3; /* 피드 비율 늘리기 */
+    flex: 3;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -75,8 +50,7 @@
     gap: 12px;
 }
 
-
-/* 피드 카드 */
+/* ===== 피드 카드 ===== */
 .feedCard {
     padding: 16px;
     border: 1px solid #E8D5B7;
@@ -87,97 +61,11 @@
 
 .feedCard:hover { background-color: #FDFAF6; }
 
-/* ▼ 추가: 우측 위젯 */
-.sideWidget {
-    flex: 1; /* ▼ 수정: 고정 width 대신 비율로 */
-    flex-shrink: 0;
+/* 트위터식 2단 레이아웃 (아바타 + 내용) */
+.cardLayout {
     display: flex;
-    flex-direction: column;
     gap: 12px;
-    position: sticky;
-    top: 0;
-}
-
-.widgetCard {
-    background-color: #ffffff;
-    border: 1px solid #E8D5B7;
-    border-radius: 12px;
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.widgetTitle {
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: #3D2B1A !important;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #F5EDD8;
-}
-
-.widgetList {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.widgetEmpty {
-    font-size: 12px !important;
-    color: #B08060 !important;
-    text-align: center !important;
-}
-
-.popularItem {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    padding: 4px 0;
-    border-bottom: 1px solid #F5EDD8;
-}
-
-.popularItem:last-child { border-bottom: none; }
-
-.popularItem:hover .popularTitle { color: #7B4F2E !important; }
-
-.popularIdx {
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: #C4956A !important;
-    min-width: 16px;
-}
-
-.popularContent {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    flex: 1;
-}
-
-.popularTitle {
-    font-size: 12px !important;
-    color: #3D2B1A !important;
-    line-height: 1.4 !important;
-    transition: color 0.15s ease;
-}
-
-/* 태그 클라우드 */
-.tagCloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.tagChip {
-    background-color: #F5EDD8 !important;
-    color: #7B4F2E !important;
-    font-size: 11px !important;
-    cursor: pointer !important;
-}
-
-.tagChip:hover {
-    background-color: #E8D5B7 !important;
+    align-items: flex-start;
 }
 
 .cardRight {
@@ -188,13 +76,26 @@
     min-width: 0;
 }
 
+/* 카드 헤더 (닉네임, 날짜, 배지, 수정/삭제) */
 .cardHeader {
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
-/* ▼ 수정: 들여쓰기 추가 */
+.nickname {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    cursor: pointer;
+}
+
+.date {
+    font-size: 11px !important;
+    color: #B08060 !important;
+}
+
+/* 카드 본문 */
 .postTitle {
     font-size: 15px !important;
     font-weight: 600 !important;
@@ -204,40 +105,13 @@
 
 .postTitle:hover { color: #7B4F2E !important; }
 
-.nickname {
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    color: #3D2B1A !important;
-}
-
-.date {
-    font-size: 11px !important;
-    color: #B08060 !important;
-}
-
-.postImg {
-    width: 140px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-    background-color: #EDE0C8;
-}
-
 .postContent {
     font-size: 13px !important;
     color: #5C3D2E !important;
     line-height: 1.6 !important;
 }
 
-/* ▼ 트위터식 2단 레이아웃 */
-.cardLayout {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-}
-
-/* 하단 */
-/* ▼ 수정: 들여쓰기 추가 */
+/* ===== 카드 하단 (좋아요, 댓글, 스크랩) ===== */
 .cardFooter {
     display: flex;
     align-items: center;
@@ -259,150 +133,37 @@
     color: #B08060 !important;
 }
 
-/* 댓글 */
-.commentArea {
-    background-color: #FAF6F0;
-    border-radius: 8px;
-    padding: 12px;
-    margin-top: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+/* ===== 아이콘 ===== */
+.iconLike {
+    font-size: 18px !important;
+    color: #E0A0A0 !important;
+    cursor: pointer;
 }
 
-.noComment {
-    font-size: 12px !important;
+.iconLikeActive {
+    font-size: 18px !important;
+    color: #E05050 !important;
+    cursor: pointer;
+}
+
+.iconChat {
+    font-size: 18px !important;
+    cursor: pointer;
+}
+
+.iconBookmark {
+    font-size: 18px !important;
     color: #B08060 !important;
-    text-align: center !important;
+    cursor: pointer;
 }
 
-.commentInput {
-    display: flex;
-    gap: 8px;
-    background-color: white;
-}
-
-.commentBtn {
-    background-color: #7B4F2E !important;
-    white-space: nowrap;
-    font-size: 12px !important;
-}
-
-.commentBtn:hover { background-color: #5C3D2E !important; }
-
-.empty {
-    text-align: center !important;
-    padding: 40px 0 !important;
-    color: #B08060 !important;
-}
-
-/* 댓글 아이템 */
-.commentItem {
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-    padding: 8px 0;
-    border-bottom: 1px solid #F0E6D3;
-}
-
-.commentBody {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    flex: 1;
-}
-
-.commentHeader {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.commentNick {
-    font-size: 12px !important;
-    font-weight: 500 !important;
-    color: #5C3D2E !important;
-}
-
-.commentDate {
-    font-size: 11px !important;
-    color: #B08060 !important;
-}
-
-.commentText {
-    font-size: 12px !important;
+.iconBookmarkActive {
+    font-size: 18px !important;
     color: #7B4F2E !important;
+    cursor: pointer;
 }
 
-.replyBtn {
-    color: #B08060 !important;
-    font-size: 11px !important;
-    padding: 0 !important;
-    min-width: 0 !important;
-    align-self: flex-start;
-}
-
-.replyInput {
-    display: flex;
-    gap: 4px;
-    margin-top: 6px;
-    width: 100%;
-    max-width: 500px;
-    background-color: white;
-}
-
-/* 대댓글 */
-.replyItem {
-    display: flex;
-    gap: 6px;
-    align-items: flex-start;
-    padding: 6px 0 6px 12px;
-    border-left: 2px solid #E8D5B7;
-    margin: 4px 0;
-    width: 100%;
-}
-
-/* ▼ 추가: @닉네임 달린 대댓글 추가 들여쓰기 */
-.replyItemNested {
-    display: flex;
-    gap: 6px;
-    align-items: flex-start;
-    padding: 6px 0 6px 24px;  /* ← 들여쓰기 더 깊게 */
-    margin: 4px 0;
-    width: 100%;
-}
-
-.commentActions {
-    display: flex;
-    gap: 4px;
-}
-
-.actionBtn {
-    color: #B08060 !important;
-    font-size: 11px !important;
-    padding: 0 4px !important;
-    min-width: 40px !important;
-    border: 1px solid #B08060 !important; /* ▼ 추가: 보더라인 */
-    border-radius: 4px !important;         /* ▼ 추가: 둥근 모서리 */
-}
-
-.fullWidth { width: 100%; }
-
-.postImgArea {
-    width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #E8D5B7;
-    margin-top: 8px;
-}
-
-.postImgFull {
-    width: 100%;
-    max-height: 400px;
-    object-fit: cover;
-    display: block;
-}
-
+/* ===== 이미지 그리드 ===== */
 .postImgGrid {
     display: grid;
     gap: 4px;
@@ -411,22 +172,18 @@
     margin-top: 8px;
 }
 
+/* 이미지 높이는 JS에서 동적으로 지정 (이미지 수에 따라 다름) */
 .postImgItem {
     width: 100%;
-    height: 200px;
     object-fit: cover;
     display: block;
-    cursor: pointer; /* ▼ 추가 */
-    height: 300px; /* ▼ 기본 높이 키우기 */
+    cursor: pointer;
 }
 
-/* 라이트박스 */
+/* ===== 라이트박스 ===== */
 .lightbox {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     background-color: rgba(0,0,0,0.85);
     z-index: 1000;
     display: flex;
@@ -450,8 +207,7 @@
 
 .lightboxClose {
     position: absolute;
-    top: -36px;
-    right: 0;
+    top: -36px; right: 0;
     background: none;
     border: none;
     color: white;
@@ -469,8 +225,7 @@
     font-size: 32px;
     cursor: pointer;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 40px; height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -487,17 +242,15 @@
 }
 
 .lightboxDot {
-    width: 8px;
-    height: 8px;
+    width: 8px; height: 8px;
     border-radius: 50%;
     background-color: rgba(255,255,255,0.4);
     cursor: pointer;
 }
 
-.lightboxDotActive {
-    background-color: white;
-}
+.lightboxDotActive { background-color: white; }
 
+/* ===== 게시글 작성창 ===== */
 .writeCard {
     background-color: #ffffff;
     border: 1px solid #E8D5B7;
@@ -529,6 +282,7 @@
 
 .writeTextarea::placeholder { color: #B08060; }
 
+/* 이미지 미리보기 */
 .writePreviews {
     display: flex;
     gap: 8px;
@@ -538,13 +292,11 @@
 
 .writePreviewItem {
     position: relative;
-    width: 80px;
-    height: 80px;
+    width: 80px; height: 80px;
 }
 
 .writePreviewImg {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     object-fit: cover;
     border-radius: 8px;
     border: 1px solid #E8D5B7;
@@ -552,10 +304,8 @@
 
 .writeRemoveBtn {
     position: absolute;
-    top: 2px;
-    right: 2px;
-    width: 18px;
-    height: 18px;
+    top: 2px; right: 2px;
+    width: 18px; height: 18px;
     border-radius: 50%;
     background-color: rgba(0,0,0,0.5);
     color: white;
@@ -564,6 +314,7 @@
     cursor: pointer;
 }
 
+/* 작성창 하단 액션 */
 .writeBottom {
     display: flex;
     align-items: center;
@@ -630,13 +381,7 @@
 
 .writeSubmitBtn:hover { background-color: #5C3D2E; }
 
-/* 북마크 */
-.iconBookmarkActive {
-    font-size: 18px !important;
-    color: #7B4F2E !important;
-    cursor: pointer;
-}
-
+/* ===== 게시글 수정 ===== */
 .postActions {
     display: flex;
     gap: 4px;
@@ -708,15 +453,247 @@
     cursor: pointer;
 }
 
+/* ===== 댓글 영역 ===== */
+.commentArea {
+    background-color: #FAF6F0;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.noComment {
+    font-size: 12px !important;
+    color: #B08060 !important;
+    text-align: center !important;
+}
+
+/* 댓글 입력창 */
+.commentInput {
+    display: flex;
+    gap: 8px;
+    background-color: white;
+}
+
+.commentBtn {
+    background-color: #7B4F2E !important;
+    white-space: nowrap;
+    font-size: 12px !important;
+}
+
+.commentBtn:hover { background-color: #5C3D2E !important; }
+
+/* 댓글 아이템 */
+.commentItem {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid #F0E6D3;
+}
+
+.commentBody {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.commentHeader {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.commentNick {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #5C3D2E !important;
+}
+
+.commentDate {
+    font-size: 11px !important;
+    color: #B08060 !important;
+}
+
+.commentText {
+    font-size: 12px !important;
+    color: #7B4F2E !important;
+}
+
+/* 수정/삭제 버튼 */
+.commentActions {
+    display: flex;
+    gap: 4px;
+}
+
+.actionBtn {
+    color: #B08060 !important;
+    font-size: 11px !important;
+    padding: 0 4px !important;
+    min-width: 40px !important;
+    border: 1px solid #B08060 !important;
+    border-radius: 4px !important;
+}
+
+/* 답글 */
+.replyBtn {
+    color: #B08060 !important;
+    font-size: 11px !important;
+    padding: 0 !important;
+    min-width: 0 !important;
+    align-self: flex-start;
+}
+
+.replyInput {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+    width: 100%;
+    max-width: 500px;
+    background-color: white;
+}
+
+/* 대댓글 */
+.replyItem {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+    padding: 6px 0 6px 12px;
+    border-left: 2px solid #E8D5B7;
+    margin: 4px 0;
+    width: 100%;
+}
+
+/* @닉네임 달린 대댓글 (추가 들여쓰기) */
+.replyItemNested {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+    padding: 6px 0 6px 24px;
+    margin: 4px 0;
+    width: 100%;
+}
+
+.fullWidth { width: 100%; }
+
+/* ===== 우측 위젯 ===== */
+.sideWidget {
+    flex: 1;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+}
+
+.widgetCard {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.widgetTitle {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #F5EDD8;
+}
+
+.widgetList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.widgetEmpty {
+    font-size: 12px !important;
+    color: #B08060 !important;
+    text-align: center !important;
+}
+
+/* 인기 도안 아이템 */
+.popularItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 0;
+    border-bottom: 1px solid #F5EDD8;
+}
+
+.popularItem:last-child { border-bottom: none; }
+.popularItem:hover .popularTitle { color: #7B4F2E !important; }
+
+.popularIdx {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #C4956A !important;
+    min-width: 16px;
+}
+
+.popularContent {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+}
+
+.popularTitle {
+    font-size: 12px !important;
+    color: #3D2B1A !important;
+    line-height: 1.4 !important;
+    transition: color 0.15s ease;
+}
+
 .popularSub {
     font-size: 10px !important;
     color: #B08060 !important;
 }
 
 .popularThumb {
-    width: 36px;
-    height: 36px;
+    width: 36px; height: 36px;
     border-radius: 6px;
     object-fit: cover;
     flex-shrink: 0;
 }
+
+/* 태그 클라우드 */
+.tagCloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tagChip {
+    background-color: #F5EDD8 !important;
+    color: #7B4F2E !important;
+    font-size: 11px !important;
+    cursor: pointer !important;
+}
+
+.tagChip:hover { background-color: #E8D5B7 !important; }
+
+/* ===== 기타 ===== */
+.empty {
+    text-align: center !important;
+    padding: 40px 0 !important;
+    color: #B08060 !important;
+}
+
+/* @멘션 텍스트 강조 */
+.mentionText {
+    color: #7B4F2E;
+    font-weight: 600;
+}
+
+/* 숨김 input (파일 업로드용) */
+.hiddenInput { display: none; }

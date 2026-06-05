@@ -1,3 +1,4 @@
+/* ===== 전체 컨테이너 ===== */
 .container {
     display: flex;
     flex-direction: column;
@@ -7,6 +8,7 @@
     background-color: #FAF6F0;
 }
 
+/* ===== 카드 ===== */
 .card {
     background-color: #ffffff;
     border: 1px solid #E8D5B7;
@@ -23,6 +25,7 @@
     color: #3D2B1A !important;
 }
 
+/* ===== 입력 필드 ===== */
 .field {
     display: flex;
     flex-direction: column;
@@ -35,6 +38,7 @@
     color: #5C3D2E !important;
 }
 
+/* 주소 검색 행 */
 .addressRow {
     display: flex;
     gap: 8px;
@@ -48,7 +52,7 @@
 
 .searchBtn:hover { background-color: #5C3D2E !important; }
 
-/* 허용 여부 버튼 */
+/* ===== 허용 여부 버튼 ===== */
 .allowRow {
     display: flex;
     gap: 12px;
@@ -61,13 +65,14 @@
     font-size: 14px !important;
 }
 
+/* ===== 시설 태그 칩 ===== */
 .chipRow {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
 
-/* 사진 첨부 */
+/* ===== 사진 첨부 ===== */
 .imageArea {
     border: 2px dashed #E8D5B7;
     border-radius: 12px;
@@ -94,6 +99,10 @@
     border-radius: 10px;
 }
 
+/* 숨김 input (파일 업로드용) */
+.hiddenInput { display: none; }
+
+/* ===== 버튼 행 ===== */
 .btnRow {
     display: flex;
     justify-content: flex-end;

@@ -1,3 +1,4 @@
+/* ===== 전체 컨테이너 ===== */
 .container {
     display: flex;
     justify-content: center;
@@ -10,6 +11,7 @@
     position: relative;
 }
 
+/* ===== 폼 카드 ===== */
 .formWrap {
     position: relative;
     z-index: 1;
@@ -23,18 +25,16 @@
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* 로고 영역 */
+/* ===== 로고 ===== */
 .logoArea {
     display: flex;
     justify-content: center;
     margin-bottom: 8px;
 }
 
-.logoImg {
-    width: 100px;
-}
+.logoImg { width: 100px; }
 
-/* 타이틀 */
+/* ===== 타이틀 ===== */
 .title {
     text-align: center !important;
     font-size: 20px !important;
@@ -43,25 +43,19 @@
     margin-bottom: 4px !important;
 }
 
-/* 서브타이틀 */
-.subTitle {
-    text-align: center !important;
-    font-size: 13px !important;
-    color: #B08060 !important;
-    margin-bottom: 8px !important;
-}
+/* ===== 입력 필드 ===== */
+.field { margin-bottom: 16px !important; }
+.fieldLast { margin-bottom: 24px !important; }
 
-/* 가입하기 버튼 */
+/* ===== 가입하기 버튼 ===== */
 .button {
     background-color: #7B4F2E !important;
     margin-top: 4px !important;
 }
 
-.button:hover {
-    background-color: #5C3D2E !important;
-}
+.button:hover { background-color: #5C3D2E !important; }
 
-/* 하단 로그인 링크 */
+/* ===== 하단 로그인 링크 ===== */
 .footer {
     text-align: center !important;
     font-size: 13px !important;
@@ -75,6 +69,4 @@
     text-decoration: none;
 }
 
-.link:hover {
-    text-decoration: underline;
-}
+.link:hover { text-decoration: underline; }

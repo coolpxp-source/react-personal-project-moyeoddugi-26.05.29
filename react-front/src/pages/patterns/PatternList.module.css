@@ -1,14 +1,15 @@
+/* ===== 전체 컨테이너 ===== */
 .container {
     display: flex;
     flex-direction: column;
     height: 100%;
     background-color: #FAF6F0;
     overflow: hidden;
-    padding: 16px 406px 16px 40px;  /* ← 오른쪽 배너 너비만큼 */
+    padding: 16px 406px 16px 20px;
     position: relative;
 }
 
-/* 코바늘/대바늘 탭 */
+/* ===== 코바늘/대바늘 탭 ===== */
 .needleTabs {
     display: flex;
     background-color: #ffffff;
@@ -35,7 +36,7 @@
     color: #7B4F2E !important;
 }
 
-/* 필터 */
+/* ===== 필터 영역 ===== */
 .filterArea {
     background-color: #ffffff;
     border-bottom: 1px solid #E8D5B7;
@@ -52,6 +53,7 @@
     flex-wrap: wrap;
 }
 
+/* 난이도/카테고리 구분선 */
 .divider {
     width: 1px;
     height: 20px;
@@ -59,9 +61,7 @@
     margin: 0 4px;
 }
 
-.searchInput { width: 100%; }
-
-/* 메인 레이아웃 */
+/* ===== 메인 레이아웃 ===== */
 .mainLayout {
     flex: 1;
     overflow-y: auto;
@@ -71,7 +71,7 @@
     gap: 16px;
 }
 
-/* 카드 그리드 */
+/* ===== 카드 그리드 ===== */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -92,45 +92,18 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
+/* 이미지 래퍼 */
 .cardImgWrapper {
     position: relative;
     width: 100%;
-    height: 250px; /* ▼ 수정 */
-    overflow: hidden; /* ▼ 추가 */
-}
-
-.cardImg {
-    width: 100%;
-    height: 100%;
-    background-color: #EDE0C8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* ▼ 이미지 위에 오버레이 */
-.cardOverlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(255, 255, 255, 0.88);
-    padding: 10px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    backdrop-filter: blur(2px);
+    height: 250px;
+    overflow: hidden;
 }
 
 .cardImgEl {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.noImg {
-    font-size: 12px !important;
-    color: #B08060 !important;
 }
 
 .cardImgEmpty {
@@ -142,11 +115,21 @@
     justify-content: center;
 }
 
-.cardContent {
-    padding: 12px;
+.noImg {
+    font-size: 12px !important;
+    color: #B08060 !important;
+}
+
+/* 카드 하단 오버레이 */
+.cardOverlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background-color: rgba(255, 255, 255, 0.88);
+    padding: 10px 12px;
     display: flex;
     flex-direction: column;
     gap: 6px;
+    backdrop-filter: blur(2px);
 }
 
 .cardTitle {
@@ -155,6 +138,7 @@
     color: #3D2B1A !important;
 }
 
+/* 작성자 정보 */
 .cardMeta {
     display: flex;
     align-items: center;
@@ -165,6 +149,7 @@
     font-size: 11px !important;
     color: #5C3D2E !important;
     font-weight: 500 !important;
+    cursor: pointer;
 }
 
 .cardDate {
@@ -172,6 +157,7 @@
     color: #B08060 !important;
 }
 
+/* 태그 */
 .cardTags {
     display: flex;
     gap: 4px;
@@ -185,13 +171,7 @@
     height: 20px !important;
 }
 
-.yarnChip {
-    background-color: #EDE7F6 !important;
-    color: #4527A0 !important;
-    font-size: 10px !important;
-    height: 20px !important;
-}
-
+/* 카드 하단 (좋아요) */
 .cardFooter {
     display: flex;
     align-items: center;
@@ -211,20 +191,27 @@
     color: #B08060 !important;
 }
 
-/* 페이지네이션 */
+/* 좋아요 아이콘 */
+.likeIcon {
+    font-size: 14px !important;
+    color: #E0A0A0 !important; /* ← 따옴표 제거 */
+}
+
+/* ===== 페이지네이션 ===== */
 .pagination {
     display: flex;
     justify-content: center;
     padding: 8px 0;
 }
 
+/* ===== 기타 ===== */
 .empty {
     text-align: center !important;
     padding: 60px 0 !important;
     color: #B08060 !important;
 }
 
-/* 도안 올리기 버튼 */
+/* 도안 올리기 버튼 (우측 하단 고정) */
 .uploadBtn {
     position: fixed !important;
     bottom: 24px;

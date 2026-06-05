@@ -1,9 +1,8 @@
 import React from 'react';
 import { 
   Drawer, List, ListItemButton, ListItemText, 
-  ListItemIcon, Typography, Box, Divider, TextField  
+  ListItemIcon, Typography, Box, Divider  
 } from '@mui/material';
-import { Search } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './Menu.module.css';
 import { jwtDecode } from 'jwt-decode';
@@ -51,8 +50,7 @@ function Menu() {
   }, [user?.userEmail]);
 
   return (
-    <Drawer variant="permanent" classes={{ paper: styles.drawerPaper }}
-        sx={{ width: 300, flexShrink: 0 }}>
+    <Drawer variant="permanent" classes={{ paper: styles.drawerPaper }}>
 
       {/* 로고 */}
       <Link to="/posts" className={styles.logoLink}>

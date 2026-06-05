@@ -199,7 +199,7 @@ function PlaceMap() {
         fetchPlaces();
     }, []);
 
-    // 마커 표시
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         if (!mapInstanceRef.current || places.length === 0) return;
 
@@ -287,7 +287,7 @@ function PlaceMap() {
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <Search sx={{ color: '#B08060', fontSize: 16 }}/>
+                                        <Search className={styles.searchIcon}/>
                                     </InputAdornment>
                                 )
                             }}
@@ -424,15 +424,13 @@ function PlaceMap() {
                                 />
                             </Box>
                         </Box>
-                        <Box sx={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
-                            <Button size="small" className={styles.closeBtn}
-                                onClick={() => setSelectedPlace(null)}
-                                sx={{ flex: 1 }}>
+                        <Box className={styles.reviewBtnRow}>
+                            <Button size="small" className={`${styles.closeBtn} ${styles.flex1}`}
+                                onClick={() => setSelectedPlace(null)}>
                                 닫기
                             </Button>
-                            <Button variant="contained" className={styles.reviewSubmitBtn}
-                                onClick={handleReviewSubmit}
-                                sx={{ flex: 1 }}>
+                            <Button variant="contained" className={`${styles.reviewSubmitBtn} ${styles.flex1}`}
+                                onClick={handleReviewSubmit}>
                                 등록
                             </Button>
                         </Box>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Tabs, Tab, TextField, Button, Typography, Chip, Collapse } from '@mui/material';
 import { Favorite, FavoriteBorder, ChatBubbleOutline, BookmarkBorder, Bookmark } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { getPosts, getPopularPosts, getPopularTags } from '../../api/posts';
+import { getPosts, getPopularTags } from '../../api/posts';
 import { getPopularPatterns, getMostCommentedPatterns } from '../../api/patterns';
 import { getComments, createComment, deleteComment, updateComment } from '../../api/comments';
 import { toggleLike } from '../../api/likes';
@@ -41,7 +41,6 @@ function PostList() {
     const [comments, setComments] = useState({});
     const [commentInput, setCommentInput] = useState({});
     const [replyInput, setReplyInput] = useState({});
-    const [popularPosts, setPopularPosts] = useState([]);
     const [popularTags, setPopularTags] = useState([]);
     const [lightbox, setLightbox] = useState(null); // { images, idx }
     //피드 작성창 
@@ -58,7 +57,7 @@ function PostList() {
     const [popularPatterns, setPopularPatterns] = useState([]);
     const [mostCommentedPatterns, setMostCommentedPatterns] = useState([]);
 
-    // ▼ 교체: 게시글 + 좋아요 초기값 한번에
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         const fetchAll = async () => {
             const data = await getPosts(BOARD_TYPES[tab], user?.userEmail);
@@ -78,8 +77,8 @@ function PostList() {
             }
         };
         fetchAll();
-    }, [tab]);
-
+    }, [tab, user?.userEmail]);
+    
     useEffect(() => {
          const fetchSidebar = async () => {
             // 기존 인기 게시글/태그 제거하고 교체

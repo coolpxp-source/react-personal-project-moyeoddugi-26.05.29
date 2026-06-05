@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography, Paper } from '@mui/material';
+import { Box, TextField, Button, Typography} from '@mui/material';
 import { Link, useNavigate } from "react-router-dom";
 import styles from './Login.module.css';
 import { login } from '../../api/auth';
@@ -30,7 +30,6 @@ function Login(){
     
     const handleSubmit = async () => {
         const data = await login(form.email, form.password);
-        console.log(data);
         if(data.result){
             localStorage.setItem('token', data.token);  // 토큰 저장
             localStorage.setItem('userEmail', data.userEmail);  // 유저 정보 저장

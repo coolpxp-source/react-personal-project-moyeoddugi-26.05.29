@@ -105,8 +105,6 @@ router.post('/login', async (req, res) => {
         // 두번째 파라미터(키) : 위에서 선언한 서버의 비밀 키
         // 세번째 파라미터 : 만료 시간
         token = jwt.sign(payload, JWT_KEY, {expiresIn : '1h'});
-        console.log(JWT_KEY);
-        console.log(token);
       }else{
         message = "비밀번호가 틀렸습니다.";
       }
@@ -129,8 +127,6 @@ router.post('/login', async (req, res) => {
 
 // 프로필 수정
 router.put('/update-profile', uploadProfile.single('profileImg'), async (req, res) => {
-    console.log('req.file:', req.file); // ▼ 추가
-    console.log('req.body:', req.body); // ▼ 추가
     const { userEmail, nickname, bio } = req.body;
     const profileImg = req.file ? `/uploads/profiles/${req.file.filename}` : null;
 

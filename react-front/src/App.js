@@ -6,7 +6,6 @@ import Login from './pages/auth/Login'; // 로그인
 import Register from './pages/auth/Register'; // 회원가입
 // 게시글 작성
 import PostList from './pages/posts/PostList'; 
-import PostDetail  from './pages/posts/PostDetail'; 
 // 뜨개 지도
 import PlaceMap from './pages/places/PlaceMap';
 import PlaceReport from './pages/places/PlaceReport';
@@ -64,7 +63,6 @@ function App() {
 
           {/* 로그인 없이 가능 */}
           <Route path="/posts" element={<PostList />} />
-          <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/works" element={<ShowcaseList />} />
           <Route path="/works/:postId" element={<ShowcaseDetail />} />
 

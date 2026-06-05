@@ -11,6 +11,7 @@ import styles from './UserPage.module.css';
 import RightSidebar from '../../components/RightSidebar';
 import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
 import { getScraps } from '../../api/scraps'; // 스크랩
+import { createDM } from '../../api/chat'; // 일대일 디엠방 만들기
 
 const DIFFICULTY_COLORS = {
     '입문': { bg: '#E8F5E9', color: '#2E7D32' },
@@ -132,6 +133,14 @@ function UserPage() {
         </Box>
     );
 
+    // DM 방 생성 추가
+    const handleDM = async () => {
+        const data = await createDM(me?.userEmail, userId);
+        if (data.result) {
+            navigate('/chat', { state: { roomId: data.roomId } });
+        }
+    };
+
     return (
         <Box className={styles.container}>
             {/* 프로필 카드 */}
@@ -156,11 +165,16 @@ function UserPage() {
                             프로필 수정
                         </Button>
                     ) : (
-                        <Button variant={following ? 'outlined' : 'contained'}
-                            className={following ? styles.unfollowBtn : styles.followBtn}
-                            onClick={handleFollow}>
-                            {following ? '팔로잉' : '팔로우'}
-                        </Button>
+                        <Box className={styles.btnRow}>
+                            <Button variant={following ? 'outlined' : 'contained'}
+                                className={following ? styles.unfollowBtn : styles.followBtn}
+                                onClick={handleFollow}>
+                                {following ? '팔로잉' : '팔로우'}
+                            </Button>
+                            <Button className={styles.dmBtn} onClick={handleDM}>
+                                💬 DM
+                            </Button>
+                        </Box>
                     )}
                     <Box className={styles.statsRow}>
                         <Box className={styles.statItem}>

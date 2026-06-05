@@ -200,6 +200,7 @@ function PostList() {
     };
 
     const handleCommentSubmit = async (e, postId) => {
+        if (!requireLogin()) return;
         e.stopPropagation();
         const content = commentInput[postId]?.trim();
         if (!content) return;
@@ -241,6 +242,7 @@ function PostList() {
     };
 
     const handleLike = async (e, postId) => {
+        if (!requireLogin()) return;
         e.stopPropagation();
         const data = await toggleLike(user?.userEmail, 'POST', postId);
         if (data.result) {
@@ -256,6 +258,7 @@ function PostList() {
 
     // handleScrap 함수
     const handleScrap = async (e, postId) => {
+        if (!requireLogin()) return;
         e.stopPropagation();
         const data = await toggleScrap(user?.userEmail, 'POST', postId);
         if (data.result) {
@@ -293,6 +296,15 @@ function PostList() {
             setPosts(prev => prev.filter(p => p.POST_ID !== postId));
             alert('삭제됐어요! 🧶');
         }
+    };
+
+    const requireLogin = () => {
+        if (!user) {
+            alert('로그인이 필요해요!');
+            navigate('/');
+            return false;
+        }
+        return true;
     };
 
     return (

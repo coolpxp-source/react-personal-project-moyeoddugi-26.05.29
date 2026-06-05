@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { getMyChatRooms, getChatRoom, getMessages, sendMessage, joinChatRoom, leaveChatRoom, markAsRead } from '../../api/chat';
 import AvatarItem from '../../components/AvatarItem';
-import RightSidebar from '../../components/RightSidebar';
 import styles from './Chat.module.css';
+import { useLocation } from 'react-router-dom';
 
 function Chat() {
     const navigate = useNavigate();
@@ -22,6 +22,9 @@ function Chat() {
     const lastMessageIdRef = useRef(null);
     const [inviteInput, setInviteInput] = useState('');
     const [showInviteInput, setShowInviteInput] = useState(false);
+    const [activeTab, setActiveTab] = useState('group'); // 'group' | 'dm'
+    const location = useLocation();
+    
 
     // 내 채팅방 목록 조회
     useEffect(() => {
@@ -32,6 +35,7 @@ function Chat() {
         const data = await getMyChatRooms(user?.userEmail);
         if (data.result) setRooms(data.list);
     };
+    
 
     // 채팅방 선택
     const handleRoomSelect = async (room) => {
@@ -103,7 +107,7 @@ function Chat() {
             alert(data.message);
             setInviteInput('');
             setShowInviteInput(false);
-            fetchRooms();
+            await fetchRooms(); // ← await 추가
             if (data.roomId) handleRoomSelect({ ROOM_ID: data.roomId });
         } else {
             alert(data.message);
@@ -135,6 +139,25 @@ function Chat() {
         });
     };
 
+    useEffect(() => {
+        if (location.state?.roomId) {
+            handleRoomSelect({ ROOM_ID: location.state.roomId });
+        }
+    }, [rooms]);
+    
+    // ▼ 탭별 미읽음 count 계산 — filteredRooms 위에 추가
+    const groupUnread = rooms
+        .filter(r => r.ROOM_TYPE !== 'DM')
+        .reduce((sum, r) => sum + (r.UNREAD_COUNT || 0), 0);
+
+    const dmUnread = rooms
+        .filter(r => r.ROOM_TYPE === 'DM')
+        .reduce((sum, r) => sum + (r.UNREAD_COUNT || 0), 0);
+
+    const filteredRooms = rooms.filter(room =>
+        activeTab === 'dm' ? room.ROOM_TYPE === 'DM' : room.ROOM_TYPE !== 'DM'
+    );
+
     return (
         <Box className={styles.container}>
             {/* 좌측 채팅방 목록 */}
@@ -144,6 +167,24 @@ function Chat() {
                     <button className={styles.joinBtn}
                         onClick={() => setShowInviteInput(prev => !prev)}>
                         + 참여
+                    </button>
+                </Box>
+                <Box className={styles.tabRow}>
+                    <button
+                        className={`${styles.tabBtn} ${activeTab === 'group' ? styles.tabBtnActive : ''}`}
+                        onClick={() => setActiveTab('group')}>
+                        👥 모임
+                        {groupUnread > 0 && (
+                            <span className={styles.tabBadge}>{groupUnread > 99 ? '99+' : groupUnread}</span>
+                        )}
+                    </button>
+                    <button
+                        className={`${styles.tabBtn} ${activeTab === 'dm' ? styles.tabBtnActive : ''}`}
+                        onClick={() => setActiveTab('dm')}>
+                        💬 DM
+                        {dmUnread > 0 && (
+                            <span className={styles.tabBadge}>{dmUnread > 99 ? '99+' : dmUnread}</span>
+                        )}
                     </button>
                 </Box>
 
@@ -162,14 +203,15 @@ function Chat() {
                         </button>
                     </Box>
                 )}
-
+                
                 {/* 채팅방 목록 */}
-                {rooms.length === 0 ? (
+                {filteredRooms.length === 0 ? (
                     <Typography className={styles.emptyRoom}>
-                        참여 중인 채팅방이 없어요 🧶
+                        {activeTab === 'dm' ? 'DM이 없어요 💬' : '참여 중인 채팅방이 없어요 🧶'}
                     </Typography>
                 ) : (
-                    rooms.map(room => (
+                    
+                    filteredRooms.map(room => (
                         <Box key={room.ROOM_ID}
                             className={`${styles.roomItem} ${selectedRoom?.ROOM_ID === room.ROOM_ID ? styles.roomItemActive : ''}`}
                             onClick={() => handleRoomSelect(room)}>
@@ -232,14 +274,17 @@ function Chat() {
                                     />
                                 ))}
                             </Box>
-                            {/* 초대 코드 복사 */}
-                            <button className={styles.inviteCodeBtn}
-                                onClick={() => {
-                                    navigator.clipboard.writeText(selectedRoom.INVITE_CODE);
-                                    alert(`초대 코드 복사됨: ${selectedRoom.INVITE_CODE}`);
-                                }}>
-                                🔗 초대 코드
-                            </button>
+                
+                            {/* 초대 코드 복사 — DM이 아닐 때만 표시 */}
+                            {selectedRoom.ROOM_TYPE !== 'DM' && (
+                                <button className={styles.inviteCodeBtn}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(selectedRoom.INVITE_CODE);
+                                        alert(`초대 코드 복사됨: ${selectedRoom.INVITE_CODE}`);
+                                    }}>
+                                    🔗 초대 코드
+                                </button>
+                            )}
                             <button className={styles.leaveBtn} onClick={handleLeave}>
                                 나가기
                             </button>

@@ -67,3 +67,13 @@ export const getTotalUnreadCount = async (userEmail) => {
     if (!data.result) return 0;
     return data.list.reduce((sum, room) => sum + (room.UNREAD_COUNT || 0), 0);
 };
+
+// 1:1 dm
+export const createDM = async (userEmail, targetUserId) => {
+    const res = await fetch('http://localhost:3010/api/chat/dm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userEmail, targetUserId }),
+    });
+    return res.json();
+};

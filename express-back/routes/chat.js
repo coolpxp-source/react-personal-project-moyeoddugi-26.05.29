@@ -45,6 +45,84 @@ router.get('/my', async (req, res) => {
     }
 });
 
+
+// 1:1 DM 채팅방 생성 또는 기존 DM방 조회
+router.post('/dm', async (req, res) => {
+    const { userEmail, targetUserId } = req.body;
+    let connection;
+    try {
+        connection = await db.getConnection();
+
+        // 내 userId 조회
+        const userResult = await connection.execute(
+            `SELECT USER_ID, NICKNAME FROM USERS WHERE EMAIL = :userEmail`,
+            [userEmail]
+        );
+        if (userResult.rows.length === 0) {
+            return res.json({ result: false, message: '유저를 찾을 수 없어요.' });
+        }
+        const myUserId = userResult.rows[0][0];
+        const myNickname = userResult.rows[0][1];
+
+        // 상대방 닉네임 조회
+        const targetResult = await connection.execute(
+            `SELECT NICKNAME FROM USERS WHERE USER_ID = :targetUserId`,
+            [Number(targetUserId)]
+        );
+        if (targetResult.rows.length === 0) {
+            return res.json({ result: false, message: '상대방을 찾을 수 없어요.' });
+        }
+        const targetNickname = targetResult.rows[0][0];
+
+        // 이미 DM방 존재하는지 확인
+        const existResult = await connection.execute(
+            `SELECT r.ROOM_ID FROM CHAT_ROOMS r
+             JOIN CHAT_MEMBERS m1 ON m1.ROOM_ID = r.ROOM_ID AND m1.USER_ID = :myUserId
+             JOIN CHAT_MEMBERS m2 ON m2.ROOM_ID = r.ROOM_ID AND m2.USER_ID = :targetUserId
+             WHERE r.ROOM_TYPE = 'DM'`,
+            [Number(myUserId), Number(targetUserId)]
+        );
+
+        if (existResult.rows.length > 0) {
+            // 이미 존재하면 기존 방 반환
+            return res.json({ result: true, roomId: existResult.rows[0][0], isNew: false });
+        }
+
+        // 새 DM방 생성
+        await connection.execute(
+            `INSERT INTO CHAT_ROOMS (ROOM_NAME, MAX_MEMBERS, ROOM_TYPE)
+             VALUES (:roomName, 2, 'DM')`,
+            { roomName: `${myNickname}, ${targetNickname}` },
+            { autoCommit: false }
+        );
+
+        const roomIdResult = await connection.execute(
+            `SELECT MAX(ROOM_ID) FROM CHAT_ROOMS WHERE ROOM_TYPE = 'DM' AND ROOM_NAME = :roomName`,
+            [`${myNickname}, ${targetNickname}`]
+        );
+        const roomId = roomIdResult.rows[0][0];
+
+        // 두 멤버 추가
+        await connection.execute(
+            `INSERT INTO CHAT_MEMBERS (ROOM_ID, USER_ID) VALUES (:roomId, :userId)`,
+            [Number(roomId), Number(myUserId)]
+        );
+        await connection.execute(
+            `INSERT INTO CHAT_MEMBERS (ROOM_ID, USER_ID) VALUES (:roomId, :userId)`,
+            [Number(roomId), Number(targetUserId)]
+        );
+
+        await connection.commit();
+        res.json({ result: true, roomId, isNew: true });
+    } catch (error) {
+        await connection.rollback();
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
+
 // 2. 채팅방 상세 + 멤버 목록 조회
 router.get('/:roomId', async (req, res) => {
     const { roomId } = req.params;
@@ -226,9 +304,9 @@ router.post('/join', async (req, res) => {
         const roomId = roomResult.rows[0][0];
         const maxMembers = roomResult.rows[0][1];
 
-        // 이미 멤버인지 확인
+        // ▼ 1. 이미 멤버인지 먼저 확인
         const memberCheck = await connection.execute(
-            `SELECT MEMBER_ID FROM CHAT_MEMBERS 
+            `SELECT MEMBER_ID FROM CHAT_MEMBERS
              WHERE ROOM_ID = :roomId AND USER_ID = :userId`,
             [roomId, userId]
         );
@@ -236,7 +314,7 @@ router.post('/join', async (req, res) => {
             return res.json({ result: true, roomId, message: '이미 참여 중인 채팅방이에요.' });
         }
 
-        // 인원 확인
+        // ▼ 2. 인원 확인
         const countResult = await connection.execute(
             `SELECT COUNT(*) FROM CHAT_MEMBERS WHERE ROOM_ID = :roomId`, [roomId]
         );
@@ -244,38 +322,38 @@ router.post('/join', async (req, res) => {
             return res.json({ result: false, message: '채팅방이 가득 찼어요.' });
         }
 
+        // ▼ 3. 멤버 추가
         await connection.execute(
-            `UPDATE CHAT_MEMBERS SET LAST_READ_MESSAGE_ID = 0
-            WHERE ROOM_ID = :roomId AND USER_ID = :userId`,
-            [roomId, userId],
+            `INSERT INTO CHAT_MEMBERS (ROOM_ID, USER_ID, LAST_READ_MESSAGE_ID)
+             VALUES (:roomId, :userId, 0)`,
+            [Number(roomId), Number(userId)],
             { autoCommit: true }
         );
 
-        // ▼ 닉네임 조회 추가
+        // ▼ 4. 닉네임 조회
         const nickResult = await connection.execute(
             `SELECT NICKNAME FROM USERS WHERE USER_ID = :userId`, [userId]
         );
         const userNickname = nickResult.rows[0][0];
 
-        // ▼ 입장 시스템 메시지 추가
+        // ▼ 5. 입장 시스템 메시지
         await connection.execute(
             `INSERT INTO CHAT_MESSAGES (ROOM_ID, USER_ID, CONTENT)
-            VALUES (:roomId, :userId, :content)`,
+             VALUES (:roomId, :userId, :content)`,
             [roomId, userId, `${userNickname}님이 채팅방에 참여했어요 🧶`],
             { autoCommit: true }
         );
 
-        // 채팅방 멤버 전체 조회 후 알림 발송
+        // ▼ 6. 다른 멤버들에게 알림
         const allMembers = await connection.execute(
-            `SELECT USER_ID FROM CHAT_MEMBERS WHERE ROOM_ID = :roomId`,
-            [roomId]
+            `SELECT USER_ID FROM CHAT_MEMBERS WHERE ROOM_ID = :roomId`, [roomId]
         );
         for (const member of allMembers.rows) {
             const memberId = member[0];
             if (memberId !== userId) {
                 await connection.execute(
                     `INSERT INTO NOTIFICATIONS (RECEIVER_ID, SENDER_ID, NOTI_TYPE, MESSAGE)
-                    VALUES (:memberId, :userId, 'GATHER', :message)`,
+                     VALUES (:memberId, :userId, 'GATHER', :message)`,
                     [memberId, userId, `${userNickname}님이 채팅방에 참여했어요 🧶`],
                     { autoCommit: true }
                 );
@@ -300,12 +378,45 @@ router.delete('/:roomId/leave', async (req, res) => {
         connection = await db.getConnection();
 
         const userResult = await connection.execute(
-            `SELECT USER_ID FROM USERS WHERE EMAIL = :userEmail`, [userEmail]
+            `SELECT USER_ID, NICKNAME FROM USERS WHERE EMAIL = :userEmail`, [userEmail]
         );
         if (userResult.rows.length === 0) {
             return res.json({ result: false, message: '유저를 찾을 수 없어요.' });
         }
         const userId = userResult.rows[0][0];
+        const userNickname = userResult.rows[0][1];
+
+        // ▼ DM방인지 확인
+        const roomResult = await connection.execute(
+            `SELECT ROOM_TYPE FROM CHAT_ROOMS WHERE ROOM_ID = :roomId`, [roomId]
+        );
+        const roomType = roomResult.rows[0]?.[0];
+
+        // ▼ DM방이면 상대방에게 알림
+        if (roomType === 'DM') {
+            const otherMember = await connection.execute(
+                `SELECT USER_ID FROM CHAT_MEMBERS
+                 WHERE ROOM_ID = :roomId AND USER_ID != :userId`,
+                [roomId, userId]
+            );
+            if (otherMember.rows.length > 0) {
+                const otherId = otherMember.rows[0][0];
+                await connection.execute(
+                    `INSERT INTO NOTIFICATIONS (RECEIVER_ID, SENDER_ID, NOTI_TYPE, MESSAGE)
+                     VALUES (:otherId, :userId, 'CHAT', :message)`,
+                    [otherId, userId, `${userNickname}님이 DM방을 나갔어요.`],
+                    { autoCommit: true }
+                );
+            }
+        }
+
+        // ▼ 퇴장 시스템 메시지
+        await connection.execute(
+            `INSERT INTO CHAT_MESSAGES (ROOM_ID, USER_ID, CONTENT)
+             VALUES (:roomId, :userId, :content)`,
+            [roomId, userId, `${userNickname}님이 채팅방을 나갔어요.`],
+            { autoCommit: true }
+        );
 
         await connection.execute(
             `DELETE FROM CHAT_MEMBERS WHERE ROOM_ID = :roomId AND USER_ID = :userId`,

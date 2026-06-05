@@ -50,6 +50,7 @@ function ShowcaseDetail() {
     }, [postId]);
 
     const handleLike = async () => {
+        if (!requireLogin()) return;
         const data = await toggleLike(user?.userEmail, 'POST', postId);
         if (data.result) {
             setLiked(data.liked);
@@ -58,6 +59,7 @@ function ShowcaseDetail() {
     };
 
     const handleCommentSubmit = async () => {
+        if (!requireLogin()) return;
         if (!commentInput.trim()) return;
         const data = await createComment({
             userEmail: user?.userEmail,
@@ -144,6 +146,15 @@ function ShowcaseDetail() {
         const data = await res.json();
         alert('삭제됐어요! 🧶');
         if (data.result) navigate('/works');
+    };
+
+    const requireLogin = () => {
+        if (!user) {
+            alert('로그인이 필요해요!');
+            navigate('/');
+            return false;
+        }
+        return true;
     };
 
     return (

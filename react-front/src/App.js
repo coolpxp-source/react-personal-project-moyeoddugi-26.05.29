@@ -38,6 +38,16 @@ function App() {
   const token = localStorage.getItem('token');
   const user = token ? jwtDecode(token) : null;
 
+  // ▼ PrivateRoute
+  const PrivateRoute = ({ children }) => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+          alert('로그인이 필요해요!');
+          return <Navigate to="/" replace />;
+      }
+      return children;
+  };
+
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#FAF6F0', minHeight: '100vh' }}>
       <CssBaseline />
@@ -51,23 +61,26 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/join" element={<Register />} />
+
+          {/* 로그인 없이 가능 */}
           <Route path="/posts" element={<PostList />} />
           <Route path="/posts/:id" element={<PostDetail />} />
-          <Route path="/places" element={<PlaceMap />} />
-          <Route path="/places/report" element={<PlaceReport />} />
-          <Route path="/patterns" element={<PatternList />} />
-          <Route path="/patterns/write" element={<PatternWrite />} />
-          <Route path="/patterns/:id" element={<PatternDetail />} />
-          <Route path="/user/:userId" element={<UserPage />} />
-          <Route path="/mypage" element={<Navigate to={`/user/${user?.userId}`} replace />} />
-          <Route path="/mypage/edit" element={<MyPageEdit />} />
           <Route path="/works" element={<ShowcaseList />} />
-          <Route path="/works/write" element={<ShowcaseWrite />} />
           <Route path="/works/:postId" element={<ShowcaseDetail />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="/chat" element={<Chat />} />
 
-        </Routes>
+          {/* 로그인 필요 */}
+          <Route path="/places" element={<PrivateRoute><PlaceMap /></PrivateRoute>} />
+          <Route path="/places/report" element={<PrivateRoute><PlaceReport /></PrivateRoute>} />
+          <Route path="/patterns" element={<PrivateRoute><PatternList /></PrivateRoute>} />
+          <Route path="/patterns/write" element={<PrivateRoute><PatternWrite /></PrivateRoute>} />
+          <Route path="/patterns/:id" element={<PrivateRoute><PatternDetail /></PrivateRoute>} />
+          <Route path="/user/:userId" element={<PrivateRoute><UserPage /></PrivateRoute>} />
+          <Route path="/mypage" element={<PrivateRoute><Navigate to={`/user/${user?.userId}`} replace /></PrivateRoute>} />
+          <Route path="/mypage/edit" element={<PrivateRoute><MyPageEdit /></PrivateRoute>} />
+          <Route path="/works/write" element={<PrivateRoute><ShowcaseWrite /></PrivateRoute>} />
+          <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
+          <Route path="/chat" element={<PrivateRoute><Chat /></PrivateRoute>} />
+      </Routes>
       </Box>
     </Box>
     

@@ -697,3 +697,55 @@
 
 /* 숨김 input (파일 업로드용) */
 .hiddenInput { display: none; }
+
+/* 추천 유저 */
+.recommendUserItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid #F5EDD8;
+}
+
+.recommendUserItem:last-child { border-bottom: none; }
+
+.recommendUserInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.recommendUserNick {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #3D2B1A !important;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.recommendUserBio {
+    font-size: 10px !important;
+    color: #B08060 !important;
+}
+
+.recommendFollowBtn {
+    background-color: #7B4F2E;
+    border: none;
+    color: white;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.recommendFollowBtnActive {
+    background-color: transparent;
+    border: 1px solid #E8D5B7;
+    color: #B08060;
+}

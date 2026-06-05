@@ -14,3 +14,8 @@ export const getUserPosts = async (userId) => {
     const res = await fetch(`${BASE_URL}/${userId}/posts`);
     return res.json();
 };
+
+export const getRecommendUsers = async (userEmail) => {
+    const res = await fetch(`http://localhost:3010/api/users/recommend?userEmail=${userEmail}`);
+    return res.json();
+};

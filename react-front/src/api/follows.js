@@ -23,3 +23,13 @@ export const getFollowing = async (userId) => {
     const res = await fetch(`${BASE_URL}/following/${userId}`);
     return res.json();
 };
+
+export const getFollowers = async (userId) => {
+    const res = await fetch(`http://localhost:3010/api/follows/followers/${userId}`);
+    return res.json();
+};
+
+export const getFollowingList = async (userId) => {
+    const res = await fetch(`http://localhost:3010/api/follows/following/${userId}`);
+    return res.json();
+};

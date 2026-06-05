@@ -3,6 +3,45 @@ const router = express.Router();
 const db = require('../db');
 const oracledb = require('oracledb');
 
+// 추천 팔로워 (나를 팔로우하지 않은 유저 중 도안 많은 순)
+router.get('/recommend', async (req, res) => {
+    const { userEmail } = req.query;
+    let connection;
+    try {
+        connection = await db.getConnection();
+
+        const userResult = await connection.execute(
+            `SELECT USER_ID FROM USERS WHERE EMAIL = :userEmail`,
+            [userEmail]
+        );
+        if (userResult.rows.length === 0) return res.json({ result: false, list: [] });
+        const userId = userResult.rows[0][0];
+
+        const result = await connection.execute(
+            `SELECT u.USER_ID, u.NICKNAME, u.PROFILE_IMG, u.BIO,
+                    COUNT(p.PATTERN_ID) AS PATTERN_COUNT
+            FROM USERS u
+            LEFT JOIN PATTERNS p ON p.USER_ID = u.USER_ID
+            WHERE u.USER_ID != :userId
+            AND u.STATUS = 'ACTIVE'
+            AND u.USER_ID NOT IN (
+                SELECT FOLLOWING_ID FROM FOLLOWS WHERE FOLLOWER_ID = :userId2
+            )
+            GROUP BY u.USER_ID, u.NICKNAME, u.PROFILE_IMG, u.BIO
+            ORDER BY PATTERN_COUNT DESC
+            FETCH FIRST 5 ROWS ONLY`,
+            { userId: Number(userId), userId2: Number(userId) }, // ← 이름 다르게 + Number()
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        res.json({ result: true, list: result.rows });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
+
 // 1. 유저 정보 조회
 router.get('/:userId', async (req, res) => {
     const { userId } = req.params;
@@ -112,5 +151,6 @@ router.get('/:userId/posts', async (req, res) => {
         await connection.close();
     }
 });
+
 
 module.exports = router;

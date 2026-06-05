@@ -12,6 +12,8 @@ import RightSidebar from '../../components/RightSidebar';
 import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
 import SearchInput from '../../components/SearchInput';
 import { toggleScrap } from '../../api/scraps'; // 스크랩
+import { getRecommendUsers } from '../../api/users'; // 추천 유저
+import { toggleFollow } from '../../api/follows';
 
 
 const BOARD_TYPES = ['전체', '자유', '질문', '모여떠요', '떠주세요', '떠드려요'];
@@ -56,6 +58,9 @@ function PostList() {
     // 인기 도안
     const [popularPatterns, setPopularPatterns] = useState([]);
     const [mostCommentedPatterns, setMostCommentedPatterns] = useState([]);
+    // 추천 유저
+    const [recommendUsers, setRecommendUsers] = useState([]);
+    const [followedUsers, setFollowedUsers] = useState({}); // { userId: true/false }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
@@ -90,6 +95,9 @@ function PostList() {
 
             const tagData = await getPopularTags();
             if (tagData.list) setPopularTags(tagData.list);
+
+            const recommendData = await getRecommendUsers(user?.userEmail);
+            if (recommendData.list) setRecommendUsers(recommendData.list);
         };
         fetchSidebar();
     }, []);
@@ -304,6 +312,21 @@ function PostList() {
             return false;
         }
         return true;
+    };
+
+    // 추천 팔로우
+    const handleRecommendFollow = async (targetUserId) => {
+        if (!requireLogin()) return;
+        const data = await toggleFollow(user?.userEmail, targetUserId);
+        if (data.result) {
+            if (data.following) {
+                setFollowedUsers(prev => ({ ...prev, [targetUserId]: true }));
+            } else {
+                // 언팔로우 시 목록에서 제거
+                setRecommendUsers(prev => prev.filter(u => u.USER_ID !== targetUserId));
+                setFollowedUsers(prev => ({ ...prev, [targetUserId]: false }));
+            }
+        }
     };
 
     return (
@@ -784,7 +807,38 @@ function PostList() {
                             )}
                         </Box>
                     </Box>
-
+                    {/* 추천 팔로워 */}
+                    {recommendUsers.length > 0 && (
+                        <Box className={styles.widgetCard}>
+                            <Typography className={styles.widgetTitle}>👤 추천 팔로워</Typography>
+                            <Box className={styles.widgetList}>
+                                {recommendUsers.map(u => (
+                                    <Box key={u.USER_ID} className={styles.recommendUserItem}>
+                                        <AvatarItem
+                                            src={u.PROFILE_IMG}
+                                            nickname={u.NICKNAME}
+                                            size={32}
+                                            onClick={() => navigate(`/user/${u.USER_ID}`)}
+                                        />
+                                        <Box className={styles.recommendUserInfo}>
+                                            <Typography className={styles.recommendUserNick}
+                                                onClick={() => navigate(`/user/${u.USER_ID}`)}>
+                                                {u.NICKNAME}
+                                            </Typography>
+                                            <Typography className={styles.recommendUserBio}>
+                                                도안 {u.PATTERN_COUNT}개
+                                            </Typography>
+                                        </Box>
+                                        <button
+                                            className={`${styles.recommendFollowBtn} ${followedUsers[u.USER_ID] ? styles.recommendFollowBtnActive : ''}`}
+                                            onClick={() => handleRecommendFollow(u.USER_ID)}>
+                                            {followedUsers[u.USER_ID] ? '팔로잉' : '팔로우'}
+                                        </button>
+                                    </Box>
+                                ))}
+                            </Box>
+                        </Box>
+                    )}
                     {/* 인기 태그 */}
                     <Box className={styles.widgetCard}>
                         <Typography className={styles.widgetTitle}>🏷 인기 태그</Typography>

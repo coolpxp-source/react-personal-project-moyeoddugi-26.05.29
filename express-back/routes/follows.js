@@ -127,7 +127,32 @@ router.get('/following/:userId', async (req, res) => {
             `SELECT u.USER_ID, u.NICKNAME, u.PROFILE_IMG
              FROM FOLLOWS f
              JOIN USERS u ON f.FOLLOWING_ID = u.USER_ID
-             WHERE f.FOLLOWER_ID = :userId`,
+             WHERE f.FOLLOWER_ID = :userId
+             ORDER BY f.CREATED_AT DESC`,
+            [userId],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        res.json({ result: true, list: result.rows });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
+
+// 5. 팔로워 목록 조회
+router.get('/followers/:userId', async (req, res) => {
+    const { userId } = req.params;
+    let connection;
+    try {
+        connection = await db.getConnection();
+        const result = await connection.execute(
+            `SELECT u.USER_ID, u.NICKNAME, u.PROFILE_IMG, u.BIO
+             FROM FOLLOWS f
+             JOIN USERS u ON f.FOLLOWER_ID = u.USER_ID
+             WHERE f.FOLLOWING_ID = :userId
+             ORDER BY f.CREATED_AT DESC`,
             [userId],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );

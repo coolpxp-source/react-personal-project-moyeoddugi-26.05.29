@@ -24,6 +24,9 @@ import ShowcaseDetail from './pages/showcase/ShowcaseDetail';
 import Notifications from './pages/notifications/Notifications';
 // 채팅방
 import Chat from './pages/chat/Chat';
+// 애니메이션 효과
+import { AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 import { Navigate } from 'react-router-dom'; // ▼ 추가
 import { jwtDecode } from 'jwt-decode';
@@ -47,6 +50,20 @@ function App() {
       return children;
   };
 
+  // ▼ 페이지 래퍼 컴포넌트 추가
+  const PageWrapper = ({ children }) => (
+      <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
+          style={{ width: '100%', height: '100%' }}
+      >
+          {children}
+      </motion.div>
+  );
+
+
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#FAF6F0', minHeight: '100vh' }}>
       <CssBaseline />
@@ -58,28 +75,30 @@ function App() {
           width: 'calc(100% - 320px)',
           overflow: 'hidden'
       }}>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/join" element={<Register />} />
+        <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<PageWrapper><Login /></PageWrapper>} />
+                <Route path="/join" element={<PageWrapper><Register /></PageWrapper>} />
 
-          {/* 로그인 없이 가능 */}
-          <Route path="/posts" element={<PostList />} />
-          <Route path="/works" element={<ShowcaseList />} />
-          <Route path="/works/:postId" element={<ShowcaseDetail />} />
+                {/* 로그인 없이 가능 */}
+                <Route path="/posts" element={<PageWrapper><PostList /></PageWrapper>} />
+                <Route path="/works" element={<PageWrapper><ShowcaseList /></PageWrapper>} />
+                <Route path="/works/:postId" element={<PageWrapper><ShowcaseDetail /></PageWrapper>} />
 
-          {/* 로그인 필요 */}
-          <Route path="/places" element={<PrivateRoute><PlaceMap /></PrivateRoute>} />
-          <Route path="/places/report" element={<PrivateRoute><PlaceReport /></PrivateRoute>} />
-          <Route path="/patterns" element={<PrivateRoute><PatternList /></PrivateRoute>} />
-          <Route path="/patterns/write" element={<PrivateRoute><PatternWrite /></PrivateRoute>} />
-          <Route path="/patterns/:id" element={<PrivateRoute><PatternDetail /></PrivateRoute>} />
-          <Route path="/user/:userId" element={<PrivateRoute><UserPage /></PrivateRoute>} />
-          <Route path="/mypage" element={<PrivateRoute><Navigate to={`/user/${user?.userId}`} replace /></PrivateRoute>} />
-          <Route path="/mypage/edit" element={<PrivateRoute><MyPageEdit /></PrivateRoute>} />
-          <Route path="/works/write" element={<PrivateRoute><ShowcaseWrite /></PrivateRoute>} />
-          <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
-          <Route path="/chat" element={<PrivateRoute><Chat /></PrivateRoute>} />
-      </Routes>
+                {/* 로그인 필요 — PrivateRoute 안쪽에 PageWrapper */}
+                <Route path="/places" element={<PrivateRoute><PageWrapper><PlaceMap /></PageWrapper></PrivateRoute>} />
+                <Route path="/places/report" element={<PrivateRoute><PageWrapper><PlaceReport /></PageWrapper></PrivateRoute>} />
+                <Route path="/patterns" element={<PrivateRoute><PageWrapper><PatternList /></PageWrapper></PrivateRoute>} />
+                <Route path="/patterns/write" element={<PrivateRoute><PageWrapper><PatternWrite /></PageWrapper></PrivateRoute>} />
+                <Route path="/patterns/:id" element={<PrivateRoute><PageWrapper><PatternDetail /></PageWrapper></PrivateRoute>} />
+                <Route path="/user/:userId" element={<PrivateRoute><PageWrapper><UserPage /></PageWrapper></PrivateRoute>} />
+                <Route path="/mypage" element={<PrivateRoute><Navigate to={`/user/${user?.userId}`} replace /></PrivateRoute>} />
+                <Route path="/mypage/edit" element={<PrivateRoute><PageWrapper><MyPageEdit /></PageWrapper></PrivateRoute>} />
+                <Route path="/works/write" element={<PrivateRoute><PageWrapper><ShowcaseWrite /></PageWrapper></PrivateRoute>} />
+                <Route path="/notifications" element={<PrivateRoute><PageWrapper><Notifications /></PageWrapper></PrivateRoute>} />
+                <Route path="/chat" element={<PrivateRoute><PageWrapper><Chat /></PageWrapper></PrivateRoute>} />
+            </Routes>
+        </AnimatePresence>
       </Box>
     </Box>
     

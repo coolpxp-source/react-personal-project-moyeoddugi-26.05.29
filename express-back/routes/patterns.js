@@ -45,8 +45,10 @@ router.get('/', async (req, res) => {
             conditions.push(`p.DIFFICULTY = :difficulty`);
             binds.push(difficulty);
         }
-        if (category) { // ▼ 추가
-            conditions.push(`p.CATEGORY = :category`);
+        if (category) {
+            conditions.push(`p.PATTERN_ID IN (
+                SELECT PATTERN_ID FROM PATTERN_TAGS WHERE TAG_NAME = :category
+            )`);
             binds.push(category);
         }
         if (conditions.length > 0) {
@@ -60,14 +62,23 @@ router.get('/', async (req, res) => {
 
         // ▼ 추가: 각 도안의 태그 조회
         const patterns = result.rows;
-        for (const pattern of patterns) {
+        if (patterns.length > 0) {
+            const patternIds = patterns.map(p => p.PATTERN_ID);
             const tagResult = await connection.execute(
-                `SELECT TAG_NAME FROM PATTERN_TAGS WHERE PATTERN_ID = :patternId`,
-                [pattern.PATTERN_ID]
+                `SELECT PATTERN_ID, TAG_NAME FROM PATTERN_TAGS 
+                WHERE PATTERN_ID IN (${patternIds.map((_, i) => `:id${i}`).join(',')})`,
+                patternIds.reduce((acc, id, i) => ({ ...acc, [`id${i}`]: id }), {}),
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
-            pattern.TAGS = tagResult.rows.map(row => row[0]);
+            const tagMap = {};
+            tagResult.rows.forEach(row => {
+                if (!tagMap[row.PATTERN_ID]) tagMap[row.PATTERN_ID] = [];
+                tagMap[row.PATTERN_ID].push(row.TAG_NAME);
+            });
+            patterns.forEach(pattern => {
+                pattern.TAGS = tagMap[pattern.PATTERN_ID] || [];
+            });
         }
-
         res.json({ list: patterns });
     } catch (error) {
         console.error('Error:', error);

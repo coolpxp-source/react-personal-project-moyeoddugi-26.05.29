@@ -493,3 +493,45 @@
 }
 
 .modalCloseBtn:hover { background-color: #5C3D2E; }
+
+.modalUserHeader {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 맞팔로우 — 초록 */
+.mutualTag {
+    font-size: 10px;
+    background-color: #E8F5E9;
+    color: #2E7D32;
+    padding: 2px 6px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+/* 나를 팔로우 중 — 파랑 */
+.followerTag {
+    font-size: 10px;
+    background-color: #E3F2FD;
+    color: #1565C0;
+    padding: 2px 6px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+/* 내가 팔로우 중 — 주황 */
+.followingTag {
+    font-size: 10px;
+    background-color: #FFF3E0;
+    color: #E65100;
+    padding: 2px 6px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+.nicknameRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

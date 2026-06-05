@@ -73,13 +73,23 @@ router.get('/', async (req, res) => {
         });
 
         const posts = result.rows;
-        for (const post of posts) {
+        if (posts.length > 0) {
+            const postIds = posts.map(p => Number(p.POST_ID));
             const imgResult = await connection.execute(
-                `SELECT IMAGE_URL FROM POST_IMAGES 
-                WHERE POST_ID = :postId ORDER BY SORT_ORDER ASC`,
-                [post.POST_ID]
+                `SELECT POST_ID, IMAGE_URL FROM POST_IMAGES 
+                WHERE POST_ID IN (${postIds.map((_, i) => `:id${i}`).join(',')})
+                ORDER BY SORT_ORDER ASC`,
+                postIds.reduce((acc, id, i) => ({ ...acc, [`id${i}`]: id }), {}),
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
-            post.IMAGES = imgResult.rows.map(r => r[0]);
+            const imgMap = {};
+            imgResult.rows.forEach(row => {
+                if (!imgMap[row.POST_ID]) imgMap[row.POST_ID] = [];
+                imgMap[row.POST_ID].push(row.IMAGE_URL);
+            });
+            posts.forEach(post => {
+                post.IMAGES = imgMap[post.POST_ID] || [];
+            });
         }
 
         res.json({ list: posts });
@@ -335,6 +345,77 @@ router.put('/showcase/:postId', async (req, res) => {
     }
 });
 
+// 팔로잉 피드 (내가 구독한 사람의 피드만 보기)
+router.get('/following', async (req, res) => {
+    const { userEmail } = req.query;
+    let connection;
+    try {
+        connection = await db.getConnection();
+        const result = await connection.execute(
+            `SELECT p.POST_ID, p.USER_ID, p.BOARD_TYPE, p.TITLE, p.CONTENT,
+                    p.VIEW_COUNT, p.CREATED_AT,
+                    u.NICKNAME, u.PROFILE_IMG,
+                    (SELECT IMAGE_URL FROM POST_IMAGES 
+                     WHERE POST_ID = p.POST_ID AND IS_THUMBNAIL = 'Y'
+                     AND ROWNUM = 1) AS THUMBNAIL_IMG,
+                    (SELECT COUNT(*) FROM COMMENTS c
+                     WHERE c.TARGET_ID = p.POST_ID
+                     AND c.TARGET_TYPE = 'POST') AS COMMENT_COUNT,
+                    (SELECT COUNT(*) FROM LIKES l
+                     WHERE l.TARGET_TYPE = 'POST'
+                     AND l.TARGET_ID = p.POST_ID) AS LIKE_COUNT,
+                    (SELECT COUNT(*) FROM LIKES l2
+                     JOIN USERS u2 ON l2.USER_ID = u2.USER_ID
+                     WHERE l2.TARGET_TYPE = 'POST'
+                     AND l2.TARGET_ID = p.POST_ID
+                     AND u2.EMAIL = :userEmail) AS IS_LIKED,
+                    (SELECT COUNT(*) FROM SCRAPS s2
+                     JOIN USERS u3 ON s2.USER_ID = u3.USER_ID
+                     WHERE s2.TARGET_TYPE = 'POST'
+                     AND s2.TARGET_ID = p.POST_ID
+                     AND u3.EMAIL = :userEmail) AS IS_SCRAPPED
+             FROM POSTS p
+             JOIN USERS u ON p.USER_ID = u.USER_ID
+             WHERE p.USER_ID IN (
+                 SELECT f.FOLLOWING_ID FROM FOLLOWS f
+                 JOIN USERS u4 ON f.FOLLOWER_ID = u4.USER_ID
+                 WHERE u4.EMAIL = :userEmail
+             )
+             AND p.BOARD_TYPE != '작품자랑'
+             ORDER BY p.CREATED_AT DESC`,
+            [userEmail, userEmail, userEmail],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+
+        const posts = result.rows;
+        if (posts.length > 0) {
+            const postIds = posts.map(p => Number(p.POST_ID));
+            const imgResult = await connection.execute(
+                `SELECT POST_ID, IMAGE_URL FROM POST_IMAGES 
+                 WHERE POST_ID IN (${postIds.map((_, i) => `:id${i}`).join(',')})
+                 ORDER BY SORT_ORDER ASC`,
+                postIds.reduce((acc, id, i) => ({ ...acc, [`id${i}`]: id }), {}),
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
+            );
+            const imgMap = {};
+            imgResult.rows.forEach(row => {
+                if (!imgMap[row.POST_ID]) imgMap[row.POST_ID] = [];
+                imgMap[row.POST_ID].push(row.IMAGE_URL);
+            });
+            posts.forEach(post => {
+                post.IMAGES = imgMap[post.POST_ID] || [];
+            });
+        }
+
+        res.json({ list: posts });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
+
 // 2. 게시글 상세 조회
 router.get('/:postId', async (req, res) => {
   const { postId } = req.params; // 동적 값은 params
@@ -538,6 +619,5 @@ router.delete('/:postId', async (req, res) => {
         await connection.close();
     }
 });
-
 
 module.exports = router;

@@ -49,3 +49,8 @@ export const getPopularTags = async () => {
     const res = await fetch(`${BASE_URL}/popular-tags`);
     return res.json();
 };
+// 구독한 사람의 피드만 보기
+export const getFollowingPosts = async (userEmail) => {
+    const res = await fetch(`http://localhost:3010/api/posts/following?userEmail=${userEmail}`);
+    return res.json();
+};

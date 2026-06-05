@@ -89,12 +89,22 @@ router.get('/:userId/patterns', async (req, res) => {
         );
 
         const patterns = result.rows;
-        for (const pattern of patterns) {
+        if (patterns.length > 0) {
+            const patternIds = patterns.map(p => p.PATTERN_ID);
             const tagResult = await connection.execute(
-                `SELECT TAG_NAME FROM PATTERN_TAGS WHERE PATTERN_ID = :patternId`,
-                [pattern.PATTERN_ID]
+                `SELECT PATTERN_ID, TAG_NAME FROM PATTERN_TAGS 
+                WHERE PATTERN_ID IN (${patternIds.map((_, i) => `:id${i}`).join(',')})`,
+                patternIds.reduce((acc, id, i) => ({ ...acc, [`id${i}`]: id }), {}),
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
-            pattern.TAGS = tagResult.rows.map(r => r[0]);
+            const tagMap = {};
+            tagResult.rows.forEach(row => {
+                if (!tagMap[row.PATTERN_ID]) tagMap[row.PATTERN_ID] = [];
+                tagMap[row.PATTERN_ID].push(row.TAG_NAME);
+            });
+            patterns.forEach(pattern => {
+                pattern.TAGS = tagMap[pattern.PATTERN_ID] || [];
+            });
         }
 
         res.json({ result: true, list: patterns });
@@ -134,13 +144,23 @@ router.get('/:userId/posts', async (req, res) => {
         );
 
         const posts = result.rows;
-        for (const post of posts) {
+        if (posts.length > 0) {
+            const postIds = posts.map(p => p.POST_ID);
             const imgResult = await connection.execute(
-                `SELECT IMAGE_URL FROM POST_IMAGES 
-                 WHERE POST_ID = :postId ORDER BY SORT_ORDER ASC`,
-                [post.POST_ID]
+                `SELECT POST_ID, IMAGE_URL FROM POST_IMAGES 
+                WHERE POST_ID IN (${postIds.map((_, i) => `:id${i}`).join(',')})
+                ORDER BY SORT_ORDER ASC`,
+                postIds.reduce((acc, id, i) => ({ ...acc, [`id${i}`]: id }), {}),
+                { outFormat: oracledb.OUT_FORMAT_OBJECT }
             );
-            post.IMAGES = imgResult.rows.map(r => r[0]);
+            const imgMap = {};
+            imgResult.rows.forEach(row => {
+                if (!imgMap[row.POST_ID]) imgMap[row.POST_ID] = [];
+                imgMap[row.POST_ID].push(row.IMAGE_URL);
+            });
+            posts.forEach(post => {
+                post.IMAGES = imgMap[post.POST_ID] || [];
+            });
         }
 
         res.json({ result: true, list: posts });

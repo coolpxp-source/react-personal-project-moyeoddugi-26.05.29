@@ -52,6 +52,7 @@ function UserPage() {
     const [showFollowModal, setShowFollowModal] = useState(false);
     const [followModalType, setFollowModalType] = useState(''); // 'followers' | 'following'
     const [followModalList, setFollowModalList] = useState([]);
+    const [mutualStatus, setMutualStatus] = useState(''); // 'mutual' | 'following' | 'follower' | ''
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
@@ -91,6 +92,16 @@ function UserPage() {
             if (isMe) {
                 const scrapPostData = await getScraps(me.userEmail, 'POST');
                 if (scrapPostData.list) setScrappedPosts(scrapPostData.list);
+            }
+
+            if (me && !isMe) {
+                const followData = await getFollowStatus(me.userEmail, userId);
+                const iFollow = followData.following;
+                const theyFollowMe = followData.followedByThem;
+
+                if (iFollow && theyFollowMe) setMutualStatus('mutual');
+                else if (iFollow) setMutualStatus('following');
+                else if (theyFollowMe) setMutualStatus('follower');
             }
         };
         fetchAll();
@@ -153,10 +164,10 @@ function UserPage() {
         setFollowModalType(type);
         setShowFollowModal(true);
         if (type === 'followers') {
-            const data = await getFollowers(userId);
+            const data = await getFollowers(userId, me?.userId); // ← me?.userId 추가
             if (data.list) setFollowModalList(data.list);
         } else {
-            const data = await getFollowingList(userId);
+            const data = await getFollowingList(userId, me?.userId); // ← me?.userId 추가
             if (data.list) setFollowModalList(data.list);
         }
     };
@@ -173,7 +184,18 @@ function UserPage() {
                             size={64}
                         />
                         <Box className={styles.profileInfo}>
-                            <Typography className={styles.nickname}>{userInfo.NICKNAME}</Typography>
+                            <Box className={styles.nicknameRow}>
+                                <Typography className={styles.nickname}>{userInfo.NICKNAME}</Typography>
+                                {!isMe && mutualStatus === 'mutual' && (
+                                    <span className={styles.mutualTag}>맞팔로우</span>
+                                )}
+                                {!isMe && mutualStatus === 'following' && (  // ← 추가
+                                    <span className={styles.followingTag}>내가 팔로우 중</span>
+                                )}
+                                {!isMe && mutualStatus === 'follower' && (
+                                    <span className={styles.followerTag}>나를 팔로우 중</span>
+                                )}
+                            </Box>
                             <Typography className={styles.bio}>
                                 {userInfo.BIO || '뜨개질을 좋아하는 뜨개인'}
                             </Typography>
@@ -484,7 +506,20 @@ function UserPage() {
                                     onClick={() => { setShowFollowModal(false); navigate(`/user/${u.USER_ID}`); }}>
                                     <AvatarItem src={u.PROFILE_IMG} nickname={u.NICKNAME} size={36}/>
                                     <Box className={styles.modalUserInfo}>
-                                        <Typography className={styles.modalUserNick}>{u.NICKNAME}</Typography>
+                                        <Box className={styles.modalUserHeader}>
+                                            <Typography className={styles.modalUserNick}>{u.NICKNAME}</Typography>
+                                            {/* ▼ 맞팔 태그 추가 */}
+                                            {followModalType === 'followers' && (
+                                                u.IS_MUTUAL === 'Y'
+                                                    ? <span className={styles.mutualTag}>맞팔로우</span>
+                                                    : null  // ← 아무것도 안 보여줌
+                                            )}
+                                            {followModalType === 'following' && (
+                                                u.IS_MUTUAL === 'Y'
+                                                    ? <span className={styles.mutualTag}>맞팔로우</span>
+                                                    : <span className={styles.followingTag}>내가 팔로우 중</span>
+                                            )}
+                                        </Box>
                                         {u.BIO && (
                                             <Typography className={styles.modalUserBio}>{u.BIO}</Typography>
                                         )}

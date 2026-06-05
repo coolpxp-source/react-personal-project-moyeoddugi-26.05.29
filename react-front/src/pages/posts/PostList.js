@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Tabs, Tab, TextField, Button, Typography, Chip, Collapse } from '@mui/material';
 import { Favorite, FavoriteBorder, ChatBubbleOutline, BookmarkBorder, Bookmark } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { getPosts, getPopularTags } from '../../api/posts';
+import { getPosts, getPopularTags, getFollowingPosts  } from '../../api/posts';
 import { getPopularPatterns, getMostCommentedPatterns } from '../../api/patterns';
 import { getComments, createComment, deleteComment, updateComment } from '../../api/comments';
 import { toggleLike } from '../../api/likes';
@@ -16,7 +16,15 @@ import { getRecommendUsers } from '../../api/users'; // 추천 유저
 import { toggleFollow } from '../../api/follows';
 
 
+
 const BOARD_TYPES = ['전체', '자유', '질문', '모여떠요', '떠주세요', '떠드려요'];
+
+// tab 0 = 전체, tab 1 = 팔로잉, tab 2~ = 게시판 타입
+const getBoardType = (tab) => {
+    if (tab === 0) return '전체';
+    if (tab === 1) return null; // 팔로잉
+    return BOARD_TYPES.filter(t => t !== '전체')[tab - 2];
+};
 
 const BADGE_COLORS = {
     '자유':    { bg: '#E8F4FD', color: '#1976D2' },
@@ -61,11 +69,14 @@ function PostList() {
     // 추천 유저
     const [recommendUsers, setRecommendUsers] = useState([]);
     const [followedUsers, setFollowedUsers] = useState({}); // { userId: true/false }
+    // 전체 / 구독 피드 구분
+    const [activeTab, setActiveTab] = useState('all'); // 'all' | 'following'
+    const [followingPosts, setFollowingPosts] = useState([]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         const fetchAll = async () => {
-            const data = await getPosts(BOARD_TYPES[tab], user?.userEmail);
+            const data = await getPosts(getBoardType(tab), user?.userEmail);
             if (data.list) {
                 setPosts(data.list);
                 const initialLikes = {};
@@ -106,6 +117,8 @@ function PostList() {
         (post.TITLE || '').toLowerCase().includes(search.toLowerCase())
         || (post.CONTENT || '').toLowerCase().includes(search.toLowerCase())
     );
+
+    const displayPosts = tab === 1 ? followingPosts : filteredPosts;
 
     // 피드에서 작성
     const handleWriteImageChange = (e) => {
@@ -329,11 +342,24 @@ function PostList() {
         }
     };
 
+    const handleTabChange = async (val) => {
+        setActiveTab(val);
+        if (val === 'following') {
+            const data = await getFollowingPosts(user?.userEmail);
+            if (data.list) setFollowingPosts(data.list);
+        }
+    };
+
     return (
         <Box className={styles.container}>
-            <Tabs value={tab} onChange={(e, val) => setTab(val)}
+            <Tabs value={tab} onChange={(e, val) => {
+                setTab(val);
+                if (val === 1) handleTabChange('following');
+            }}
                 className={styles.tabs} variant="scrollable" scrollButtons="auto">
-                {BOARD_TYPES.map((type) => (
+                <Tab label="전체" className={styles.tab}/>
+                <Tab label="⭐ 팔로잉" className={styles.tab}/>
+                {BOARD_TYPES.filter(t => t !== '전체').map((type) => (
                     <Tab key={type} label={type} className={styles.tab}/>
                 ))}
             </Tabs>
@@ -419,10 +445,14 @@ function PostList() {
                         )}
                     </Box>
                     <Box className={styles.feed}>
-                        {filteredPosts.length === 0 ? (
-                            <Typography className={styles.empty}>게시글이 없어요 🧶</Typography>
+                        {displayPosts .length === 0 ? (
+                            <Typography className={styles.empty}>
+                                {tab === BOARD_TYPES.length 
+                                    ? '팔로잉한 사람의 게시글이 없어요 🧶' 
+                                    : '게시글이 없어요 🧶'}
+                            </Typography>
                         ) : (
-                            filteredPosts.map((post) => (
+                            displayPosts .map((post) => (
                                 <Box key={post.POST_ID} className={styles.feedCard}>
                                     <Box className={styles.cardLayout}>
                                         {/* 좌측 아바타 */}

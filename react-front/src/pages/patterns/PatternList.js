@@ -83,7 +83,8 @@ function PatternList() {
     };
 
     const filteredPatterns = patterns.filter(p =>
-        p.TITLE.toLowerCase().includes(search.toLowerCase())
+        p.TITLE.toLowerCase().includes(search.toLowerCase()) ||
+        p.TAGS?.some(tag => tag && tag.toLowerCase().includes(search.toLowerCase()))
     );
 
     const totalPages = Math.ceil(filteredPatterns.length / PER_PAGE);

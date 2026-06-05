@@ -41,8 +41,10 @@ function Register(){
 
         // 비밀번호
         if(name === 'password'){
-            setForm({ ...form, [name]: value });
-            if(value.length > 0 && value.length < 8){
+            const filtered = value.replace(/[\s ㄱ-ㅎㅏ-ㅣ가-힣]/g, '');
+            setForm({ ...form, [name]: filtered });
+            // 길이 체크
+            if(filtered.length > 0 && filtered.length < 8){
                 setErrors({ ...errors, password: '비밀번호는 8자 이상이어야 합니다.' });
             } else {
                 setErrors({ ...errors, password: '' });

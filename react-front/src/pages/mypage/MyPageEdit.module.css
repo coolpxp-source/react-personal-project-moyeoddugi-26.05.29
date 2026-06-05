@@ -121,3 +121,101 @@
 
 /* 숨김 input (파일 업로드용) */
 .hiddenInput { display: none; }
+
+/* 비밀변호 변경 */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #F5EDD8;
+}
+
+.sectionTitle {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.errorText {
+    font-size: 12px !important;
+    color: #E53935 !important;
+}
+
+.pwChangeBtn {
+    background-color: #7B4F2E !important;
+    border-radius: 20px !important;
+    align-self: flex-end;
+}
+
+.pwChangeBtn:hover { background-color: #5C3D2E !important; }
+
+/* 회원탈퇴 */
+.withdrawSection {
+    border-top: 1px solid #F5EDD8;
+    padding-top: 16px;
+    margin-top: 8px;
+}
+
+.withdrawOpenBtn {
+    background: none;
+    border: none;
+    color: #B08060;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.withdrawBox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.withdrawTitle {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #E53935 !important;
+}
+
+.withdrawDesc {
+    font-size: 12px !important;
+    color: #B08060 !important;
+}
+
+.withdrawInput {
+    border: 1px solid #E8D5B7;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+    background-color: #FAF6F0;
+}
+
+.withdrawInput:focus { border-color: #E53935; }
+
+.withdrawBtns {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.withdrawBtn {
+    background-color: #E53935;
+    border: none;
+    color: white;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.withdrawCancelBtn {
+    background: none;
+    border: 1px solid #E8D5B7;
+    color: #B08060;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}

@@ -62,7 +62,10 @@
     margin-bottom: 24px;
 }
 
-.link { color: #7B4F2E; }
+.link { 
+    color: #7B4F2E; 
+    cursor: pointer;
+}
 
 .divider {
     text-align: center;
@@ -115,4 +118,70 @@
     opacity: 0.85 !important;
     transform: scale(1.02) !important;
     background-color: white !important;
+}
+
+/* 비밀번호 임시 발급  */
+.modalOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalBox {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modalTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #3D2B1A;
+}
+
+.modalDesc {
+    font-size: 13px;
+    color: #B08060;
+}
+
+.modalBtns {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.modalSubmitBtn {
+    background-color: #7B4F2E;
+    border: none;
+    color: white;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.modalCancelBtn {
+    background: none;
+    border: 1px solid #E8D5B7;
+    color: #B08060;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.foundEmail {
+    font-size: 16px;
+    font-weight: 600;
+    color: #7B4F2E;
+    text-align: center;
+    padding: 8px 0;
 }

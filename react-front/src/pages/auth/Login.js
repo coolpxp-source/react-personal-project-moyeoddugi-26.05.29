@@ -8,6 +8,50 @@ import { motion } from 'framer-motion'; // 모션 라이브러리
 function Login(){
     const navigate = useNavigate(); // 페이지 이동 hook
     const [form, setForm] = useState({ email: '', password: '' }); 
+    // 비밀번호 찾기 모달 state
+    const [showFindPw, setShowFindPw] = useState(false);
+    const [findPwEmail, setFindPwEmail] = useState('');
+    // 아이디(이메일) 찾기 모달
+    const [showFindEmail, setShowFindEmail] = useState(false);
+    const [findEmailForm, setFindEmailForm] = useState({ userName: '', nickname: '' });
+    const [foundEmail, setFoundEmail] = useState('');
+
+    const handleFindPassword = async () => {
+        if (!findPwEmail.trim()) return alert('이메일을 입력해주세요.');
+        const res = await fetch('http://localhost:3010/api/auth/find-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userEmail: findPwEmail }),
+        });
+        const data = await res.json();
+        if (data.result) {
+            alert(`임시 비밀번호: ${data.tempPassword}\n로그인 후 비밀번호를 변경해주세요!`);
+            setShowFindPw(false);
+            setFindPwEmail('');
+        } else {
+            alert(data.message);
+        }
+    };
+
+    const handleFindEmail = async () => {
+        if (!findEmailForm.userName.trim() || !findEmailForm.nickname.trim()) {
+            return alert('이름과 닉네임을 입력해주세요.');
+        }
+        const res = await fetch('http://localhost:3010/api/auth/find-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userName: findEmailForm.userName,
+                nickname: findEmailForm.nickname,
+            }),
+        });
+        const data = await res.json();
+        if (data.result) {
+            setFoundEmail(data.email);
+        } else {
+            alert(data.message);
+        }
+    };
 
     const handleChange = (e) =>{
         const {name, value} = e.target;
@@ -18,10 +62,10 @@ function Login(){
             return;
         }
 
-        // 비밀번호 - 공백 입력 막기
+        // 비밀번호 - 공백 + 한글 입력 막기
         if(name === 'password'){
-            const noSpace = value.replace(/\s/g, '');
-            setForm({ ...form, [name]: noSpace });
+            const filtered = value.replace(/[\s ㄱ-ㅎㅏ-ㅣ가-힣]/g, '');
+            setForm({ ...form, [name]: filtered });
             return;
         }
 
@@ -72,8 +116,88 @@ function Login(){
                         </Button>
 
                         <Typography className={styles.subTitle}>
-                            <Link to="/join" className={styles.link}>비밀번호를 잊으셨나요?</Link>
+                            <span className={styles.link}
+                                onClick={() => setShowFindEmail(true)}>
+                                아이디 찾기
+                            </span>
+                            {' | '}
+                            <span className={styles.link}
+                                onClick={() => setShowFindPw(true)}>
+                                비밀번호를 잊으셨나요?
+                            </span>
                         </Typography>
+
+                        {/* 아이디 찾기 모달 */}
+                        {showFindEmail && (
+                            <Box className={styles.modalOverlay} onClick={() => { setShowFindEmail(false); setFoundEmail(''); }}>
+                                <Box className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
+                                    <Typography className={styles.modalTitle}>아이디 찾기</Typography>
+                                    <Typography className={styles.modalDesc}>
+                                        가입 시 입력한 이름과 닉네임을 입력해주세요.
+                                    </Typography>
+                                    {!foundEmail ? (
+                                        <>
+                                            <TextField fullWidth size="small"
+                                                placeholder="이름"
+                                                value={findEmailForm.userName}
+                                                onChange={(e) => setFindEmailForm(prev => ({ ...prev, userName: e.target.value }))}
+                                            />
+                                            <TextField fullWidth size="small"
+                                                placeholder="닉네임"
+                                                value={findEmailForm.nickname}
+                                                onChange={(e) => setFindEmailForm(prev => ({ ...prev, nickname: e.target.value }))}
+                                                onKeyDown={(e) => e.key === 'Enter' && handleFindEmail()}
+                                            />
+                                            <Box className={styles.modalBtns}>
+                                                <button className={styles.modalCancelBtn}
+                                                    onClick={() => setShowFindEmail(false)}>취소</button>
+                                                <button className={styles.modalSubmitBtn}
+                                                    onClick={handleFindEmail}>확인</button>
+                                            </Box>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Typography className={styles.modalDesc}>
+                                                찾은 이메일이에요:
+                                            </Typography>
+                                            <Typography className={styles.foundEmail}>
+                                                {foundEmail}
+                                            </Typography>
+                                            <Box className={styles.modalBtns}>
+                                                <button className={styles.modalSubmitBtn}
+                                                    onClick={() => { setShowFindEmail(false); setFoundEmail(''); }}>
+                                                    확인
+                                                </button>
+                                            </Box>
+                                        </>
+                                    )}
+                                </Box>
+                            </Box>
+                        )}
+
+                        {/* 비밀번호 찾기 모달 */}
+                        {showFindPw && (
+                            <Box className={styles.modalOverlay} onClick={() => setShowFindPw(false)}>
+                                <Box className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
+                                    <Typography className={styles.modalTitle}>비밀번호 찾기</Typography>
+                                    <Typography className={styles.modalDesc}>
+                                        가입한 이메일을 입력하면 임시 비밀번호를 알려드려요.
+                                    </Typography>
+                                    <TextField fullWidth size="small"
+                                        placeholder="이메일을 입력하세요"
+                                        value={findPwEmail}
+                                        onChange={(e) => setFindPwEmail(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleFindPassword()}
+                                    />
+                                    <Box className={styles.modalBtns}>
+                                        <button className={styles.modalCancelBtn}
+                                            onClick={() => setShowFindPw(false)}>취소</button>
+                                        <button className={styles.modalSubmitBtn}
+                                            onClick={handleFindPassword}>확인</button>
+                                    </Box>
+                                </Box>
+                            </Box>
+                        )}
 
                         <Typography className={styles.divider}>또는</Typography>
 

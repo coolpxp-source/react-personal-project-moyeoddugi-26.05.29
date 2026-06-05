@@ -87,6 +87,10 @@ router.post('/login', async (req, res) => {
     );
     
     if(result.rows.length > 0){ // id 있는지 없는지
+      // ▼ 탈퇴 회원 체크 추가
+      if(result.rows[0].STATUS === 'WITHDRAWN') {
+          return res.json({ result: false, message: '탈퇴한 계정이에요.' });
+      }
       let match = await bcrypt.compare(pwd, result.rows[0].PASSWORD);
       if(match){
         isLogin = true;
@@ -175,5 +179,139 @@ router.put('/update-profile', uploadProfile.single('profileImg'), async (req, re
     }
 });
 
+// 임시 비밀번호 발급
+router.post('/find-password', async (req, res) => {
+    const { userEmail } = req.body;
+    let connection;
+    try {
+        connection = await db.getConnection();
+
+        // 유저 존재 확인
+        const userResult = await connection.execute(
+            `SELECT USER_ID FROM USERS WHERE EMAIL = :userEmail`,
+            [userEmail]
+        );
+        if (userResult.rows.length === 0) {
+            return res.json({ result: false, message: '등록되지 않은 이메일이에요.' });
+        }
+
+        // 임시 비밀번호 생성 (8자리 랜덤)
+        const tempPassword = Math.random().toString(36).substr(2, 8);
+        const hashPwd = await bcrypt.hash(tempPassword, saltRounds);
+
+        // DB 업데이트
+        await connection.execute(
+            `UPDATE USERS SET PASSWORD = :hashPwd WHERE EMAIL = :userEmail`,
+            [hashPwd, userEmail],
+            { autoCommit: true }
+        );
+
+        res.json({ result: true, tempPassword, message: '임시 비밀번호가 발급됐어요.' });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
+
+// 비밀번호 변경
+router.put('/change-password', async (req, res) => {
+    const { userEmail, currentPassword, newPassword } = req.body;
+    let connection;
+    try {
+        connection = await db.getConnection();
+
+        // 현재 비밀번호 확인
+        const userResult = await connection.execute(
+            `SELECT PASSWORD FROM USERS WHERE EMAIL = :userEmail`,
+            [userEmail]
+        );
+        if (userResult.rows.length === 0) {
+            return res.json({ result: false, message: '유저를 찾을 수 없어요.' });
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, userResult.rows[0][0]);
+        if (!isMatch) {
+            return res.json({ result: false, message: '현재 비밀번호가 일치하지 않아요.' });
+        }
+
+        const hashPwd = await bcrypt.hash(newPassword, saltRounds);
+        await connection.execute(
+            `UPDATE USERS SET PASSWORD = :hashPwd WHERE EMAIL = :userEmail`,
+            [hashPwd, userEmail],
+            { autoCommit: true }
+        );
+
+        res.json({ result: true, message: '비밀번호가 변경됐어요!' });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
+
+// 아이디(이메일) 찾기
+router.post('/find-email', async (req, res) => {
+    const { userName, nickname } = req.body;
+    let connection;
+    try {
+        connection = await db.getConnection();
+        const result = await connection.execute(
+            `SELECT EMAIL FROM USERS 
+             WHERE USER_NAME = :userName AND NICKNAME = :nickname`,
+            [userName, nickname]
+        );
+        if (result.rows.length === 0) {
+            return res.json({ result: false, message: '일치하는 계정을 찾을 수 없어요.' });
+        }
+        const email = result.rows[0][0];
+        // 이메일 일부 마스킹 (예: ab***@naver.com)
+        const masked = email.replace(/(?<=.{2}).(?=[^@]*@)/g, '*');
+        res.json({ result: true, email: masked });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
+
+// 회원탈퇴 — 데이터 삭제 대신 STATUS 변경
+router.delete('/withdraw', async (req, res) => {
+    const { userEmail, password } = req.body;
+    let connection;
+    try {
+        connection = await db.getConnection();
+
+        const userResult = await connection.execute(
+            `SELECT USER_ID, PASSWORD FROM USERS WHERE EMAIL = :userEmail`,
+            [userEmail]
+        );
+        if (userResult.rows.length === 0) {
+            return res.json({ result: false, message: '유저를 찾을 수 없어요.' });
+        }
+
+        const isMatch = await bcrypt.compare(password, userResult.rows[0][1]);
+        if (!isMatch) {
+            return res.json({ result: false, message: '비밀번호가 일치하지 않아요.' });
+        }
+
+        // ▼ 삭제 대신 STATUS 변경
+        await connection.execute(
+            `UPDATE USERS SET STATUS = 'WITHDRAWN' WHERE EMAIL = :userEmail`,
+            [userEmail],
+            { autoCommit: true }
+        );
+
+        res.json({ result: true, message: '탈퇴가 완료됐어요.' });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error executing query');
+    } finally {
+        await connection.close();
+    }
+});
 
 module.exports = router;

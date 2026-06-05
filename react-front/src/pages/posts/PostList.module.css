@@ -109,6 +109,7 @@
     font-size: 13px !important;
     color: #5C3D2E !important;
     line-height: 1.6 !important;
+    white-space: pre-line !important; /* 줄바꿈 */
 }
 
 /* ===== 카드 하단 (좋아요, 댓글, 스크랩) ===== */

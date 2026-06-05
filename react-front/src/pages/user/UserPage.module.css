@@ -535,3 +535,11 @@
     align-items: center;
     gap: 8px;
 }
+
+.statItemClickable {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+}

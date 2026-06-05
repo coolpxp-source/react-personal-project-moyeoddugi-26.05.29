@@ -3,16 +3,15 @@ import { Box, Typography, Button, Tabs, Tab, Chip } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { getUser, getUserPatterns, getUserPosts } from '../../api/users';
-import {getFollowStatus, toggleFollow, getFollowing } from '../../api/follows';
+import { getFollowStatus, toggleFollow, getFollowing, getFollowers, getFollowingList } from '../../api/follows';
 import { getPatterns } from '../../api/patterns';
-import { toggleLike, getLikes } from '../../api/likes';
+import { toggleLike , getLikes } from '../../api/likes';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
 import styles from './UserPage.module.css';
 import RightSidebar from '../../components/RightSidebar';
 import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
 import { getScraps } from '../../api/scraps'; // 스크랩
 import { createDM } from '../../api/chat'; // 일대일 디엠방 만들기
-import { getFollowers, getFollowingList } from '../../api/follows';
 import ReactDOM from 'react-dom';
 
 const DIFFICULTY_COLORS = {
@@ -220,15 +219,13 @@ function UserPage() {
                             </Box>
                         )}
                         <Box className={styles.statsRow}>
-                            <Box className={styles.statItem}
-                                onClick={() => handleShowFollow('followers')}
-                                style={{ cursor: 'pointer' }}>
+                            <Box className={styles.statItemClickable}
+                                onClick={() => handleShowFollow('followers')}>
                                 <Typography className={styles.statNum}>{followerCount}</Typography>
                                 <Typography className={styles.statLabel}>팔로워</Typography>
                             </Box>
-                            <Box className={styles.statItem}
-                                onClick={() => handleShowFollow('following')}
-                                style={{ cursor: 'pointer' }}>
+                            <Box className={styles.statItemClickable}
+                                onClick={() => handleShowFollow('following')}>
                                 <Typography className={styles.statNum}>{userInfo.FOLLOWING_COUNT}</Typography>
                                 <Typography className={styles.statLabel}>팔로잉</Typography>
                             </Box>
@@ -318,7 +315,8 @@ function UserPage() {
                                 <Typography className={styles.empty}>올린 게시글이 없어요 🧶</Typography>
                             ) : (
                                 posts.map(post => (
-                                    <Box key={post.POST_ID} className={styles.postCard}>
+                                    <Box key={post.POST_ID} className={styles.postCard}
+                                        onClick={() => navigate('/posts', { state: { scrollToPostId: post.POST_ID } })}>
                                         <Box className={styles.postHeader}>
                                             {post.BOARD_TYPE && (
                                                 <Chip label={post.BOARD_TYPE} size="small"
@@ -422,7 +420,7 @@ function UserPage() {
                                 <>
                                     {(showAllPosts ? scrappedPosts : scrappedPosts.slice(0, 3)).map(post => (
                                         <Box key={post.POST_ID} className={styles.postCard}
-                                            onClick={() => navigate('/community')}>
+                                            onClick={() => navigate('/posts', { state: { scrollToPostId: post.POST_ID } })}>
                                             <Box className={styles.postHeader}>
                                                 {post.BOARD_TYPE && (
                                                     <Chip label={post.BOARD_TYPE} size="small"

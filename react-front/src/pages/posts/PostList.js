@@ -14,6 +14,7 @@ import SearchInput from '../../components/SearchInput';
 import { toggleScrap } from '../../api/scraps'; // 스크랩
 import { getRecommendUsers } from '../../api/users'; // 추천 유저
 import { toggleFollow } from '../../api/follows';
+import { useLocation } from 'react-router-dom';
 
 
 
@@ -73,6 +74,8 @@ function PostList() {
     const [activeTab, setActiveTab] = useState('all'); // 'all' | 'following'
     const [followingPosts, setFollowingPosts] = useState([]);
 
+    const { state: routeState } = useLocation();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         const fetchAll = async () => {
@@ -112,6 +115,17 @@ function PostList() {
         };
         fetchSidebar();
     }, []);
+
+    useEffect(() => {
+        if (routeState?.scrollToPostId) {
+            const el = document.getElementById(`post-${routeState.scrollToPostId}`);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                el.style.border = '2px solid #7B4F2E';
+                setTimeout(() => { el.style.border = '1px solid #E8D5B7'; }, 2000);
+            }
+        }
+    }, [routeState]);
 
     const filteredPosts = posts.filter(post =>
         (post.TITLE || '').toLowerCase().includes(search.toLowerCase())
@@ -453,7 +467,8 @@ function PostList() {
                             </Typography>
                         ) : (
                             displayPosts .map((post) => (
-                                <Box key={post.POST_ID} className={styles.feedCard}>
+                                <Box key={post.POST_ID} className={styles.feedCard}
+                                    id={`post-${post.POST_ID}`}>
                                     <Box className={styles.cardLayout}>
                                         {/* 좌측 아바타 */}
                                         <AvatarItem

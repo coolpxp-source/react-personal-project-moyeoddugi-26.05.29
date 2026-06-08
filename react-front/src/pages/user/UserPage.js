@@ -6,7 +6,7 @@ import { getUser, getUserPatterns, getUserPosts } from '../../api/users';
 import { getFollowStatus, toggleFollow, getFollowing, getFollowers, getFollowingList } from '../../api/follows';
 import { getPatterns } from '../../api/patterns';
 import { toggleLike , getLikes } from '../../api/likes';
-import { Favorite, FavoriteBorder } from '@mui/icons-material';
+import { Favorite, FavoriteBorder , ForwardToInboxOutlined } from '@mui/icons-material';
 import styles from './UserPage.module.css';
 import RightSidebar from '../../components/RightSidebar';
 import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
@@ -213,8 +213,9 @@ function UserPage() {
                                     onClick={handleFollow}>
                                     {following ? '팔로잉' : '팔로우'}
                                 </Button>
-                                <Button className={styles.dmBtn} onClick={handleDM}>
-                                    💬 DM
+                                <Button className={styles.dmBtn} onClick={handleDM}
+                                    startIcon={<ForwardToInboxOutlined/>}>
+                                    DM
                                 </Button>
                             </Box>
                         )}

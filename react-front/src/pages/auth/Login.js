@@ -202,11 +202,16 @@ function Login(){
                         <Typography className={styles.divider}>또는</Typography>
 
                         <Button fullWidth variant="outlined" className={styles.socialButton}
-                            startIcon={<img src="/icons/google_logo.webp" width={20} alt="google"/>}>
+                            startIcon={<img src="/icons/google_logo.webp" width={20} alt="google"/>}
+                            onClick={() => alert('구글 로그인은 준비 중이에요 🧶')}>
                             Google로 로그인
                         </Button>
-                        <img src="/icons/kakao_login_medium_wide.png" alt="카카오 로그인" className={styles.socialImg}/>
-                        <img src="/icons/NAVER_login.png" alt="네이버 로그인" className={styles.socialImg}/>
+                        <img src="/icons/kakao_login_medium_wide.png" alt="카카오 로그인" 
+                            className={styles.socialImg}
+                            onClick={() => alert('카카오 로그인은 준비 중이에요 🧶')}/>
+                        <img src="/icons/NAVER_login.png" alt="네이버 로그인" 
+                            className={styles.socialImg}
+                            onClick={() => alert('네이버 로그인은 준비 중이에요 🧶')}/>
                         <Button fullWidth variant="outlined" component={Link} to="/join"
                             className={styles.newAccountButton}>
                             새 계정 만들기

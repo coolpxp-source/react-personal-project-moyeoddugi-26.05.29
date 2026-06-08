@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Tabs, Tab, TextField, Button, Typography, Chip, Collapse } from '@mui/material';
-import { Favorite, FavoriteBorder, ChatBubbleOutline, BookmarkBorder, Bookmark } from '@mui/icons-material';
+import { Favorite, FavoriteBorder, ChatBubbleOutline, BookmarkBorder, Bookmark , Diversity3Outlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { getPosts, getPopularTags, getFollowingPosts  } from '../../api/posts';
 import { getPopularPatterns, getMostCommentedPatterns } from '../../api/patterns';
@@ -8,13 +8,13 @@ import { getComments, createComment, deleteComment, updateComment } from '../../
 import { toggleLike } from '../../api/likes';
 import { jwtDecode } from 'jwt-decode';
 import styles from './PostList.module.css';
-import RightSidebar from '../../components/RightSidebar';
 import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
 import SearchInput from '../../components/SearchInput';
 import { toggleScrap } from '../../api/scraps'; // 스크랩
 import { getRecommendUsers } from '../../api/users'; // 추천 유저
 import { toggleFollow } from '../../api/follows';
 import { useLocation } from 'react-router-dom';
+import { dummyBanners } from '../../components/RightSidebar';
 
 
 
@@ -73,6 +73,8 @@ function PostList() {
     // 전체 / 구독 피드 구분
     const [activeTab, setActiveTab] = useState('all'); // 'all' | 'following'
     const [followingPosts, setFollowingPosts] = useState([]);
+    // 정렬
+    const [sort, setSort] = useState('latest'); 
 
     const { state: routeState } = useLocation();
 
@@ -132,7 +134,12 @@ function PostList() {
         || (post.CONTENT || '').toLowerCase().includes(search.toLowerCase())
     );
 
-    const displayPosts = tab === 1 ? followingPosts : filteredPosts;
+    const displayPosts = tab === 1 
+        ? followingPosts 
+        : [...filteredPosts].sort((a, b) => {
+            if (sort === 'popular') return (b.LIKE_COUNT || 0) - (a.LIKE_COUNT || 0);
+            return new Date(b.CREATED_AT) - new Date(a.CREATED_AT);
+        });
 
     // 피드에서 작성
     const handleWriteImageChange = (e) => {
@@ -370,9 +377,13 @@ function PostList() {
                 setTab(val);
                 if (val === 1) handleTabChange('following');
             }}
-                className={styles.tabs} variant="scrollable" scrollButtons="auto">
+                className={styles.tabs} variant="scrollable" scrollButtons={false}>
                 <Tab label="전체" className={styles.tab}/>
-                <Tab label="⭐ 팔로잉" className={styles.tab}/>
+                <Tab label={
+                    <Box className={styles.followingTabLabel}>
+                        <Diversity3Outlined className={styles.followingTabIcon}/> 팔로잉
+                    </Box>
+                } className={styles.tab}/>
                 {BOARD_TYPES.filter(t => t !== '전체').map((type) => (
                     <Tab key={type} label={type} className={styles.tab}/>
                 ))}
@@ -384,6 +395,12 @@ function PostList() {
                     onChange={setSearch}
                     placeholder="검색어를 입력하세요"
                 />
+                <Box className={styles.sortBtns}>
+                    <button className={`${styles.sortBtn} ${sort === 'latest' ? styles.sortBtnActive : ''}`}
+                        onClick={() => setSort('latest')}>최신순</button>
+                    <button className={`${styles.sortBtn} ${sort === 'popular' ? styles.sortBtnActive : ''}`}
+                        onClick={() => setSort('popular')}>인기순</button>
+                </Box>
             </Box>
 
             <Box className={styles.mainLayout}>
@@ -397,14 +414,25 @@ function PostList() {
                                 nickname={user?.userNickname}
                                 size={42}
                             />
-                            <textarea
-                                className={styles.writeTextarea}
-                                placeholder="무슨 생각을 하고 계신가요? 🧶"
-                                value={writeForm.content}
-                                onChange={(e) => setWriteForm(prev => ({ ...prev, content: e.target.value }))}
-                                onFocus={() => setIsWriting(true)}
-                                rows={isWriting ? 3 : 1}
-                            />
+                            {!isWriting ? (
+                                // ▼ 클릭 전 — 버튼처럼 보이게
+                                <Box className={styles.writePlaceholder}
+                                    onClick={() => setIsWriting(true)}>
+                                    <Typography className={styles.writePlaceholderText}>
+                                        무슨 생각을 하고 계신가요? 🧶
+                                    </Typography>
+                                </Box>
+                            ) : (
+                                // ▼ 클릭 후 — 기존 textarea
+                                <textarea
+                                    className={styles.writeTextarea}
+                                    placeholder="무슨 생각을 하고 계신가요? 🧶"
+                                    value={writeForm.content}
+                                    onChange={(e) => setWriteForm(prev => ({ ...prev, content: e.target.value }))}
+                                    autoFocus
+                                    rows={3}
+                                />
+                            )}
                         </Box>
 
                         {/* 이미지 프리뷰 */}
@@ -466,332 +494,365 @@ function PostList() {
                                     : '게시글이 없어요 🧶'}
                             </Typography>
                         ) : (
-                            displayPosts .map((post) => (
-                                <Box key={post.POST_ID} className={styles.feedCard}
-                                    id={`post-${post.POST_ID}`}>
-                                    <Box className={styles.cardLayout}>
-                                        {/* 좌측 아바타 */}
-                                        <AvatarItem
-                                            src={post.PROFILE_IMG}
-                                            nickname={post.NICKNAME}
-                                            size={42}
-                                            onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}
-                                        />
-                                        {/* 우측 내용 */}
-                                        <Box className={styles.cardRight}>
-                                            <Box className={styles.cardHeader}>
-                                                <Typography className={styles.nickname}
-                                                    onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}>
-                                                    {post.NICKNAME}
-                                                </Typography>
-                                                <Typography className={styles.date}>
-                                                    {new Date(post.CREATED_AT).toLocaleDateString()}
-                                                </Typography>
-                                                <Chip label={post.BOARD_TYPE} size="small"
-                                                    style={{
-                                                        backgroundColor: BADGE_COLORS[post.BOARD_TYPE]?.bg,
-                                                        color: BADGE_COLORS[post.BOARD_TYPE]?.color,
-                                                        fontSize: 11, height: 20, marginLeft: 'auto'
-                                                    }}
-                                                />
-                                                {/* ▼ 본인 게시글만 수정/삭제 표시 */}
-                                                {post.NICKNAME === user?.userNickname && (
-                                                    <Box className={styles.postActions}>
-                                                        <button className={styles.postActionBtn}
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setEditPost(prev => ({ ...prev, [post.POST_ID]: true }));
-                                                                setEditPostInput(prev => ({ ...prev, [post.POST_ID]: post.CONTENT }));
-                                                            }}>수정</button>
-                                                        <button className={styles.postActionBtn}
-                                                            onClick={(e) => { e.stopPropagation(); handlePostDelete(post.POST_ID); }}>
-                                                            삭제</button>
+                            displayPosts.map((post, idx) => (
+                                <React.Fragment key={post.POST_ID}>
+                                    <Box key={post.POST_ID} className={styles.feedCard}
+                                        id={`post-${post.POST_ID}`}>
+                                        <Box className={styles.cardLayout}>
+                                            {/* 좌측 아바타 */}
+                                            <AvatarItem
+                                                src={post.PROFILE_IMG}
+                                                nickname={post.NICKNAME}
+                                                size={42}
+                                                onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}
+                                            />
+                                            {/* 우측 내용 */}
+                                            <Box className={styles.cardRight}>
+                                                <Box className={styles.cardHeader}>
+                                                    <Typography className={styles.nickname}
+                                                        onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.USER_ID}`); }}>
+                                                        {post.NICKNAME}
+                                                    </Typography>
+                                                    <Typography className={styles.date}>
+                                                        {new Date(post.CREATED_AT).toLocaleDateString()}
+                                                    </Typography>
+                                                    <Chip label={post.BOARD_TYPE} size="small"
+                                                        style={{
+                                                            backgroundColor: BADGE_COLORS[post.BOARD_TYPE]?.bg,
+                                                            color: BADGE_COLORS[post.BOARD_TYPE]?.color,
+                                                            fontSize: 11, height: 20, marginLeft: 'auto'
+                                                        }}
+                                                    />
+                                                    {/* ▼ 본인 게시글만 수정/삭제 표시 */}
+                                                    {post.NICKNAME === user?.userNickname && (
+                                                        <Box className={styles.postActions}>
+                                                            <button className={styles.postActionBtn}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setEditPost(prev => ({ ...prev, [post.POST_ID]: true }));
+                                                                    setEditPostInput(prev => ({ ...prev, [post.POST_ID]: post.CONTENT }));
+                                                                }}>수정</button>
+                                                            <button className={styles.postActionBtn}
+                                                                onClick={(e) => { e.stopPropagation(); handlePostDelete(post.POST_ID); }}>
+                                                                삭제</button>
+                                                        </Box>
+                                                    )}
+                                                </Box>
+
+                                                {post.TITLE && (
+                                                    <Typography className={styles.postTitle}>{post.TITLE}</Typography>
+                                                )}
+                                                {/* 내용 post content */}
+                                                {editPost[post.POST_ID] ? (
+                                                    <Box className={styles.postEditBox}>
+                                                        <textarea
+                                                            className={styles.postEditTextarea}
+                                                            value={editPostInput[post.POST_ID] || ''}
+                                                            onChange={(e) => setEditPostInput(prev => ({
+                                                                ...prev, [post.POST_ID]: e.target.value
+                                                            }))}
+                                                        />
+                                                        <Box className={styles.postEditBtns}>
+                                                            <button className={styles.postEditSubmit}
+                                                                onClick={() => handlePostEdit(post.POST_ID)}>완료</button>
+                                                            <button className={styles.postEditCancel}
+                                                                onClick={() => setEditPost(prev => ({ ...prev, [post.POST_ID]: false }))}>
+                                                                취소</button>
+                                                        </Box>
+                                                    </Box>
+                                                ) : (
+                                                    <Typography className={styles.postContent}>
+                                                        {post.CONTENT?.length > 150
+                                                            ? post.CONTENT.slice(0, 150) + '...'
+                                                            : post.CONTENT}
+                                                    </Typography>
+                                                )}
+
+                                                {/* ▼ 이미지 여러장 표시 */}
+                                                {post.IMAGES && post.IMAGES.length > 0 && (
+                                                    <Box className={styles.postImgGrid} style={{
+                                                        gridTemplateColumns: post.IMAGES.length === 1 ? '1fr'
+                                                            : post.IMAGES.length === 2 ? 'repeat(2, 1fr)'
+                                                            : post.IMAGES.length === 3 ? 'repeat(2, 1fr)'
+                                                            : 'repeat(2, 1fr)'
+                                                    }}>
+                                                        {post.IMAGES.map((img, idx) => (
+                                                            <img key={idx}
+                                                                src={`http://localhost:3010${img}`}
+                                                                alt={`post-img-${idx}`}
+                                                                className={styles.postImgItem}
+                                                                loading="lazy"
+                                                                style={{
+                                                                    // 3장일 때 첫번째 이미지 full width
+                                                                    gridColumn: post.IMAGES.length === 3 && idx === 0 ? '1 / -1' : 'auto',
+                                                                    height: post.IMAGES.length === 1 ? '400px'  /* ▼ 1장: 크게 */
+                                                                    : post.IMAGES.length === 2 ? '300px'  /* ▼ 2장: 중간 */
+                                                                    : post.IMAGES.length === 3 && idx === 0 ? '280px'  /* ▼ 3장 첫번째 */
+                                                                    : '200px'  /* ▼ 3장 나머지 */
+                                                                }}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setLightbox({ images: post.IMAGES, idx });
+                                                                }}
+                                                            />
+                                                        ))}
                                                     </Box>
                                                 )}
-                                            </Box>
 
-                                            {post.TITLE && (
-                                                <Typography className={styles.postTitle}>{post.TITLE}</Typography>
-                                            )}
-                                            {/* 내용 post content */}
-                                            {editPost[post.POST_ID] ? (
-                                                <Box className={styles.postEditBox}>
-                                                    <textarea
-                                                        className={styles.postEditTextarea}
-                                                        value={editPostInput[post.POST_ID] || ''}
-                                                        onChange={(e) => setEditPostInput(prev => ({
-                                                            ...prev, [post.POST_ID]: e.target.value
-                                                        }))}
-                                                    />
-                                                    <Box className={styles.postEditBtns}>
-                                                        <button className={styles.postEditSubmit}
-                                                            onClick={() => handlePostEdit(post.POST_ID)}>완료</button>
-                                                        <button className={styles.postEditCancel}
-                                                            onClick={() => setEditPost(prev => ({ ...prev, [post.POST_ID]: false }))}>
-                                                            취소</button>
-                                                    </Box>
-                                                </Box>
-                                            ) : (
-                                                <Typography className={styles.postContent}>
-                                                    {post.CONTENT?.length > 150
-                                                        ? post.CONTENT.slice(0, 150) + '...'
-                                                        : post.CONTENT}
-                                                </Typography>
-                                            )}
-
-                                            {/* ▼ 이미지 여러장 표시 */}
-                                            {post.IMAGES && post.IMAGES.length > 0 && (
-                                                <Box className={styles.postImgGrid} style={{
-                                                    gridTemplateColumns: post.IMAGES.length === 1 ? '1fr'
-                                                        : post.IMAGES.length === 2 ? 'repeat(2, 1fr)'
-                                                        : post.IMAGES.length === 3 ? 'repeat(2, 1fr)'
-                                                        : 'repeat(2, 1fr)'
-                                                }}>
-                                                    {post.IMAGES.map((img, idx) => (
-                                                        <img key={idx}
-                                                            src={`http://localhost:3010${img}`}
-                                                            alt={`post-img-${idx}`}
-                                                            className={styles.postImgItem}
-                                                            loading="lazy"
-                                                            style={{
-                                                                // 3장일 때 첫번째 이미지 full width
-                                                                gridColumn: post.IMAGES.length === 3 && idx === 0 ? '1 / -1' : 'auto',
-                                                                height: post.IMAGES.length === 1 ? '400px'  /* ▼ 1장: 크게 */
-                                                                : post.IMAGES.length === 2 ? '300px'  /* ▼ 2장: 중간 */
-                                                                : post.IMAGES.length === 3 && idx === 0 ? '280px'  /* ▼ 3장 첫번째 */
-                                                                : '200px'  /* ▼ 3장 나머지 */
-                                                            }}
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setLightbox({ images: post.IMAGES, idx });
-                                                            }}
-                                                        />
-                                                    ))}
-                                                </Box>
-                                            )}
-
-                                            {/* 라이트박스 */}
-                                            {lightbox && (
-                                                <Box className={styles.lightbox} onClick={() => setLightbox(null)}>
-                                                    <Box className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
-                                                        <img src={`http://localhost:3010${lightbox.images[lightbox.idx]}`}
-                                                            alt="lightbox" className={styles.lightboxImg}/>
-                                                        <Box className={styles.lightboxNav}>
-                                                            {lightbox.images.length > 1 && lightbox.images.map((_, i) => (
-                                                                <Box key={i}
-                                                                    className={`${styles.lightboxDot} ${i === lightbox.idx ? styles.lightboxDotActive : ''}`}
-                                                                    onClick={() => setLightbox(prev => ({ ...prev, idx: i }))}
-                                                                />
-                                                            ))}
-                                                        </Box>
-                                                        {lightbox.idx > 0 && (
-                                                            <button className={styles.lightboxPrev}
-                                                                onClick={() => setLightbox(prev => ({ ...prev, idx: prev.idx - 1 }))}>
-                                                                ‹
-                                                            </button>
-                                                        )}
-                                                        {lightbox.idx < lightbox.images.length - 1 && (
-                                                            <button className={styles.lightboxNext}
-                                                                onClick={() => setLightbox(prev => ({ ...prev, idx: prev.idx + 1 }))}>
-                                                                ›
-                                                            </button>
-                                                        )}
-                                                        <button className={styles.lightboxClose} onClick={() => setLightbox(null)}>✕</button>
-                                                    </Box>
-                                                </Box>
-                                            )}
-
-                                            <Box className={styles.cardFooter}>
-                                                <Box className={styles.footerItem}
-                                                    onClick={(e) => handleLike(e, post.POST_ID)}>
-                                                    {likes[post.POST_ID]?.liked
-                                                        ? <Favorite className={styles.iconLikeActive}/>
-                                                        : <FavoriteBorder className={styles.iconLike}/>
-                                                    }
-                                                    <Typography className={styles.footerText}>
-                                                        {likes[post.POST_ID]?.count || 0}
-                                                    </Typography>
-                                                </Box>
-                                                <Box className={styles.footerItem}
-                                                    onClick={(e) => toggleComment(e, post.POST_ID)}>
-                                                    <ChatBubbleOutline className={styles.iconChat}
-                                                        style={{ color: openComments[post.POST_ID] ? '#7B4F2E' : '#B08060' }}/>
-                                                    <Typography className={styles.footerText}>
-                                                        {comments[post.POST_ID]?.length ?? post.COMMENT_COUNT ?? 0}
-                                                    </Typography>
-                                                </Box>
-                                                {scraps[post.POST_ID]
-                                                    ? <Bookmark className={styles.iconBookmarkActive}
-                                                        onClick={(e) => handleScrap(e, post.POST_ID)}/>
-                                                    : <BookmarkBorder className={styles.iconBookmark}
-                                                        onClick={(e) => handleScrap(e, post.POST_ID)}/>
-                                                }
-                                            </Box>
-
-                                            {/* 댓글 토글 */}
-                                            <Collapse in={openComments[post.POST_ID]}>
-                                                <Box className={styles.commentArea}>
-                                                    {comments[post.POST_ID]?.filter(c => !c.PARENT_ID).length > 0 ? (
-                                                        comments[post.POST_ID].filter(c => !c.PARENT_ID).map((c) => (
-                                                            <Box key={c.COMMENT_ID} className={styles.commentItem}
-                                                                onClick={(e) => e.stopPropagation()}>
-                                                                <AvatarItem
-                                                                    src={c.PROFILE_IMG}
-                                                                    nickname={c.NICKNAME}
-                                                                    size={22}
-                                                                />
-                                                                <Box className={styles.commentBody}>
-                                                                    <Box className={styles.commentHeader}>
-                                                                        <Typography className={styles.commentNick}>{c.NICKNAME}</Typography>
-                                                                        <Typography className={styles.commentDate}>
-                                                                            {new Date(c.CREATED_AT).toLocaleDateString()}
-                                                                        </Typography>
-                                                                    </Box>
-                                                                    <Typography className={styles.commentText}>{c.CONTENT}</Typography>
-
-                                                                    {c.NICKNAME === user?.userNickname && (
-                                                                        <Box className={styles.commentActions}>
-                                                                            <Button size="small" className={styles.actionBtn}
-                                                                                onClick={(e) => {
-                                                                                    e.stopPropagation();
-                                                                                    setEditComment(prev => ({ ...prev, [c.COMMENT_ID]: true }));
-                                                                                    setEditInput(prev => ({ ...prev, [c.COMMENT_ID]: c.CONTENT }));
-                                                                                }}>수정</Button>
-                                                                            <Button size="small" className={styles.actionBtn}
-                                                                                onClick={(e) => handleDelete(e, post.POST_ID, c.COMMENT_ID)}>삭제</Button>
-                                                                        </Box>
-                                                                    )}
-
-                                                                    <Collapse in={editComment[c.COMMENT_ID]}>
-                                                                        <Box className={styles.replyInput} onClick={(e) => e.stopPropagation()}>
-                                                                            <TextField fullWidth size="small"
-                                                                                value={editInput[c.COMMENT_ID] || ''}
-                                                                                onChange={(e) => setEditInput(prev => ({ ...prev, [c.COMMENT_ID]: e.target.value }))}
-                                                                            />
-                                                                            <Button variant="contained" className={styles.commentBtn}
-                                                                                onClick={(e) => handleEditSubmit(e, post.POST_ID, c.COMMENT_ID)}>완료</Button>
-                                                                            <Button size="small" className={styles.actionBtn}
-                                                                                onClick={(e) => { e.stopPropagation(); setEditComment(prev => ({ ...prev, [c.COMMENT_ID]: false })); }}>취소</Button>
-                                                                        </Box>
-                                                                    </Collapse>
-
-                                                                    <Button size="small" className={styles.replyBtn}
-                                                                        onClick={(e) => toggleReply(e, c.COMMENT_ID)}>답글 달기</Button>
-
-                                                                    <Collapse in={openReply[c.COMMENT_ID]}>
-                                                                        <Box className={styles.replyInput} onClick={(e) => e.stopPropagation()}>
-                                                                            <TextField fullWidth size="small"
-                                                                                placeholder="답글을 입력하세요"
-                                                                                value={replyInput[c.COMMENT_ID] || ''}
-                                                                                onChange={(e) => setReplyInput(prev => ({ ...prev, [c.COMMENT_ID]: e.target.value }))}
-                                                                            />
-                                                                            <Button variant="contained" className={styles.commentBtn}
-                                                                                onClick={(e) => handleReplySubmit(e, post.POST_ID, c.COMMENT_ID, c.COMMENT_ID)}>등록</Button>
-                                                                        </Box>
-                                                                    </Collapse>
-
-                                                                    {(() => {
-                                                                        const replies = comments[post.POST_ID]?.filter(r => r.PARENT_ID === c.COMMENT_ID) || [];
-                                                                        const ordered = [];
-                                                                        replies.filter(r => !r.REPLY_TO).forEach(r => {
-                                                                            ordered.push(r);
-                                                                            replies.filter(sub => sub.REPLY_TO === r.COMMENT_ID).forEach(sub => ordered.push(sub));
-                                                                        });
-                                                                        return ordered.map((reply) => (
-                                                                            <Box key={reply.COMMENT_ID}
-                                                                                className={reply.REPLY_TO ? styles.replyItemNested : styles.replyItem}>
-                                                                                <AvatarItem
-                                                                                    src={reply.PROFILE_IMG}
-                                                                                    nickname={reply.NICKNAME}
-                                                                                    size={22}
-                                                                                />
-                                                                                <Box className={styles.fullWidth}>
-                                                                                    <Typography className={styles.commentNick}>{reply.NICKNAME}</Typography>
-                                                                                    <Typography className={styles.commentText}>
-                                                                                        {reply.CONTENT?.startsWith('@') ? (
-                                                                                            <>
-                                                                                                <span className={styles.mentionText}>
-                                                                                                    {reply.CONTENT.split(' ')[0]}
-                                                                                                </span>
-                                                                                                {' ' + reply.CONTENT.split(' ').slice(1).join(' ')}
-                                                                                            </>
-                                                                                        ) : reply.CONTENT}
-                                                                                    </Typography>
-
-                                                                                    {reply.NICKNAME === user?.userNickname && (
-                                                                                        <Box className={styles.commentActions}>
-                                                                                            <Button size="small" className={styles.actionBtn}
-                                                                                                onClick={(e) => {
-                                                                                                    e.stopPropagation();
-                                                                                                    setEditComment(prev => ({ ...prev, [reply.COMMENT_ID]: true }));
-                                                                                                    setEditInput(prev => ({ ...prev, [reply.COMMENT_ID]: reply.CONTENT }));
-                                                                                                }}>수정</Button>
-                                                                                            <Button size="small" className={styles.actionBtn}
-                                                                                                onClick={(e) => handleDelete(e, post.POST_ID, reply.COMMENT_ID)}>삭제</Button>
-                                                                                        </Box>
-                                                                                    )}
-
-                                                                                    <Collapse in={editComment[reply.COMMENT_ID]}>
-                                                                                        <Box className={styles.replyInput} onClick={(e) => e.stopPropagation()}>
-                                                                                            <TextField fullWidth size="small"
-                                                                                                value={editInput[reply.COMMENT_ID] || ''}
-                                                                                                onChange={(e) => setEditInput(prev => ({ ...prev, [reply.COMMENT_ID]: e.target.value }))}
-                                                                                            />
-                                                                                            <Button variant="contained" className={styles.commentBtn}
-                                                                                                onClick={(e) => handleEditSubmit(e, post.POST_ID, reply.COMMENT_ID)}>완료</Button>
-                                                                                            <Button size="small" className={styles.actionBtn}
-                                                                                                onClick={(e) => { e.stopPropagation(); setEditComment(prev => ({ ...prev, [reply.COMMENT_ID]: false })); }}>취소</Button>
-                                                                                        </Box>
-                                                                                    </Collapse>
-
-                                                                                    <Button size="small" className={styles.replyBtn}
-                                                                                        onClick={(e) => toggleReply(e, reply.COMMENT_ID)}>답글 달기</Button>
-
-                                                                                    <Collapse in={openReply[reply.COMMENT_ID]}>
-                                                                                        <Box className={styles.replyInput} onClick={(e) => e.stopPropagation()}>
-                                                                                            <TextField fullWidth size="small"
-                                                                                                placeholder="답글을 입력하세요"
-                                                                                                value={replyInput[reply.COMMENT_ID] || ''}
-                                                                                                onChange={(e) => setReplyInput(prev => ({ ...prev, [reply.COMMENT_ID]: e.target.value }))}
-                                                                                            />
-                                                                                            <Button variant="contained" className={styles.commentBtn}
-                                                                                                onClick={(e) => {
-                                                                                                    const currentInput = replyInput[reply.COMMENT_ID] || '';
-                                                                                                    const finalContent = currentInput.startsWith(`@${reply.NICKNAME}`)
-                                                                                                        ? currentInput
-                                                                                                        : `@${reply.NICKNAME} ${currentInput}`;
-                                                                                                    handleReplySubmit(e, post.POST_ID, c.COMMENT_ID, reply.COMMENT_ID, finalContent.trim(), reply.COMMENT_ID);
-                                                                                                }}>등록</Button>
-                                                                                        </Box>
-                                                                                    </Collapse>
-                                                                                </Box>
-                                                                            </Box>
-                                                                        ));
-                                                                    })()}
-                                                                </Box>
+                                                {/* 라이트박스 */}
+                                                {lightbox && (
+                                                    <Box className={styles.lightbox} onClick={() => setLightbox(null)}>
+                                                        <Box className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
+                                                            <img src={`http://localhost:3010${lightbox.images[lightbox.idx]}`}
+                                                                alt="lightbox" className={styles.lightboxImg}/>
+                                                            <Box className={styles.lightboxNav}>
+                                                                {lightbox.images.length > 1 && lightbox.images.map((_, i) => (
+                                                                    <Box key={i}
+                                                                        className={`${styles.lightboxDot} ${i === lightbox.idx ? styles.lightboxDotActive : ''}`}
+                                                                        onClick={() => setLightbox(prev => ({ ...prev, idx: i }))}
+                                                                    />
+                                                                ))}
                                                             </Box>
-                                                        ))
-                                                    ) : (
-                                                        <Typography className={styles.noComment}>
-                                                            아직 댓글이 없어요. 첫 댓글을 달아보세요! 🧶
-                                                        </Typography>
-                                                    )}
-
-                                                    <Box className={styles.commentInput}>
-                                                        <TextField fullWidth size="small"
-                                                            placeholder="댓글을 입력하세요"
-                                                            value={commentInput[post.POST_ID] || ''}
-                                                            onChange={(e) => setCommentInput(prev => ({ ...prev, [post.POST_ID]: e.target.value }))}
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        />
-                                                        <Button variant="contained" className={styles.commentBtn}
-                                                            onClick={(e) => handleCommentSubmit(e, post.POST_ID)}>등록</Button>
+                                                            {lightbox.idx > 0 && (
+                                                                <button className={styles.lightboxPrev}
+                                                                    onClick={() => setLightbox(prev => ({ ...prev, idx: prev.idx - 1 }))}>
+                                                                    ‹
+                                                                </button>
+                                                            )}
+                                                            {lightbox.idx < lightbox.images.length - 1 && (
+                                                                <button className={styles.lightboxNext}
+                                                                    onClick={() => setLightbox(prev => ({ ...prev, idx: prev.idx + 1 }))}>
+                                                                    ›
+                                                                </button>
+                                                            )}
+                                                            <button className={styles.lightboxClose} onClick={() => setLightbox(null)}>✕</button>
+                                                        </Box>
                                                     </Box>
+                                                )}
+
+                                                <Box className={styles.cardFooter}>
+                                                    <Box className={styles.footerItem}
+                                                        onClick={(e) => handleLike(e, post.POST_ID)}>
+                                                        {likes[post.POST_ID]?.liked
+                                                            ? <Favorite className={styles.iconLikeActive}/>
+                                                            : <FavoriteBorder className={styles.iconLike}/>
+                                                        }
+                                                        <Typography className={styles.footerText}>
+                                                            {likes[post.POST_ID]?.count || 0}
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box className={styles.footerItem}
+                                                        onClick={(e) => toggleComment(e, post.POST_ID)}>
+                                                        <ChatBubbleOutline className={styles.iconChat}
+                                                            style={{ color: openComments[post.POST_ID] ? '#7B4F2E' : '#B08060' }}/>
+                                                        <Typography className={styles.footerText}>
+                                                            {comments[post.POST_ID]?.length ?? post.COMMENT_COUNT ?? 0}
+                                                        </Typography>
+                                                    </Box>
+                                                    {scraps[post.POST_ID]
+                                                        ? <Bookmark className={styles.iconBookmarkActive}
+                                                            onClick={(e) => handleScrap(e, post.POST_ID)}/>
+                                                        : <BookmarkBorder className={styles.iconBookmark}
+                                                            onClick={(e) => handleScrap(e, post.POST_ID)}/>
+                                                    }
                                                 </Box>
-                                            </Collapse>
+
+                                                {/* 댓글 토글 */}
+                                                <Collapse in={openComments[post.POST_ID]}>
+                                                    <Box className={styles.commentArea}>
+                                                        {comments[post.POST_ID]?.filter(c => !c.PARENT_ID).length > 0 ? (
+                                                            comments[post.POST_ID].filter(c => !c.PARENT_ID).map((c) => (
+                                                                <Box key={c.COMMENT_ID} className={styles.commentItem}
+                                                                    onClick={(e) => e.stopPropagation()}>
+                                                                    <AvatarItem
+                                                                        src={c.PROFILE_IMG}
+                                                                        nickname={c.NICKNAME}
+                                                                        size={22}
+                                                                    />
+                                                                    <Box className={styles.commentBody}>
+                                                                        <Box className={styles.commentHeader}>
+                                                                            <Typography className={styles.commentNick}>{c.NICKNAME}</Typography>
+                                                                            <Typography className={styles.commentDate}>
+                                                                                {new Date(c.CREATED_AT).toLocaleDateString()}
+                                                                            </Typography>
+                                                                        </Box>
+                                                                        <Typography className={styles.commentText}>{c.CONTENT}</Typography>
+
+                                                                        {c.NICKNAME === user?.userNickname && (
+                                                                            <Box className={styles.commentActions}>
+                                                                                <Button size="small" className={styles.actionBtn}
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation();
+                                                                                        setEditComment(prev => ({ ...prev, [c.COMMENT_ID]: true }));
+                                                                                        setEditInput(prev => ({ ...prev, [c.COMMENT_ID]: c.CONTENT }));
+                                                                                    }}>수정</Button>
+                                                                                <Button size="small" className={styles.actionBtn}
+                                                                                    onClick={(e) => handleDelete(e, post.POST_ID, c.COMMENT_ID)}>삭제</Button>
+                                                                            </Box>
+                                                                        )}
+
+                                                                        <Collapse in={editComment[c.COMMENT_ID]}>
+                                                                            <Box className={styles.replyInput} onClick={(e) => e.stopPropagation()}>
+                                                                                <TextField fullWidth size="small"
+                                                                                    value={editInput[c.COMMENT_ID] || ''}
+                                                                                    onChange={(e) => setEditInput(prev => ({ ...prev, [c.COMMENT_ID]: e.target.value }))}
+                                                                                />
+                                                                                <Button variant="contained" className={styles.commentBtn}
+                                                                                    onClick={(e) => handleEditSubmit(e, post.POST_ID, c.COMMENT_ID)}>완료</Button>
+                                                                                <Button size="small" className={styles.actionBtn}
+                                                                                    onClick={(e) => { e.stopPropagation(); setEditComment(prev => ({ ...prev, [c.COMMENT_ID]: false })); }}>취소</Button>
+                                                                            </Box>
+                                                                        </Collapse>
+
+                                                                        <Button size="small" className={styles.replyBtn}
+                                                                            onClick={(e) => toggleReply(e, c.COMMENT_ID)}>답글 달기</Button>
+
+                                                                        <Collapse in={openReply[c.COMMENT_ID]}>
+                                                                            <Box className={styles.replyInput} onClick={(e) => e.stopPropagation()}>
+                                                                                <TextField fullWidth size="small"
+                                                                                    placeholder="답글을 입력하세요"
+                                                                                    value={replyInput[c.COMMENT_ID] || ''}
+                                                                                    onChange={(e) => setReplyInput(prev => ({ ...prev, [c.COMMENT_ID]: e.target.value }))}
+                                                                                />
+                                                                                <Button variant="contained" className={styles.commentBtn}
+                                                                                    onClick={(e) => handleReplySubmit(e, post.POST_ID, c.COMMENT_ID, c.COMMENT_ID)}>등록</Button>
+                                                                            </Box>
+                                                                        </Collapse>
+
+                                                                        {(() => {
+                                                                            const replies = comments[post.POST_ID]?.filter(r => r.PARENT_ID === c.COMMENT_ID) || [];
+                                                                            const ordered = [];
+                                                                            replies.filter(r => !r.REPLY_TO).forEach(r => {
+                                                                                ordered.push(r);
+                                                                                replies.filter(sub => sub.REPLY_TO === r.COMMENT_ID).forEach(sub => ordered.push(sub));
+                                                                            });
+                                                                            return ordered.map((reply) => (
+                                                                                <Box key={reply.COMMENT_ID}
+                                                                                    className={reply.REPLY_TO ? styles.replyItemNested : styles.replyItem}>
+                                                                                    <AvatarItem
+                                                                                        src={reply.PROFILE_IMG}
+                                                                                        nickname={reply.NICKNAME}
+                                                                                        size={22}
+                                                                                    />
+                                                                                    <Box className={styles.fullWidth}>
+                                                                                        <Typography className={styles.commentNick}>{reply.NICKNAME}</Typography>
+                                                                                        <Typography className={styles.commentText}>
+                                                                                            {reply.CONTENT?.startsWith('@') ? (
+                                                                                                <>
+                                                                                                    <span className={styles.mentionText}>
+                                                                                                        {reply.CONTENT.split(' ')[0]}
+                                                                                                    </span>
+                                                                                                    {' ' + reply.CONTENT.split(' ').slice(1).join(' ')}
+                                                                                                </>
+                                                                                            ) : reply.CONTENT}
+                                                                                        </Typography>
+
+                                                                                        {reply.NICKNAME === user?.userNickname && (
+                                                                                            <Box className={styles.commentActions}>
+                                                                                                <Button size="small" className={styles.actionBtn}
+                                                                                                    onClick={(e) => {
+                                                                                                        e.stopPropagation();
+                                                                                                        setEditComment(prev => ({ ...prev, [reply.COMMENT_ID]: true }));
+                                                                                                        setEditInput(prev => ({ ...prev, [reply.COMMENT_ID]: reply.CONTENT }));
+                                                                                                    }}>수정</Button>
+                                                                                                <Button size="small" className={styles.actionBtn}
+                                                                                                    onClick={(e) => handleDelete(e, post.POST_ID, reply.COMMENT_ID)}>삭제</Button>
+                                                                                            </Box>
+                                                                                        )}
+
+                                                                                        <Collapse in={editComment[reply.COMMENT_ID]}>
+                                                                                            <Box className={styles.replyInput} onClick={(e) => e.stopPropagation()}>
+                                                                                                <TextField fullWidth size="small"
+                                                                                                    value={editInput[reply.COMMENT_ID] || ''}
+                                                                                                    onChange={(e) => setEditInput(prev => ({ ...prev, [reply.COMMENT_ID]: e.target.value }))}
+                                                                                                />
+                                                                                                <Button variant="contained" className={styles.commentBtn}
+                                                                                                    onClick={(e) => handleEditSubmit(e, post.POST_ID, reply.COMMENT_ID)}>완료</Button>
+                                                                                                <Button size="small" className={styles.actionBtn}
+                                                                                                    onClick={(e) => { e.stopPropagation(); setEditComment(prev => ({ ...prev, [reply.COMMENT_ID]: false })); }}>취소</Button>
+                                                                                            </Box>
+                                                                                        </Collapse>
+
+                                                                                        <Button size="small" className={styles.replyBtn}
+                                                                                            onClick={(e) => toggleReply(e, reply.COMMENT_ID)}>답글 달기</Button>
+
+                                                                                        <Collapse in={openReply[reply.COMMENT_ID]}>
+                                                                                            <Box className={styles.replyInput} onClick={(e) => e.stopPropagation()}>
+                                                                                                <TextField fullWidth size="small"
+                                                                                                    placeholder="답글을 입력하세요"
+                                                                                                    value={replyInput[reply.COMMENT_ID] || ''}
+                                                                                                    onChange={(e) => setReplyInput(prev => ({ ...prev, [reply.COMMENT_ID]: e.target.value }))}
+                                                                                                />
+                                                                                                <Button variant="contained" className={styles.commentBtn}
+                                                                                                    onClick={(e) => {
+                                                                                                        const currentInput = replyInput[reply.COMMENT_ID] || '';
+                                                                                                        const finalContent = currentInput.startsWith(`@${reply.NICKNAME}`)
+                                                                                                            ? currentInput
+                                                                                                            : `@${reply.NICKNAME} ${currentInput}`;
+                                                                                                        handleReplySubmit(e, post.POST_ID, c.COMMENT_ID, reply.COMMENT_ID, finalContent.trim(), reply.COMMENT_ID);
+                                                                                                    }}>등록</Button>
+                                                                                            </Box>
+                                                                                        </Collapse>
+                                                                                    </Box>
+                                                                                </Box>
+                                                                            ));
+                                                                        })()}
+                                                                    </Box>
+                                                                </Box>
+                                                            ))
+                                                        ) : (
+                                                            <Typography className={styles.noComment}>
+                                                                아직 댓글이 없어요. 첫 댓글을 달아보세요! 🧶
+                                                            </Typography>
+                                                        )}
+
+                                                        <Box className={styles.commentInput}>
+                                                            <TextField fullWidth size="small"
+                                                                placeholder="댓글을 입력하세요"
+                                                                value={commentInput[post.POST_ID] || ''}
+                                                                onChange={(e) => setCommentInput(prev => ({ ...prev, [post.POST_ID]: e.target.value }))}
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            />
+                                                            <Button variant="contained" className={styles.commentBtn}
+                                                                onClick={(e) => handleCommentSubmit(e, post.POST_ID)}>등록</Button>
+                                                        </Box>
+                                                    </Box>
+                                                </Collapse>
+                                            </Box>
                                         </Box>
                                     </Box>
-                                </Box>
+                                    {/* ▼ 3번째 게시글마다 배너 삽입 */}
+                                    {(idx + 1) % 3 === 0 && (() => {
+                                        const banner = dummyBanners[Math.floor(idx / 3) % dummyBanners.length];
+                                        if (!banner) return null;
+                                        return (
+                                            <Box className={styles.nativeBanner}
+                                                onClick={() => window.open(banner.link, '_blank')}>
+                                                <Typography className={styles.nativeBannerSponsor}>광고</Typography>
+                                                <Box className={styles.nativeBannerContent}>
+                                                    <Box className={styles.nativeBannerImgWrapper}>
+                                                        <img src={banner.img} alt={banner.title} className={styles.nativeBannerImg}/>
+                                                    </Box>
+                                                    <Box className={styles.nativeBannerInfo}>
+                                                        <Box className={styles.nativeBannerTagRow}>
+                                                            <span className={styles.nativeBannerTagChip}>{banner.tag}</span>
+                                                        </Box>
+                                                        <Typography className={styles.nativeBannerBrand}>{banner.brand}</Typography>
+                                                        <Typography className={styles.nativeBannerTitle}>{banner.title}</Typography>
+                                                        <Typography className={styles.nativeBannerDesc}>{banner.desc}</Typography>
+                                                        <Typography className={styles.nativeBannerSubDesc}>{banner.subDesc}</Typography>
+                                                    </Box>
+                                                    <Box className={styles.nativeBannerShopWrapper}>
+                                                        <Typography className={styles.nativeBannerAdText}>{banner.adText}</Typography>
+                                                        <Box className={styles.nativeBannerShopBtn}>
+                                                            🛒 구매처 바로가기
+                                                        </Box>
+                                                    </Box>
+                                                </Box>
+                                            </Box>
+                                        );
+                                    })()}
+                                </React.Fragment>
                             ))
                         )}
                     </Box>
@@ -902,8 +963,6 @@ function PostList() {
                     </Box>
                 </Box>
             </Box>
-
-            <RightSidebar />
         </Box>
     );
 }

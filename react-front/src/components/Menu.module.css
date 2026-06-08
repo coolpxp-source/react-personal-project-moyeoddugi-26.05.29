@@ -4,6 +4,9 @@
     border-right: 1px solid #E8D5B7 !important;
     width: 320px !important;
     flex-shrink: 0 !important;
+    display: flex !important;        
+    flex-direction: column !important;
+    justify-content: space-between !important;
 }
 
 .logoLink {
@@ -39,6 +42,8 @@
 
 .menuItem:hover {
     background-color: #F0E6D3 !important;
+    padding-left: 20px !important; 
+    transition: padding-left 0.15s ease !important;
 }
 
 .menuIcon {
@@ -85,4 +90,19 @@
     color: #B08060;
     margin-right: 8px;
     font-size: 18px !important;
+}
+
+/* 활성 탭 */
+.menuItemActive {
+    background-color: #F0E6D3 !important;
+    border-right: 3px solid #7B4F2E !important;
+}
+
+.menuItemActive .menuIcon {
+    color: #7B4F2E !important;
+}
+
+.menuItemActive span {
+    color: #7B4F2E !important;
+    font-weight: 600 !important;
 }

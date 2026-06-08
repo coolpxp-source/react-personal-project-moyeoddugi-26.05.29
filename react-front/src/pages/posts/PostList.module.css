@@ -11,8 +11,23 @@
 .tabs {
     background-color: #ffffff !important;
     border-bottom: 1px solid #E8D5B7 !important;
-    padding-right: 390px !important;
+    padding-right: 20px !important; 
     padding-left: 16px !important;
+}
+
+.tab {
+    color: #B08060 !important;
+    font-size: 15px !important;
+    transition: transform 0.15s ease, color 0.15s ease !important;
+}
+
+.tab:hover {
+    transform: translateY(-2px) !important;
+    color: #7B4F2E !important;
+}
+
+.tabs :global(.MuiTabs-indicator) {
+    background-color: #7B4F2E !important;
 }
 
 /* ===== 검색창 툴바 ===== */
@@ -20,16 +35,18 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 406px 12px 40px;
+    padding: 12px 20px 12px 40px;
     background-color: #ffffff;
     border-bottom: 1px solid #E8D5B7;
+    /* max-width: 1160px; */
+    flex-wrap: nowrap;
 }
 
 /* ===== 메인 레이아웃 (피드 + 사이드 위젯) ===== */
 .mainLayout {
     display: flex;
     flex-direction: row;
-    padding: 16px 406px 16px 20px;
+    padding: 16px 20px 16px 40px;
     flex: 1;
     overflow-y: auto;
     gap: 16px;
@@ -52,7 +69,7 @@
 
 /* ===== 피드 카드 ===== */
 .feedCard {
-    padding: 16px;
+    padding: 20px;
     border: 1px solid #E8D5B7;
     border-radius: 12px;
     background-color: #ffffff;
@@ -64,7 +81,7 @@
 /* 트위터식 2단 레이아웃 (아바타 + 내용) */
 .cardLayout {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     align-items: flex-start;
 }
 
@@ -74,6 +91,7 @@
     flex-direction: column;
     gap: 6px;
     min-width: 0;
+    margin-right: 40px;
 }
 
 /* 카드 헤더 (닉네임, 날짜, 배지, 수정/삭제) */
@@ -84,20 +102,20 @@
 }
 
 .nickname {
-    font-size: 14px !important;
+    font-size: 15px !important;
     font-weight: 600 !important;
     color: #3D2B1A !important;
     cursor: pointer;
 }
 
 .date {
-    font-size: 11px !important;
+    font-size: 12px !important;
     color: #B08060 !important;
 }
 
 /* 카드 본문 */
 .postTitle {
-    font-size: 15px !important;
+    font-size: 16px !important;
     font-weight: 600 !important;
     color: #3D2B1A !important;
     cursor: pointer;
@@ -106,7 +124,7 @@
 .postTitle:hover { color: #7B4F2E !important; }
 
 .postContent {
-    font-size: 13px !important;
+    font-size: 15px !important;
     color: #5C3D2E !important;
     line-height: 1.6 !important;
     white-space: pre-line !important; /* 줄바꿈 */
@@ -130,7 +148,7 @@
 }
 
 .footerText {
-    font-size: 12px !important;
+    font-size: 13px !important;
     color: #B08060 !important;
 }
 
@@ -520,7 +538,7 @@
 }
 
 .commentText {
-    font-size: 12px !important;
+    font-size: 13px !important;
     color: #7B4F2E !important;
 }
 
@@ -602,7 +620,7 @@
 }
 
 .widgetTitle {
-    font-size: 13px !important;
+    font-size: 14px !important;
     font-weight: 600 !important;
     color: #3D2B1A !important;
     padding-bottom: 8px;
@@ -616,7 +634,7 @@
 }
 
 .widgetEmpty {
-    font-size: 12px !important;
+    font-size: 13px !important;
     color: #B08060 !important;
     text-align: center !important;
 }
@@ -635,7 +653,7 @@
 .popularItem:hover .popularTitle { color: #7B4F2E !important; }
 
 .popularIdx {
-    font-size: 13px !important;
+    font-size: 14px !important;
     font-weight: 600 !important;
     color: #C4956A !important;
     min-width: 16px;
@@ -649,22 +667,23 @@
 }
 
 .popularTitle {
-    font-size: 12px !important;
+    font-size: 13px !important;
     color: #3D2B1A !important;
     line-height: 1.4 !important;
     transition: color 0.15s ease;
 }
 
 .popularSub {
-    font-size: 10px !important;
+    font-size: 11px !important;
     color: #B08060 !important;
 }
 
 .popularThumb {
-    width: 36px; height: 36px;
+    width: 45px; height: 40px;
     border-radius: 6px;
     object-fit: cover;
     flex-shrink: 0;
+    margin-right: 5px;
 }
 
 /* 태그 클라우드 */
@@ -716,6 +735,7 @@
     flex-direction: column;
     gap: 2px;
     min-width: 0;
+    font-size: 13px;
 }
 
 .recommendUserNick {
@@ -729,7 +749,7 @@
 }
 
 .recommendUserBio {
-    font-size: 10px !important;
+    font-size: 11px !important;
     color: #B08060 !important;
 }
 
@@ -737,8 +757,9 @@
     background-color: #7B4F2E;
     border: none;
     color: white;
-    font-size: 11px;
-    padding: 4px 10px;
+    font-size: 12px;
+    padding: 5px 12px;
+    margin-right: 5px;
     border-radius: 12px;
     cursor: pointer;
     white-space: nowrap;
@@ -749,4 +770,191 @@
     background-color: transparent;
     border: 1px solid #E8D5B7;
     color: #B08060;
+}
+
+/* 팔로잉 아이콘 */
+.followingTabLabel {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.followingTabIcon {
+    font-size: 16px !important;
+}
+
+.writePlaceholder {
+    flex: 1;
+    border: 1px solid #E8D5B7;
+    border-radius: 20px;
+    padding: 10px 16px;
+    background-color: #FAF6F0;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.writePlaceholder:hover {
+    background-color: #F5EDD8;
+    border-color: #C4956A;
+}
+
+.writePlaceholderText {
+    font-size: 14px !important;
+    color: #B08060 !important;
+}
+
+/* 네이티브 광고 배너 */
+.nativeBanner {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.nativeBanner:hover { background-color: #FDFAF6; }
+
+.nativeBannerSponsor {
+    font-size: 12px !important;
+    color: #B08060 !important;
+    margin-bottom: 8px !important;
+    margin-left: 55px;
+}
+
+.nativeBannerBottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+
+.nativeBannerShopBtn {
+    background-color: #7B4F2E;
+    color: white;
+    font-size: 13px; 
+    font-weight: 500;
+    padding: 12px 20px; 
+    margin-right: 50px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.nativeBannerShopBtn:hover { background-color: #5C3D2E; }
+
+.nativeBannerContent {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nativeBannerImgWrapper {
+    width: 150px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-left: 55px;
+}
+
+.nativeBannerImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nativeBannerInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 20px;
+}
+
+.nativeBannerBrand {
+    font-size: 14px !important;
+    color: #B08060 !important;
+}
+
+.nativeBannerTitle {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+}
+
+.nativeBannerDesc {
+    font-size: 13px !important;
+    color: #7B4F2E !important;
+}
+
+.nativeBannerSubDesc {
+    font-size: 11px !important;
+    color: #B08060 !important;
+}
+
+.nativeBannerShopWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.nativeBannerAdText {
+    font-size: 11px !important;
+    color: #B08060 !important;
+    text-align: center !important;
+    max-width: 180px !important;
+    line-height: 1.5 !important;
+    margin-right: 50px;
+}
+
+.nativeBannerTagRow {
+    display: flex;
+    gap: 6px;
+}
+
+.nativeBannerTagChip {
+    background-color: #F5EDD8;
+    color: #7B4F2E;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+/* 정렬 */
+.sortBtns {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.sortBtn {
+    background: none;
+    border: 1px solid #E8D5B7;
+    color: #B08060;
+    font-size: 14px;
+    padding: 8px 70px;
+    margin-left: 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+}
+
+.sortBtn:hover {
+    border-color: #C4956A;
+    color: #7B4F2E;
+    transform: translateY(-2px) !important;
+}
+
+.sortBtnActive {
+    background-color: #7B4F2E !important;
+    border-color: #7B4F2E !important;
+    color: white !important;
 }

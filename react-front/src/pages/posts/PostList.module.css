@@ -3,7 +3,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background-color: #FAF6F0;
+    background-color: transparent !important;
     overflow: hidden;
 }
 
@@ -76,7 +76,11 @@
     transition: background-color 0.15s ease;
 }
 
-.feedCard:hover { background-color: #FDFAF6; }
+.feedCard:hover { 
+    background-color: #FDFAF6; 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08); 
+}
 
 /* 트위터식 2단 레이아웃 (아바타 + 내용) */
 .cardLayout {
@@ -202,14 +206,16 @@
 /* ===== 라이트박스 ===== */
 .lightbox {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0,0,0,0.85);
+    top: 0;
+    left: 320px;  /* ← 0 → 320px */
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.4);  /* ← 살짝 투명하게 */
     z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 .lightboxContent {
     position: relative;
     max-width: 80vw;
@@ -664,6 +670,12 @@
     flex-direction: column;
     gap: 3px;
     flex: 1;
+    transition: transform 0.15s ease, color 0.15s ease !important;
+}
+
+.popularContent:hover {
+    transform: translateY(-2px) !important;
+    color: #7B4F2E !important;
 }
 
 .popularTitle {
@@ -698,9 +710,14 @@
     color: #7B4F2E !important;
     font-size: 11px !important;
     cursor: pointer !important;
+    transition: transform 0.15s ease, color 0.15s ease !important;
 }
 
-.tagChip:hover { background-color: #E8D5B7 !important; }
+.tagChip:hover { 
+    background-color: #E8D5B7 !important; 
+    transform: translateY(-2px) !important;
+
+}
 
 /* ===== 기타 ===== */
 .empty {
@@ -764,6 +781,11 @@
     cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;
+    transition: transform 0.15s ease, color 0.15s ease !important;
+}
+
+.recommendFollowBtn:hover {
+    transform: translateY(-2px) !important;
 }
 
 .recommendFollowBtnActive {
@@ -803,62 +825,106 @@
     color: #B08060 !important;
 }
 
-/* 네이티브 광고 배너 */
+/* ==========================================
+   네이티브 광고 배너 (최종 수정안)
+   ========================================== */
+
 .nativeBanner {
     background-color: #ffffff;
     border: 1px solid #E8D5B7;
-    border-radius: 12px;
-    padding: 16px;
+    border-radius: 16px;
+    padding: 24px 32px; /* 상하좌우 여백을 조금 더 주어 안정감 확보 */
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    
+    width: 100%;             /* 피드와 가로폭 100% 일치 */
+    box-sizing: border-box;
 }
 
-.nativeBanner:hover { background-color: #FDFAF6; }
-
-.nativeBannerSponsor {
-    font-size: 12px !important;
-    color: #B08060 !important;
-    margin-bottom: 8px !important;
-    margin-left: 55px;
+.nativeBanner:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(61, 43, 26, 0.08); /* 톤에 맞춘 부드러운 그림자 */
 }
-
-.nativeBannerBottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 8px;
-}
-
-.nativeBannerShopBtn {
-    background-color: #7B4F2E;
-    color: white;
-    font-size: 13px; 
-    font-weight: 500;
-    padding: 12px 20px; 
-    margin-right: 50px;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: background-color 0.15s;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.nativeBannerShopBtn:hover { background-color: #5C3D2E; }
 
 .nativeBannerContent {
     display: flex;
-    gap: 40px;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; /* 3개 영역을 좌/중/우로 넓게 분산 */
 }
 
-.nativeBannerImgWrapper {
-    width: 150px;
-    height: 100px;
-    border-radius: 8px;
-    overflow: hidden;
+.nativeBannerMainGroup {
+    display: flex;
+    align-items: center;
+    gap: 40px; /* 🔴 여기서 문구와 사진 사이의 간격을 원하는 만큼 조절하세요! (예: 32px ~ 48px) */
+    flex: 1;   /* 남는 공간을 유연하게 차지하게 함 */
+}
+
+/* ------------------------------------------
+   왼쪽 텍스트 영역
+   ------------------------------------------ */
+.nativeBannerLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 25%;             /* 🌟 전체의 30% 공간 확보 */
     flex-shrink: 0;
-    margin-left: 55px;
+}
+
+.nativeBannerTopRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px; /* [수정] 상단 태그와 아래 본문 사이 여백 확보 */
+}
+
+.nativeBannerSponsor {
+    font-size: 11px;
+    color: #A0A0A0; /* [수정] '광고' 텍스트의 명도를 낮춰 브랜드명으로 시선 유도 */
+}
+
+.nativeBannerTagChip {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background-color: #F5EDD8;
+    color: #7B4F2E;
+}
+
+.nativeBannerBrand {
+    font-size: 11px !important; /* [수정] 크기를 살짝 줄여 메인 타이틀과의 체급 차이 부여 */
+    font-weight: 600 !important;
+    color: #B08060 !important;
+    letter-spacing: 1.5px; /* [수정] 자간을 넓혀 서브 텍스트로서의 세련미 강조 */
+    text-transform: uppercase;
+}
+
+.nativeBannerHighlight {
+    font-size: 25px !important; /* [수정] 22px -> 25px로 키워 배너의 확실한 주인공으로 설정 */
+    font-weight: 800 !important;
+    color: #3D2B1A !important;
+    line-height: 1.2 !important;
+    margin-bottom: 2px;
+}
+
+.nativeBannerTitle {
+    font-size: 14px !important; /* [수정] 메인 카피를 받쳐주도록 크기 소폭 조정 */
+    font-weight: 500 !important;
+    color: #7B4F2E !important;
+}
+
+/* ------------------------------------------
+   가운데 이미지 영역
+   ------------------------------------------ */
+.nativeBannerImgWrapper {
+    width: 40%;             /* 🌟 전체의 40% 공간 확보하여 공백 완벽 차단 */
+    height: 120px;          /* 이미지 높이도 살짝 키움 */
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;  
+    display: flex;          /* 이미지를 이 영역 안에서 정중앙 정렬 */
+    justify-content: center;
+    align-items: center;
 }
 
 .nativeBannerImg {
@@ -867,64 +933,53 @@
     object-fit: cover;
 }
 
-.nativeBannerInfo {
-    flex: 1;
+/* ------------------------------------------
+   오른쪽 가격 및 버튼 영역
+   ------------------------------------------ */
+.nativeBannerRight {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 0 20px;
-}
-
-.nativeBannerBrand {
-    font-size: 14px !important;
-    color: #B08060 !important;
-}
-
-.nativeBannerTitle {
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    color: #3D2B1A !important;
-}
-
-.nativeBannerDesc {
-    font-size: 13px !important;
-    color: #7B4F2E !important;
-}
-
-.nativeBannerSubDesc {
-    font-size: 11px !important;
-    color: #B08060 !important;
-}
-
-.nativeBannerShopWrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
+    align-items: flex-end;   /* 오른쪽 정렬 축 고정 */
+    justify-content: center;
+    gap: 8px;
+    width: 25%;             /* 🌟 전체의 30% 공간 확보 */
     flex-shrink: 0;
 }
 
-.nativeBannerAdText {
-    font-size: 11px !important;
-    color: #B08060 !important;
-    text-align: center !important;
-    max-width: 180px !important;
-    line-height: 1.5 !important;
-    margin-right: 50px;
-}
-
-.nativeBannerTagRow {
-    display: flex;
-    gap: 6px;
-}
-
-.nativeBannerTagChip {
+.nativeBannerBadge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
     background-color: #F5EDD8;
     color: #7B4F2E;
-    font-size: 12px;
+}
+
+.nativeBannerPrice {
+    font-size: 23px !important; /* [수정] 22px -> 23px로 소폭 확대 */
+    font-weight: 800 !important;
+    color: #3D2B1A !important;
+    line-height: 1 !important;
+    margin-bottom: 4px; /* 버튼과의 간격 확보 */
+}
+
+.nativeBannerShopBtn {
+    font-size: 13px;
     font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 10px;
+    padding: 10px 0;
+    width: 140px;           /* 가격 텍스트와 밸런스가 맞는 고정 너비 */
+    text-align: center;
+    border-radius: 50px;
+    background-color: #7B4F2E;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s;
+}
+
+.nativeBannerShopBtn:hover { 
+    background-color: #5C3D2E; 
 }
 
 /* 정렬 */
@@ -957,4 +1012,21 @@
     background-color: #7B4F2E !important;
     border-color: #7B4F2E !important;
     color: white !important;
+}
+
+/* 하트 애니메이션 */
+@keyframes heartPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+
+.iconLikeActive {
+    font-size: 18px !important;
+    color: #E05050 !important;
+    cursor: pointer;
+}
+
+.heartAnim {
+    animation: heartPop 0.3s ease;
 }

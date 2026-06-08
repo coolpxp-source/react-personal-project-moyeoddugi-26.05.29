@@ -7,7 +7,6 @@ import { getShowcase } from '../../api/showcase';
 import { getComments, createComment, deleteComment, updateComment } from '../../api/comments';
 import { toggleLike, getLikes } from '../../api/likes';
 import styles from './ShowcaseDetail.module.css';
-import RightSidebar from '../../components/RightSidebar';
 import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
 
 function ShowcaseDetail() {
@@ -404,7 +403,6 @@ function ShowcaseDetail() {
                     </Box>
                 </Box>
             </Box>
-            <RightSidebar />
         </Box>
     );
 }

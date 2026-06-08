@@ -51,7 +51,7 @@ function Menu() {
           setChatUnreadCount(chatCount);
       };
       fetchCount();
-      const interval = setInterval(fetchCount,3000);
+      const interval = setInterval(fetchCount,10000);
       return () => clearInterval(interval);
   }, [user?.userEmail]);
 

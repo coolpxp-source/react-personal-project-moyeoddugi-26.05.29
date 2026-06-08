@@ -1,13 +1,20 @@
+html {
+  /* 스크롤바가 생성되더라도 컨텐츠 영역이 밀리지 않도록 고정 구역을 확보 */
+  scrollbar-gutter: stable; 
+}
+
 body {
-  margin: 0;
-  background-color: #FAF6F0;
-  padding: 0;
-  min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #FAF6F0 !important;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1.5px, transparent 1.5px) !important;
+    background-size: 24px 24px !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
@@ -16,5 +23,8 @@ code {
 }
 #root {
     background-color: #FAF6F0;
+    background-image: radial-gradient(circle, #C4956A 2px, transparent 2px); /* ← 갈색으로 테스트 */
+    background-size: 24px 24px;
     min-height: 100vh;
 }
+

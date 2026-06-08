@@ -268,7 +268,7 @@ router.get('/showcase/popular', async (req, res) => {
              WHERE p.BOARD_TYPE = '작품자랑'
              GROUP BY p.POST_ID, p.TITLE, p.CONTENT, u.NICKNAME, u.PROFILE_IMG
              ORDER BY LIKE_COUNT DESC
-             FETCH FIRST 3 ROWS ONLY`,
+             FETCH FIRST 4 ROWS ONLY`,
             [],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );

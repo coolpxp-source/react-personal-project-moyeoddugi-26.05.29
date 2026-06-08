@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { getNotifications, readAllNotifications, readNotification } from '../../api/notifications';
 import AvatarItem from '../../components/AvatarItem';
-import RightSidebar from '../../components/RightSidebar';
 import styles from './Notifications.module.css';
 
 const NOTI_ICONS = {
@@ -88,7 +87,6 @@ function Notifications() {
                     </Box>
                 ))
             )}
-            <RightSidebar />
         </Box>
     );
 }

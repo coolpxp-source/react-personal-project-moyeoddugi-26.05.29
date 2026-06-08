@@ -1,6 +1,6 @@
 .drawerPaper {
     box-sizing: border-box !important;
-    background-color: #FAF6F0 !important;
+    background-color: transparent !important;
     border-right: 1px solid #E8D5B7 !important;
     width: 320px !important;
     flex-shrink: 0 !important;
@@ -9,14 +9,58 @@
     justify-content: space-between !important;
 }
 
+@keyframes logoShimmer {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
 .logoLink {
     display: flex;
     justify-content: center;
     padding: 12px;
+    position: relative;
+    overflow: hidden;
+    width: 120px;
+    margin: 0 auto;
 }
 
 .logoImg {
     width: 120px;
+    display: block;
+}
+
+/* [추가] 움직이는 흰색 빛줄기 만들기 */
+.logoLink::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%; /* 시작할 때 로고 왼쪽 바깥에 숨겨둠 */
+  width: 30%;   /* 빛줄기 두께 */
+  height: 100%;
+  
+  /* 은은한 흰색 그라데이션 빛줄기 */
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  
+  transform: skewX(-25deg); /* 세련된 느낌을 주는 대각선 각도 */
+  animation: logoShine 4s infinite linear; /* 4초마다 반복 */
+}
+
+/* [수정] 슥 지나간 뒤 잠시 멈춰있는 세련된 애니메이션 */
+@keyframes logoShine {
+  0% {
+    left: -150%;
+  }
+  20% {
+    left: 150%; /* 0%에서 20%까지는 빠르게 왼쪽에서 오른쪽으로 통과 */
+  }
+  100% {
+    left: 150%; /* 나머지 20%~100% 시간 동안은 오른쪽에 머물며 대기 (여백의 미) */
+  }
 }
 
 .profileBox {

@@ -4,7 +4,6 @@ import { Search } from '@mui/icons-material';
 import { getPlaces } from '../../api/places';
 import { jwtDecode } from 'jwt-decode';
 import styles from './PlaceMap.module.css';
-import RightSidebar from '../../components/RightSidebar';
 import { useNavigate } from 'react-router-dom';
 import { getPlaceReviews, createPlaceReview, deletePlaceReview } from '../../api/placeReviews';
 
@@ -468,7 +467,6 @@ function PlaceMap() {
                     }
                 </Box>
             </Box>
-            <RightSidebar />
         </Box>
     );
 }

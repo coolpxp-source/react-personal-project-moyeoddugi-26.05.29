@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import { Box, CssBaseline } from '@mui/material';
+import { Box, GlobalStyles  } from '@mui/material';
 import Menu from './components/Menu';  // 메뉴(좌측)
 import Login from './pages/auth/Login'; // 로그인
 import Register from './pages/auth/Register'; // 회원가입
@@ -33,76 +33,92 @@ import { jwtDecode } from 'jwt-decode';
 
 
 function App() {
-  const location = useLocation();
-  const isAuthPage = location.pathname === '/' || location.pathname === '/join';
+    const location = useLocation();
+    const isAuthPage = location.pathname === '/' || location.pathname === '/join';
 
-  // ▼ 추가
-  const token = localStorage.getItem('token');
-  const user = token ? jwtDecode(token) : null;
+    // ▼ 추가
+    const token = localStorage.getItem('token');
+    const user = token ? jwtDecode(token) : null;
 
-  // ▼ PrivateRoute
-  const PrivateRoute = ({ children }) => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-          alert('로그인이 필요해요!');
-          return <Navigate to="/" replace />;
-      }
-      return children;
-  };
+    // ▼ PrivateRoute
+    const PrivateRoute = ({ children }) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('로그인이 필요해요!');
+            return <Navigate to="/" replace />;
+        }
+        return children;
+    };
 
   // ▼ 페이지 래퍼 컴포넌트 추가
-  const PageWrapper = ({ children }) => (
-      <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.25, ease: 'easeOut' }}
-          style={{ width: '100%', height: '100%' }}
-      >
-          {children}
-      </motion.div>
-  );
+    const PageWrapper = ({ children }) => (
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            style={{ 
+                width: '100%', 
+                height: '100%', 
+                backgroundColor: 'transparent',
+                minWidth: 0,        /* ← 추가 */
+                overflow: 'hidden', /* ← 추가 */
+            }}
+        >
+            {children}
+        </motion.div>
+    );
 
+    return (
+        <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            backgroundImage: 'radial-gradient(circle, rgba(196, 149, 106, 0.3) 2px, #FAF6F0 2px)', // ← 1.5px → 2px (도트 크기)
+            backgroundSize: '28px 28px', // ← 24px → 28px (간격)
+            boxSizing: 'border-box',
+            minHeight: '100vh' 
+        }}>
+        <GlobalStyles styles={{
+                body: { margin: 0, padding: 0, backgroundColor: '#FAF6F0' }
+            }} />
+        {!isAuthPage && <Menu />}
+        <Box component="main" sx={{ 
+                flexGrow: 1,
+                p: 0,
+                marginLeft: '320px',
+                minWidth: 0,
+                width: 'calc(100% - 320px)',
+                overflow: 'hidden',
+                backgroundColor: 'transparent', // ← 추가
+            }}>
+            <AnimatePresence mode="wait">
+                <Routes location={location} key={location.pathname}>
+                    <Route path="/" element={<PageWrapper><Login /></PageWrapper>} />
+                    <Route path="/join" element={<PageWrapper><Register /></PageWrapper>} />
 
-  return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#FAF6F0', minHeight: '100vh' }}>
-      <CssBaseline />
-      {!isAuthPage && <Menu />}
-      <Box component="main" sx={{ 
-          flexGrow: 1,
-          p: 0,
-          marginLeft: '320px', // ← width 대신 marginLeft 사용
-          width: 'calc(100% - 320px)',
-          overflow: 'hidden'
-      }}>
-        <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-                <Route path="/" element={<PageWrapper><Login /></PageWrapper>} />
-                <Route path="/join" element={<PageWrapper><Register /></PageWrapper>} />
+                    {/* 로그인 없이 가능 */}
+                    <Route path="/posts" element={<PageWrapper><PostList /></PageWrapper>} />
+                    <Route path="/works" element={<PageWrapper><ShowcaseList /></PageWrapper>} />
+                    <Route path="/works/:postId" element={<PageWrapper><ShowcaseDetail /></PageWrapper>} />
 
-                {/* 로그인 없이 가능 */}
-                <Route path="/posts" element={<PageWrapper><PostList /></PageWrapper>} />
-                <Route path="/works" element={<PageWrapper><ShowcaseList /></PageWrapper>} />
-                <Route path="/works/:postId" element={<PageWrapper><ShowcaseDetail /></PageWrapper>} />
+                    {/* 로그인 필요 — PrivateRoute 안쪽에 PageWrapper */}
+                    <Route path="/places" element={<PrivateRoute><PageWrapper><PlaceMap /></PageWrapper></PrivateRoute>} />
+                    <Route path="/places/report" element={<PrivateRoute><PageWrapper><PlaceReport /></PageWrapper></PrivateRoute>} />
+                    <Route path="/patterns" element={<PrivateRoute><PageWrapper><PatternList /></PageWrapper></PrivateRoute>} />
+                    <Route path="/patterns/write" element={<PrivateRoute><PageWrapper><PatternWrite /></PageWrapper></PrivateRoute>} />
+                    <Route path="/patterns/:id" element={<PrivateRoute><PageWrapper><PatternDetail /></PageWrapper></PrivateRoute>} />
+                    <Route path="/user/:userId" element={<PrivateRoute><PageWrapper><UserPage /></PageWrapper></PrivateRoute>} />
+                    <Route path="/mypage" element={<PrivateRoute><Navigate to={`/user/${user?.userId}`} replace /></PrivateRoute>} />
+                    <Route path="/mypage/edit" element={<PrivateRoute><PageWrapper><MyPageEdit /></PageWrapper></PrivateRoute>} />
+                    <Route path="/works/write" element={<PrivateRoute><PageWrapper><ShowcaseWrite /></PageWrapper></PrivateRoute>} />
+                    <Route path="/notifications" element={<PrivateRoute><PageWrapper><Notifications /></PageWrapper></PrivateRoute>} />
+                    <Route path="/chat" element={<PrivateRoute><PageWrapper><Chat /></PageWrapper></PrivateRoute>} />
+                </Routes>
+            </AnimatePresence>
+        </Box>
+        </Box>
+        
+    );
+    }
 
-                {/* 로그인 필요 — PrivateRoute 안쪽에 PageWrapper */}
-                <Route path="/places" element={<PrivateRoute><PageWrapper><PlaceMap /></PageWrapper></PrivateRoute>} />
-                <Route path="/places/report" element={<PrivateRoute><PageWrapper><PlaceReport /></PageWrapper></PrivateRoute>} />
-                <Route path="/patterns" element={<PrivateRoute><PageWrapper><PatternList /></PageWrapper></PrivateRoute>} />
-                <Route path="/patterns/write" element={<PrivateRoute><PageWrapper><PatternWrite /></PageWrapper></PrivateRoute>} />
-                <Route path="/patterns/:id" element={<PrivateRoute><PageWrapper><PatternDetail /></PageWrapper></PrivateRoute>} />
-                <Route path="/user/:userId" element={<PrivateRoute><PageWrapper><UserPage /></PageWrapper></PrivateRoute>} />
-                <Route path="/mypage" element={<PrivateRoute><Navigate to={`/user/${user?.userId}`} replace /></PrivateRoute>} />
-                <Route path="/mypage/edit" element={<PrivateRoute><PageWrapper><MyPageEdit /></PageWrapper></PrivateRoute>} />
-                <Route path="/works/write" element={<PrivateRoute><PageWrapper><ShowcaseWrite /></PageWrapper></PrivateRoute>} />
-                <Route path="/notifications" element={<PrivateRoute><PageWrapper><Notifications /></PageWrapper></PrivateRoute>} />
-                <Route path="/chat" element={<PrivateRoute><PageWrapper><Chat /></PageWrapper></PrivateRoute>} />
-            </Routes>
-        </AnimatePresence>
-      </Box>
-    </Box>
-    
-  );
-}
-
-export default App;
+    export default App;

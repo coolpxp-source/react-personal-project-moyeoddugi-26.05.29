@@ -5,8 +5,7 @@
     padding: 16px 406px 24px 20px;
     height: 100%;
     overflow-y: auto;
-    background-color: #FAF6F0;
-    gap: 8px;
+    background-color: transparent;
 }
 
 /* ===== 헤더 (타이틀 + 전체 읽음 버튼) ===== */

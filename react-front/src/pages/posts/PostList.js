@@ -75,6 +75,8 @@ function PostList() {
     const [followingPosts, setFollowingPosts] = useState([]);
     // 정렬
     const [sort, setSort] = useState('latest'); 
+    // 좋아요 효과
+    const [likeAnim, setLikeAnim] = useState({});
 
     const { state: routeState } = useLocation();
 
@@ -119,15 +121,17 @@ function PostList() {
     }, []);
 
     useEffect(() => {
-        if (routeState?.scrollToPostId) {
-            const el = document.getElementById(`post-${routeState.scrollToPostId}`);
-            if (el) {
-                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                el.style.border = '2px solid #7B4F2E';
-                setTimeout(() => { el.style.border = '1px solid #E8D5B7'; }, 2000);
-            }
+        if (routeState?.scrollToPostId && posts.length > 0) { // ← posts.length > 0 추가
+            setTimeout(() => { // ← setTimeout 추가
+                const el = document.getElementById(`post-${routeState.scrollToPostId}`);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.style.border = '2px solid #7B4F2E';
+                    setTimeout(() => { el.style.border = '1px solid #E8D5B7'; }, 2000);
+                }
+            }, 500);
         }
-    }, [routeState]);
+    }, [routeState, posts.length]); // ← posts.length 추가
 
     const filteredPosts = posts.filter(post =>
         (post.TITLE || '').toLowerCase().includes(search.toLowerCase())
@@ -294,6 +298,11 @@ function PostList() {
                     liked: data.liked
                 }
             }));
+            // ▼ 애니메이션 트리거
+            if (data.liked) {
+                setLikeAnim(prev => ({ ...prev, [postId]: true }));
+                setTimeout(() => setLikeAnim(prev => ({ ...prev, [postId]: false })), 300);
+            }
         }
     };
 
@@ -599,42 +608,11 @@ function PostList() {
                                                     </Box>
                                                 )}
 
-                                                {/* 라이트박스 */}
-                                                {lightbox && (
-                                                    <Box className={styles.lightbox} onClick={() => setLightbox(null)}>
-                                                        <Box className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
-                                                            <img src={`http://localhost:3010${lightbox.images[lightbox.idx]}`}
-                                                                alt="lightbox" className={styles.lightboxImg}/>
-                                                            <Box className={styles.lightboxNav}>
-                                                                {lightbox.images.length > 1 && lightbox.images.map((_, i) => (
-                                                                    <Box key={i}
-                                                                        className={`${styles.lightboxDot} ${i === lightbox.idx ? styles.lightboxDotActive : ''}`}
-                                                                        onClick={() => setLightbox(prev => ({ ...prev, idx: i }))}
-                                                                    />
-                                                                ))}
-                                                            </Box>
-                                                            {lightbox.idx > 0 && (
-                                                                <button className={styles.lightboxPrev}
-                                                                    onClick={() => setLightbox(prev => ({ ...prev, idx: prev.idx - 1 }))}>
-                                                                    ‹
-                                                                </button>
-                                                            )}
-                                                            {lightbox.idx < lightbox.images.length - 1 && (
-                                                                <button className={styles.lightboxNext}
-                                                                    onClick={() => setLightbox(prev => ({ ...prev, idx: prev.idx + 1 }))}>
-                                                                    ›
-                                                                </button>
-                                                            )}
-                                                            <button className={styles.lightboxClose} onClick={() => setLightbox(null)}>✕</button>
-                                                        </Box>
-                                                    </Box>
-                                                )}
-
                                                 <Box className={styles.cardFooter}>
                                                     <Box className={styles.footerItem}
                                                         onClick={(e) => handleLike(e, post.POST_ID)}>
                                                         {likes[post.POST_ID]?.liked
-                                                            ? <Favorite className={styles.iconLikeActive}/>
+                                                            ? <Favorite className={`${styles.iconLikeActive} ${likeAnim[post.POST_ID] ? styles.heartAnim : ''}`}/>
                                                             : <FavoriteBorder className={styles.iconLike}/>
                                                         }
                                                         <Typography className={styles.footerText}>
@@ -828,24 +806,44 @@ function PostList() {
                                         return (
                                             <Box className={styles.nativeBanner}
                                                 onClick={() => window.open(banner.link, '_blank')}>
-                                                <Typography className={styles.nativeBannerSponsor}>광고</Typography>
                                                 <Box className={styles.nativeBannerContent}>
-                                                    <Box className={styles.nativeBannerImgWrapper}>
-                                                        <img src={banner.img} alt={banner.title} className={styles.nativeBannerImg}/>
-                                                    </Box>
-                                                    <Box className={styles.nativeBannerInfo}>
-                                                        <Box className={styles.nativeBannerTagRow}>
-                                                            <span className={styles.nativeBannerTagChip}>{banner.tag}</span>
+                                                    <Box className={styles.nativeBannerMainGroup}>
+                                                        {/* 왼쪽 — 텍스트 */}
+                                                        <Box className={styles.nativeBannerLeft}>
+                                                            <Box className={styles.nativeBannerTopRow}>
+                                                                <span className={styles.nativeBannerTagChip}
+                                                                    style={{ backgroundColor: banner.accentColor, color: banner.bgColor }}>
+                                                                    {banner.tag}
+                                                                </span>
+                                                                <span className={styles.nativeBannerSponsor}>광고</span>
+                                                            </Box>
+                                                            <Typography className={styles.nativeBannerBrand}>
+                                                                {banner.brand}
+                                                            </Typography>
+                                                            <Typography className={styles.nativeBannerHighlight}>
+                                                                {banner.highlight}
+                                                            </Typography>
+                                                            <Typography className={styles.nativeBannerTitle}>
+                                                                {banner.title}
+                                                            </Typography>
                                                         </Box>
-                                                        <Typography className={styles.nativeBannerBrand}>{banner.brand}</Typography>
-                                                        <Typography className={styles.nativeBannerTitle}>{banner.title}</Typography>
-                                                        <Typography className={styles.nativeBannerDesc}>{banner.desc}</Typography>
-                                                        <Typography className={styles.nativeBannerSubDesc}>{banner.subDesc}</Typography>
-                                                    </Box>
-                                                    <Box className={styles.nativeBannerShopWrapper}>
-                                                        <Typography className={styles.nativeBannerAdText}>{banner.adText}</Typography>
-                                                        <Box className={styles.nativeBannerShopBtn}>
-                                                            🛒 구매처 바로가기
+                                                        {/* 가운데 — 이미지 */}
+                                                        <Box className={styles.nativeBannerImgWrapper}>
+                                                            <img src={banner.img} alt={banner.title} className={styles.nativeBannerImg}/>
+                                                        </Box>
+                                                        {/* 오른쪽 — 가격 + 버튼 */}
+                                                        <Box className={styles.nativeBannerRight}>
+                                                            <span className={styles.nativeBannerBadge}
+                                                                style={{ backgroundColor: banner.accentColor, color: banner.bgColor }}>
+                                                                {banner.badge}
+                                                            </span>
+                                                            <Typography className={styles.nativeBannerPrice}
+                                                                style={{ color: '#ffffff' }}>
+                                                                {banner.price}
+                                                            </Typography>
+                                                            <Box className={styles.nativeBannerShopBtn}>
+                                                                🛒 구매처 바로가기
+                                                            </Box>
                                                         </Box>
                                                     </Box>
                                                 </Box>
@@ -857,7 +855,33 @@ function PostList() {
                         )}
                     </Box>
                 </Box>
-
+                {/* 라이트박스 */}
+                {lightbox && (
+                <Box className={styles.lightbox} onClick={() => setLightbox(null)}>
+                    <Box className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
+                        <img src={`http://localhost:3010${lightbox.images[lightbox.idx]}`}
+                            alt="lightbox" className={styles.lightboxImg}/>
+                            <Box className={styles.lightboxNav}>
+                                {lightbox.images.length > 1 && lightbox.images.map((_, i) => (
+                                    <Box key={i}
+                                    className={`${styles.lightboxDot} ${i === lightbox.idx ? styles.lightboxDotActive : ''}`}
+                                    onClick={() => setLightbox(prev => ({ ...prev, idx: i }))}/>
+                                ))}
+                            </Box>
+                                {lightbox.idx > 0 && (
+                                    <button className={styles.lightboxPrev}
+                                        onClick={() => setLightbox(prev => ({ ...prev, idx: prev.idx - 1 }))}>
+                                             ‹</button>
+                                )}
+                                {lightbox.idx < lightbox.images.length - 1 && (
+                                    <button className={styles.lightboxNext}
+                                        onClick={() => setLightbox(prev => ({ ...prev, idx: prev.idx + 1 }))}>›
+                                    </button>
+                                )}
+                                <button className={styles.lightboxClose} onClick={() => setLightbox(null)}>✕</button>
+                        </Box>
+                    </Box>
+                )}
                 {/* 우측 위젯 */}
                 <Box className={styles.sideWidget}>
                     {/* 인기 도안 */}

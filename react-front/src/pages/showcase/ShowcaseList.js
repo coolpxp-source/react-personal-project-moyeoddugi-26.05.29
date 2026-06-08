@@ -7,7 +7,6 @@ import { getShowcaseList } from '../../api/showcase';
 import { toggleLike, getLikes } from '../../api/likes';
 import { getComments, createComment } from '../../api/comments';
 import styles from './ShowcaseList.module.css';
-import RightSidebar from '../../components/RightSidebar';
 import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
 import SearchInput from '../../components/SearchInput'; // 검색창
 
@@ -236,8 +235,6 @@ function ShowcaseList() {
                     </Box>
                 ))
             )}
-
-            <RightSidebar />
         </Box>
     );
 }

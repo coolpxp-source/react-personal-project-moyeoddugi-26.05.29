@@ -2,12 +2,71 @@
 .container {
     display: flex;
     flex-direction: column;
-    padding: 16px 406px 24px 20px;
+    padding: 16px 20px;
     height: 100%;
     overflow-y: auto;
-    background-color: #FAF6F0;
+    background-color: transparent;
     gap: 16px;
     position: relative;
+    width: 100%;        /* ← 추가 */
+    box-sizing: border-box;
+}
+
+.mainLayout {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.contentArea {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 0; /* flex: 1과 함께 써야 찐으로 고정됨 */
+}
+
+.sideWidget {
+    width: 240px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 16px;
+    align-self: flex-start;
+}
+
+.widgetCard {
+    background-color: #ffffff;
+    border: 1px solid #E8D5B7;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.widgetTitle {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #F5EDD8;
+}
+
+/* 위젯 전용 통계 행 (라벨-값 좌우 배치) */
+.widgetStatItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.statValue {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #3D2B1A !important;
 }
 
 .loading {
@@ -21,10 +80,12 @@
     background-color: #ffffff;
     border: 1px solid #E8D5B7;
     border-radius: 12px;
-    padding: 20px 24px;
+    padding: 24px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    gap: 10px;
+    position: relative;  /* 버튼 절대위치용 */
 }
 
 .profileLeft {
@@ -36,29 +97,26 @@
 .profileInfo {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 10px;
 }
 
 .nickname {
-    font-size: 18px !important;
+    font-size: 20px !important;
     font-weight: 600 !important;
     color: #3D2B1A !important;
+    text-align: center;
 }
 
 .bio {
-    font-size: 12px !important;
+    font-size: 15px !important;
     color: #B08060 !important;
+    text-align: center;
 }
 
-.profileRight {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 12px;
-}
-
-/* 팔로우/DM 버튼 행 */
 .btnRow {
+    position: absolute;  /* ← 팔로우/DM도 오른쪽 위 */
+    top: 16px;
+    right: 16px;
     display: flex;
     gap: 8px;
     align-items: center;
@@ -79,11 +137,15 @@
 }
 
 .editBtn {
+    position: absolute !important;  /* ← 오른쪽 위 고정 */
+    top: 16px !important;
+    right: 16px !important;
     border-color: #E8D5B7 !important;
     color: #7B4F2E !important;
     border-radius: 20px !important;
     font-size: 12px !important;
 }
+
 
 .dmBtn {
     border: 1px solid #E8D5B7 !important;
@@ -97,10 +159,11 @@
 
 .dmBtn:hover { background-color: #F5EDD8 !important; }
 
-/* 팔로워/팔로잉/도안 통계 */
+/* 프로필 카드 팔로워/팔로잉/도안 통계 */
 .statsRow {
     display: flex;
     gap: 24px;
+     margin-top: 4px;
 }
 
 .statItem {
@@ -108,6 +171,14 @@
     flex-direction: column;
     align-items: center;
     gap: 2px;
+}
+
+.statItemClickable {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
 }
 
 .statNum {
@@ -126,6 +197,10 @@
     background-color: #ffffff !important;
     border-bottom: 1px solid #E8D5B7 !important;
     border-radius: 12px 12px 0 0;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important; /* ← 이게 핵심 */
 }
 
 .tab {
@@ -138,6 +213,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
+    padding-top: 10px;
 }
 
 .card {
@@ -148,7 +224,10 @@
     transition: transform 0.15s ease;
 }
 
-.card:hover { transform: translateY(-2px); }
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
 
 .cardImgWrapper {
     position: relative;
@@ -177,7 +256,6 @@
     color: #B08060 !important;
 }
 
-/* 카드 하단 오버레이 */
 .cardOverlay {
     position: absolute;
     bottom: 0; left: 0; right: 0;
@@ -248,9 +326,9 @@
 
 /* ===== 게시글 목록 ===== */
 .postList {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    columns: 2;
+    column-gap: 12px;
+    padding-top: 10px;
 }
 
 .postCard {
@@ -262,6 +340,9 @@
     flex-direction: column;
     gap: 8px;
     cursor: pointer;
+    max-width: 800px;
+    break-inside: avoid;    /* ← 추가: 카드가 열 사이에서 잘리지 않게 */
+    margin-bottom: 12px;    /* ← gap 대신 margin 사용 */
 }
 
 .postHeader {
@@ -299,7 +380,6 @@
     color: #B08060 !important;
 }
 
-/* 게시글 이미지 그리드 — 높이는 JS에서 동적으로 지정 */
 .postImgGrid {
     display: grid;
     gap: 4px;
@@ -312,7 +392,6 @@
     width: 100%;
     object-fit: cover;
     display: block;
-    cursor: pointer;
 }
 
 /* ===== 스크랩 탭 ===== */
@@ -325,7 +404,6 @@
     margin-bottom: 12px !important;
 }
 
-/* 스크랩 게시글 섹션 상단 여백 */
 .sectionTitleMargin {
     font-size: 14px !important;
     font-weight: 600 !important;
@@ -353,6 +431,8 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    margin-top: 10px;
+    box-sizing: border-box;
 }
 
 .newsTitle {
@@ -410,7 +490,7 @@
     color: #B08060 !important;
 }
 
-/* 팔로워/팔로잉 모달 */
+/* ===== 팔로워/팔로잉 모달 ===== */
 .modalOverlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -500,7 +580,7 @@
     gap: 6px;
 }
 
-/* 맞팔로우 — 초록 */
+/* ===== 팔로우 태그 ===== */
 .mutualTag {
     font-size: 10px;
     background-color: #E8F5E9;
@@ -510,7 +590,6 @@
     white-space: nowrap;
 }
 
-/* 나를 팔로우 중 — 파랑 */
 .followerTag {
     font-size: 10px;
     background-color: #E3F2FD;
@@ -520,7 +599,6 @@
     white-space: nowrap;
 }
 
-/* 내가 팔로우 중 — 주황 */
 .followingTag {
     font-size: 10px;
     background-color: #FFF3E0;
@@ -536,10 +614,15 @@
     gap: 8px;
 }
 
-.statItemClickable {
+.scrapPostList {
+    columns: 2;
+    column-gap: 12px;
+    padding-top: 10px;
+}
+
+.scrapList {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    cursor: pointer;
+    gap: 12px;
+    padding-top: 10px;
 }

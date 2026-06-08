@@ -7,7 +7,6 @@ import { toggleLike, getLikes } from '../../api/likes';
 import { jwtDecode } from 'jwt-decode';
 import { getComments, createComment, deleteComment, updateComment } from '../../api/comments';
 import styles from './PatternDetail.module.css';
-import RightSidebar from '../../components/RightSidebar';
 import AvatarItem from '../../components/AvatarItem'; // 프로필 이미지
 import useScrap from '../../hooks/useScrap'; // 스크랩
 
@@ -590,7 +589,6 @@ function PatternDetail() {
                     </Box>
                 </Box>
             )}
-            <RightSidebar />
         </Box>
     );
 }

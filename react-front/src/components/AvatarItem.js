@@ -1,36 +1,30 @@
 // src/components/AvatarItem.jsx
 import React from 'react';
 import { Box, Typography } from '@mui/material';
+import styles from './AvatarItem.module.css';
 
 const BASE_URL = 'http://localhost:3010';
 
 function AvatarItem({ src, nickname, size = 24, onClick }) {
-    const style = {
-        width: size,
-        height: size,
-        borderRadius: '50%',
-        cursor: onClick ? 'pointer' : 'default',
-    };
-
-    if (src) {
-        return (
-            <img
-                src={`${BASE_URL}${src}`}
-                alt="profile"
-                style={{ ...style, objectFit: 'cover' }}
-                onClick={onClick}
-            />
-        );
-    }
-
     return (
-        <Box
-            style={{ ...style, backgroundColor: '#C4956A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        <Box 
+            className={`${styles.wrapper} ${onClick ? styles.clickable : ''}`}
+            style={{ width: size, height: size }}
             onClick={onClick}
         >
-            <Typography style={{ fontSize: size * 0.45, color: 'white', fontWeight: 500 }}>
-                {nickname?.charAt(0)}
-            </Typography>
+            {src ? (
+                <img
+                    src={`${BASE_URL}${src}`}
+                    alt="profile"
+                    className={styles.img}
+                />
+            ) : (
+                <Box className={styles.default}>
+                    <Typography style={{ fontSize: size * 0.45, color: 'white', fontWeight: 500 }}>
+                        {nickname?.charAt(0)}
+                    </Typography>
+                </Box>
+            )}
         </Box>
     );
 }

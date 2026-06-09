@@ -44,32 +44,26 @@
 
 ## 🛠 사용 기술
 
-**Frontend**
-- React 18, Vite
-- React Router v6
-- CSS Modules
-- MUI (Material UI)
-- framer-motion
+### Frontend
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![CSS Modules](https://img.shields.io/badge/CSS_Modules-000000?style=for-the-badge&logo=cssmodules&logoColor=white)
+![MUI](https://img.shields.io/badge/MUI-007FFF?style=for-the-badge&logo=mui&logoColor=white)
 
-**Backend**
-- Node.js, Express
-- JWT, bcrypt
+### Backend
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white)
 
-**Database**
-- Oracle Database 21c XE
-- node-oracledb
+### Database
+![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
 
-**라이브러리**
-- Multer (이미지 업로드)
-- Sharp (이미지 리사이징)
-- Socket.io (실시간 채팅)
-- jwt-decode
-
-**API**
-- 카카오맵 API
-
-**버전 관리**
-- Git, GitHub
+### Tools
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
+![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
+![KakaoMap](https://img.shields.io/badge/KakaoMap_API-FFCD00?style=for-the-badge&logo=kakao&logoColor=black)
 
 <br>
 

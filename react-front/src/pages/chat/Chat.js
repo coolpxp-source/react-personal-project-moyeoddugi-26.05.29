@@ -155,9 +155,11 @@ function Chat() {
         .filter(r => r.ROOM_TYPE === 'DM')
         .reduce((sum, r) => sum + (r.UNREAD_COUNT || 0), 0);
 
-    const filteredRooms = rooms.filter(room =>
-        activeTab === 'dm' ? room.ROOM_TYPE === 'DM' : room.ROOM_TYPE !== 'DM'
-    );
+    const filteredRooms = rooms
+        .filter(room => activeTab === 'dm' ? room.ROOM_TYPE === 'DM' : room.ROOM_TYPE !== 'DM')
+        .filter((room, index, self) => 
+            index === self.findIndex(r => r.ROOM_ID === room.ROOM_ID)
+        );
 
     return (
         <Box className={styles.container}>

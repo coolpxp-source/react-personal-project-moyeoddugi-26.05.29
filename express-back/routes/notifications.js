@@ -22,11 +22,13 @@ router.get('/', async (req, res) => {
         const result = await connection.execute(
             `SELECT n.NOTI_ID, n.NOTI_TYPE, n.TARGET_TYPE, n.TARGET_ID,
                     n.MESSAGE, n.IS_READ, n.CREATED_AT,
-                    u.NICKNAME AS SENDER_NICKNAME, u.PROFILE_IMG AS SENDER_PROFILE_IMG
-             FROM NOTIFICATIONS n
-             LEFT JOIN USERS u ON n.SENDER_ID = u.USER_ID
-             WHERE n.RECEIVER_ID = :userId
-             ORDER BY n.CREATED_AT DESC`,
+                    u.NICKNAME AS SENDER_NICKNAME, u.PROFILE_IMG AS SENDER_PROFILE_IMG,
+                    p.BOARD_TYPE AS BOARD_TYPE
+            FROM NOTIFICATIONS n
+            LEFT JOIN USERS u ON n.SENDER_ID = u.USER_ID
+            LEFT JOIN POSTS p ON n.TARGET_TYPE = 'POST' AND n.TARGET_ID = p.POST_ID
+            WHERE n.RECEIVER_ID = :userId
+            ORDER BY n.CREATED_AT DESC`,
             [userId],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );

@@ -12,6 +12,7 @@ const NOTI_ICONS = {
     FOLLOW: '👤',
     GATHER: '🧶',
     CHAT: '📩',
+    SHOWCASE: '🎨',
 };
 // eslint-disable-next-line react-hooks/exhaustive-deps
 function Notifications() {
@@ -40,10 +41,15 @@ function Notifications() {
         setNotifications(prev =>
             prev.map(n => n.NOTI_ID === noti.NOTI_ID ? { ...n, IS_READ: 'Y' } : n)
         );
-        // 클릭 시 해당 페이지로 이동
-        if (noti.TARGET_TYPE === 'POST') navigate('/posts', { state: { scrollToPostId: noti.TARGET_ID } });
-        else if (noti.TARGET_TYPE === 'PATTERN') navigate(`/patterns/${noti.TARGET_ID}`);
-        else if (noti.TARGET_TYPE === 'SHOWCASE') navigate(`/works/${noti.TARGET_ID}`);
+        if (noti.TARGET_TYPE === 'POST') {
+            if (noti.BOARD_TYPE === '작품자랑') {
+                navigate(`/works/${noti.TARGET_ID}`);
+            } else {
+                navigate('/posts', { state: { scrollToPostId: noti.TARGET_ID } });
+            }
+        } else if (noti.TARGET_TYPE === 'PATTERN') {
+            navigate(`/patterns/${noti.TARGET_ID}`);
+        }
     };
 
     return (
@@ -65,7 +71,10 @@ function Notifications() {
                         onClick={() => handleClick(noti)}>
                         <Box className={styles.notiLeft}>
                             <Typography className={styles.notiIcon}>
-                                {NOTI_ICONS[noti.NOTI_TYPE] || '🔔'}
+                                {noti.BOARD_TYPE === '작품자랑'
+                                    ? NOTI_ICONS['SHOWCASE']
+                                    : NOTI_ICONS[noti.NOTI_TYPE] || '🔔'
+                                }
                             </Typography>
                             {noti.SENDER_PROFILE_IMG || noti.SENDER_NICKNAME ? (
                                 <AvatarItem

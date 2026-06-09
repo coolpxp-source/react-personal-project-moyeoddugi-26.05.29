@@ -13,7 +13,7 @@ const NOTI_ICONS = {
     GATHER: '🧶',
     CHAT: '📩',
 };
-
+// eslint-disable-next-line react-hooks/exhaustive-deps
 function Notifications() {
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
@@ -41,7 +41,7 @@ function Notifications() {
             prev.map(n => n.NOTI_ID === noti.NOTI_ID ? { ...n, IS_READ: 'Y' } : n)
         );
         // 클릭 시 해당 페이지로 이동
-        if (noti.TARGET_TYPE === 'POST') navigate('/posts');
+        if (noti.TARGET_TYPE === 'POST') navigate('/posts', { state: { scrollToPostId: noti.TARGET_ID } });
         else if (noti.TARGET_TYPE === 'PATTERN') navigate(`/patterns/${noti.TARGET_ID}`);
         else if (noti.TARGET_TYPE === 'SHOWCASE') navigate(`/works/${noti.TARGET_ID}`);
     };

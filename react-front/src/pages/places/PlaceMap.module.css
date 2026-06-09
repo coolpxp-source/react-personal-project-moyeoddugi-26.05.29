@@ -392,3 +392,18 @@
     gap: 4px;
     margin-top: 4px;
 }
+
+/* 리셋버튼 */
+.resetBtn {
+    border-color: #E8D5B7 !important;
+    color: #B08060 !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.resetBtn:hover {
+    border-color: #7B4F2E !important;
+    color: #7B4F2E !important;
+    background-color: #F5EDD8 !important;
+}

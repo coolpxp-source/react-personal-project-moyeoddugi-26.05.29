@@ -85,11 +85,11 @@ function App() {
         <Box component="main" sx={{ 
                 flexGrow: 1,
                 p: 0,
-                marginLeft: '320px',
+                marginLeft: isAuthPage ? '0px' : '320px',
                 minWidth: 0,
-                width: 'calc(100% - 320px)',
+                wwidth: isAuthPage ? '100%' : 'calc(100% - 320px)',
                 overflow: 'hidden',
-                backgroundColor: 'transparent', // ← 추가
+                backgroundColor: 'transparent',
             }}>
             <AnimatePresence mode="wait">
                 <Routes location={location} key={location.pathname}>

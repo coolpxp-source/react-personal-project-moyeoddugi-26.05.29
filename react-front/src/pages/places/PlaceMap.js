@@ -198,7 +198,7 @@ function PlaceMap() {
         fetchPlaces();
     }, []);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+// eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         if (!mapInstanceRef.current || places.length === 0) return;
 
@@ -312,6 +312,19 @@ function PlaceMap() {
                         onClick={handleSearch}>
                         검색
                     </Button>
+                    {/* ▼ 리셋 버튼 추가 */}
+                    {(filter !== '전체' || tagFilters.length > 0 || search) && (
+                        <Button variant="outlined" className={styles.resetBtn}
+                            onClick={() => {
+                                setFilter('전체');
+                                setTagFilters([]);
+                                setSearch('');
+                                setSearchResults([]);
+                                setSelectedPlace(null);
+                            }}>
+                            전체 리셋
+                        </Button>
+                    )}
                 </Box>
             </Box>
 

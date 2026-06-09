@@ -90,23 +90,37 @@
 - 허용/금지/모르겠어요 상태별 색상 구분
 - 장소 검색 및 필터 기능
 - 리뷰 작성 기능
+<img src="assets/5.map.PNG" width="100%"/>
+<img src="assets/5.map_review.PNG" width="100%"/>
+<img src="assets/5.map_report.PNG" width="100%"/>
+
 
 ### 🧵 도안 공유
 - 도안 목록 (코바늘/대바늘 탭, 난이도/태그 필터)
 - 멀티 이미지 업로드 (Sharp 리사이징)
 - 좋아요 / 스크랩 / 댓글·대댓글
+<img src="assets/3.pattern.PNG" width="100%"/>
+<img src="assets/3.pattern_detail.PNG" width="100%"/>
+<img src="assets/3.pattern_writePNG.PNG" width="100%"/>
+
 
 ### 📋 커뮤니티 피드
 - 트위터식 SNS 피드 (자유/질문/모여떠요/떠주세요/떠드려요)
 - 인라인 게시글 작성 (이미지 최대 3장)
 - 팔로잉 피드 탭 (내가 팔로우한 사람 게시글만)
 - 좋아요 / 스크랩 / 댓글·대댓글
+<img src="assets/2.posts.PNG" width="100%"/>
+<img src="assets/2.posts_click_img.PNG" width="100%"/>
+<img src="assets/2.posts_following.PNG" width="100%"/>
 
 ### 👤 유저 페이지 & 소셜
 - 팔로우/팔로잉, 맞팔로우 뱃지
 - 내 도안 / 게시글 / 스크랩 탭
 - 활동 통계 위젯
 - 1:1 DM 채팅
+<img src="assets/8.mypage.PNG" width="100%"/>
+<img src="assets/8.mypage_scrap.PNG" width="100%"/>
+<img src="assets/8.mypage_following.PNG" width="50%"/>
 
 ### 💬 채팅
 - 모여떠요 게시글 연동 그룹 채팅방

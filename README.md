@@ -50,20 +50,36 @@
 ![CSS Modules](https://img.shields.io/badge/CSS_Modules-000000?style=for-the-badge&logo=cssmodules&logoColor=white)
 ![MUI](https://img.shields.io/badge/MUI-007FFF?style=for-the-badge&logo=mui&logoColor=white)
 
+- **React**: 컴포넌트 기반 UI 개발, useState/useEffect 훅 활용
+- **Vite**: 빠른 개발 서버 및 빌드 도구
+- **CSS Modules**: 컴포넌트 단위 스타일 관리, 클래스명 충돌 방지
+- **MUI**: 공통 UI 컴포넌트 활용 (Tabs, Chip, Avatar 등)
+
 ### Backend
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white)
 
+- **Node.js / Express**: REST API 서버 구현, 라우터 모듈화
+- **JWT**: 로그인 인증 및 토큰 기반 사용자 식별
+- **Socket.io**: 실시간 그룹 채팅 및 1:1 DM 구현
+- **Multer / Sharp**: 이미지 업로드 및 리사이징 처리
+
 ### Database
 ![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
 
-### Tools
+- **Oracle DB 21c XE**: 16개 테이블 설계 및 운영, 시퀀스/제약조건 활용
+
+### Tools & API
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
 ![KakaoMap](https://img.shields.io/badge/KakaoMap_API-FFCD00?style=for-the-badge&logo=kakao&logoColor=black)
+
+- **Git / GitHub**: 버전 관리 및 소스코드 공유
+- **Figma**: 와이어프레임 및 화면 설계
+- **카카오맵 API**: 지도 렌더링, 마커 표시, 장소 검색 연동
 
 <br>
 

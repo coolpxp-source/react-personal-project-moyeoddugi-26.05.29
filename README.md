@@ -145,6 +145,8 @@
 
 ##  🎥 핵심 기능 시연 영상
 
+[▶ 시연 영상 보러가기](https://drive.google.com/file/d/1hFul60YRHtJOZ1hcjHQhfAtC-p2cd7hM/view?usp=sharing)
+
 <br>
 
 ## 📁 프로젝트 자료 모음

@@ -141,6 +141,8 @@
 
 ## 👩‍🏫 PPT
 
+[📊 발표 자료 보러가기](https://docs.google.com/presentation/d/1c_qd1DWyd8mtrt4Ij1YzPcksgwb-A1_M/edit?usp=sharing&ouid=113056228442571637421&rtpof=true&sd=true)
+
 <br>
 
 ##  🎥 핵심 기능 시연 영상

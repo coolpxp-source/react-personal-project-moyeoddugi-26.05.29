@@ -141,7 +141,7 @@
 
 ## 👩‍🏫 PPT
 
-[📊 발표 자료 보러가기](https://drive.google.com/file/d/15QNU73sr7pTUSCRYYVqJ3YsTmOJ28nZY/view?usp=drive_link)
+[📊 발표 자료 보러가기](https://drive.google.com/file/d/1MEHoPLB6le5ay45WtI8UyatL3qkR3lWT/view?usp=drive_link)
 
 <br>
 
